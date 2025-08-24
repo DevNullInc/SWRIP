@@ -1,0 +1,80 @@
+#PLAYER
+Version      3
+Toplevel     110
+Name         Drake~
+Sex          1
+Race         0
+MainAbility  0
+Languages    -1 1
+Played       13707
+Room         100
+HpManaMove   500 500 0 0 1000 1000
+Force        0 0 0 0
+Gold         5000
+Bank         0
+Ability        0 1 0
+Ability        1 1 0
+Ability        2 1 0
+Ability        3 1 0
+Ability        4 1 0
+Ability        5 1 0
+Ability        6 1 0
+Ability        7 1 0
+Ability        8 1 0
+Clones         0
+Salary_time         0
+Salary         0
+Clones         0
+Questpoints         0
+Nextquest         0
+Jailvnum         0
+Act          570426952
+Position     8
+SavingThrows 0 0 0 0 0
+Alignment    0
+Glory        0
+MGlory       0
+Hitroll      0
+Damroll      0
+Armor        100
+Mentalstate  0
+Password     DramJ0nb9ElQM~
+Lastplayed   1208549349
+Title         Drake the Human~
+AuthedBy     professor schoolmaster teacher headmaster~
+Commandgroup    1023
+Addiction    0 0 0 0 0 0 0 0 0 0
+Druglevel    0 0 0 0 0 0 0 0 0 0
+WizInvis     110
+Flags        0
+MKills       0
+MDeaths      0
+AttrPerm     9 11 10 9 6 13 18
+AttrMod      0 0 0 0 0 0 0
+Condition    0 48 48 10
+Site         98.216.216.165
+Tongue       100 'common'
+End
+
+#OBJECT
+Vnum         10311
+WearLoc      0
+Values       0 0 46 0 0 0
+End
+
+#OBJECT
+Vnum         10312
+WearLoc      16
+Values       12 5 20 2 805 1000
+End
+
+#OBJECT
+Vnum         10424
+End
+
+#OBJECT
+Vnum         10321
+Level        1
+End
+
+#END

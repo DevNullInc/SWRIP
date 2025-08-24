@@ -1,0 +1,287 @@
+#PLAYER
+Version      3
+Toplevel     109
+Name         Darrik~
+Description  Empty bottles lie stacked up next to the door, prohibiting  its free range
+
+of movement.  What looks to have started out  as an expensive couch bears
+
+many liquid stains and tears. An old  holo-projector stands in a corner,
+
+flickering half-heartedly.  The main feature of the room is a large wooden
+
+shelf with many  compartments in its base.  A bottle opener and several
+
+small  glasses sit on top of the shelf. 
+
+~
+Sex          1
+Race         11
+MainAbility  4
+Languages    -1 -262145
+Played       -1008178744
+Room         100
+PlrHome      109
+HpManaMove   509 509 0 0 1000 1000
+Force        1 0 30001 30001
+Gold         100000000
+Bank         1401235
+Ability        0 200 19999999
+Ability        1 200 19999999
+Ability        2 200 19999999
+Ability        3 200 19965018
+Ability        4 200 19801999
+Ability        5 200 19999999
+Ability        6 200 19800500
+Ability        7 200 19999999
+Ability        8 1 0
+Clones         0
+Salary_time         0
+Salary         0
+Clones         0
+Questpoints         1250
+Nextquest         0
+Jailvnum         0
+Act          570570312
+Position     8
+SavingThrows 0 0 0 0 0
+Alignment    -592
+Glory        500
+MGlory       0
+Hitroll      0
+Damroll      1
+Armor        97
+Immune       4194304
+Susceptible  1028
+Restore_time 1086740963
+Mentalstate  0
+Password     DrPAoeWcZadjg~
+Lastplayed   1208535806
+Rank         &c(&rShai'tan&c) &R&W~
+Title         Darrik Vequir &R&W^x~
+AuthedBy     professor schoolmaster teacher headmaster~
+Prompt       &c%i:&R&w~
+Commandgroup    1023
+Addiction    0 0 0 0 0 0 0 0 0 0
+Druglevel    0 0 0 0 0 0 0 0 0 0
+WizInvis     101
+Flags        2048
+PKills       3
+Targ 6612~
+MKills       27
+MDeaths      0
+AttrPerm     12 25 11 11 15 20 6
+AttrMod      0 0 0 0 0 0 0
+Condition    0 100 48 120
+Site         (Link-Dead)
+Spell        100 'affect mind'
+Spell        100 'alertness'
+Spell        100 'armor'
+Spell        100 'beauty'
+Spell        100 'blindness'
+Spell        100 'choke'
+Spell        100 'create fire'
+Spell        100 'cure blindness'
+Spell        100 'cure critical'
+Spell        100 'cure light'
+Spell        100 'cure poison'
+Spell        100 'cure serious'
+Spell        100 'detect darkness'
+Spell        100 'detect force'
+Spell        100 'detect intent'
+Spell        100 'detect masking'
+Spell        100 'detect poison'
+Spell        100 'detect traps'
+Spell        100 'dispel force'
+Spell        100 'drain essence'
+Spell        100 'dream'
+Spell        100 'earthquake'
+Spell        100 'farsight'
+Spell        100 'fatigue'
+Spell        100 'feebleness'
+Spell        100 'fireball'
+Spell        100 'flamestrike'
+Spell        100 'float'
+Spell        100 'force blast wrath'
+Spell        100 'force bolt'
+Spell        100 'force bubble'
+Spell        100 'force funnel'
+Spell        100 'force lightning'
+Spell        100 'force shield'
+Spell        100 'force sight'
+Spell        100 'force spray'
+Spell        100 'forethought'
+Spell        100 'good fortune'
+Spell        100 'group masking'
+Spell        100 'hand of Darkness'
+Spell        100 'harden'
+Spell        100 'harm'
+Spell        100 'heal'
+Spell        100 'heightened awareness'
+Spell        100 'illuminate'
+Spell        100 'inner fortress'
+Spell        100 'invade essence'
+Spell        100 'know essence'
+Spell        100 'mask'
+Spell        100 'poison'
+Spell        100 'possess'
+Spell        100 'protection from darkness'
+Spell        100 'refresh'
+Spell        100 'remove masking'
+Spell        100 'remove trap'
+Spell        100 'restoration'
+Spell        100 'sanctuary'
+Spell        100 'scorching surge'
+Spell        100 'shield'
+Spell        100 'shocking grasp'
+Spell        100 'shockshield'
+Spell        100 'sleep'
+Spell        100 'slink'
+Spell        100 'true sight'
+Spell        100 'unravel defense'
+Spell        100 'ventriloquate'
+Spell        100 'weaken'
+Skill        100 'acute_awarness'
+Skill        100 'acute_damage'
+Skill        100 'add_patrol'
+Skill        100 'aid'
+Skill        100 'apprehend'
+Skill        100 'backstab'
+Skill        100 'bash'
+Skill        100 'beg'
+Skill        100 'berserk'
+Skill        100 'bind'
+Skill        100 'bribe'
+Skill        100 'capital ships'
+Skill        100 'circle'
+Skill        100 'climb'
+Skill        100 'cloak'
+Skill        100 'cutdoor'
+Skill        100 'detrap'
+Skill        100 'dig'
+Skill        100 'disarm'
+Skill        100 'disguise'
+Skill        100 'dodge'
+Skill        100 'dominate'
+Skill        100 'doorbash'
+Skill        100 'dual wield'
+Skill        100 'elite_guard'
+Skill        100 'enhanced damage'
+Skill        100 'fake signal'
+Skill        100 'fifth attack'
+Skill        100 'first aid'
+Skill        100 'focus strength'
+Skill        100 'fourth attack'
+Skill        100 'gather_intelligence'
+Skill        100 'gemcutting'
+Skill        100 'gouge'
+Skill        100 'grenades'
+Skill        100 'grip'
+Skill        100 'heightened accuracy'
+Skill        100 'hijack'
+Skill        100 'hitall'
+Skill        100 'inner strength'
+Skill        100 'jail'
+Skill        100 'jumpvector'
+Skill        100 'kick'
+Skill        100 'lift'
+Skill        100 'lightsaber crafting'
+Skill        100 'limber'
+Skill        100 'makearmor'
+Skill        100 'makeblade'
+Skill        100 'makeblaster'
+Skill        100 'makebowcaster'
+Skill        100 'makecomlink'
+Skill        100 'makecontainer'
+Skill        100 'makeflashlight'
+Skill        100 'makefurniture'
+Skill        100 'makegrenade'
+Skill        100 'makejewelry'
+Skill        100 'makelandmine'
+Skill        100 'makemedpac'
+Skill        100 'makeshield'
+Skill        100 'mass_propeganda'
+Skill        100 'meditate'
+Skill        100 'midships'
+Skill        100 'mine'
+Skill        100 'mount'
+Skill        100 'navigation'
+Skill        100 'parry'
+Skill        100 'peek'
+Skill        100 'pick lock'
+Skill        100 'pick ship lock'
+Skill        100 'poison weapon'
+Skill        100 'post guard'
+Skill        100 'propeganda'
+Skill        100 'punch'
+Skill        100 'reinforcements'
+Skill        100 'repair_module'
+Skill        100 'rescue'
+Skill        100 'sabotage'
+Skill        100 'scan'
+Skill        100 'scribe'
+Skill        100 'search'
+Skill        100 'second attack'
+Skill        100 'seduce'
+Skill        100 'see masking'
+Skill        100 'ship docking'
+Skill        100 'ship maintenance'
+Skill        100 'ship systems'
+Skill        100 'skin'
+Skill        100 'slicing'
+Skill        100 'smalltalk'
+Skill        100 'sneak'
+Skill        100 'snipe'
+Skill        100 'space combat 1'
+Skill        100 'space combat 2'
+Skill        100 'space combat 3'
+Skill        100 'special_forces'
+Skill        100 'speeder combat'
+Skill        100 'speeders'
+Skill        100 'spice refining'
+Skill        100 'starfighters'
+Skill        100 'stealth'
+Skill        100 'stun'
+Skill        100 'third attack'
+Skill        100 'throw'
+Skill        100 'torture'
+Skill        100 'track'
+Skill        100 'tractor beams'
+Skill        100 'trance'
+Skill        100 'weapon systems'
+Weapon       100 'blasters'
+Weapon       100 'bowcasters'
+Weapon       100 'force pikes'
+Weapon       100 'lightsabers'
+Weapon       100 'vibro-blades'
+Tongue       100 'barabel'
+Tongue       100 'bothan'
+Tongue       100 'common'
+Tongue       100 'coynite'
+Tongue       100 'duros'
+Tongue       100 'firrerreo'
+Tongue       100 'gand'
+Tongue       100 'kubaz'
+Tongue       100 'togorian'
+Tongue       100 'yevethan'
+Killed       10519 1
+Killed       10520 1
+Killed       10521 1
+Killed       10522 1
+Killed       10523 1
+Killed       10524 3
+Killed       313 1
+Killed       27413 1
+Killed       27408 1
+Killed       27407 1
+Killed       27442 4
+Killed       27714 1
+Killed       27713 1
+Killed       25 1
+Killed       22 1
+Killed       21 2
+Killed       414 5
+Killed       26 4
+End
+
+#END

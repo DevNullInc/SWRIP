@@ -1,0 +1,107 @@
+Fri Apr 18 12:06:18 2008 :: PID: 9000
+Fri Apr 18 12:06:18 2008 :: Booting Database
+ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+Fri Apr 18 12:06:18 2008 :: [*****] BOOT: ---------------------[ Boot Log ]--------------------
+Fri Apr 18 12:06:18 2008 :: Loading commands
+Fri Apr 18 12:06:18 2008 :: Loading sysdata configuration...
+Fri Apr 18 12:06:18 2008 :: Loading socials
+Fri Apr 18 12:06:18 2008 :: Loading skill table
+Fri Apr 18 12:06:18 2008 :: Sorting skill table...
+Fri Apr 18 12:06:18 2008 :: Loading herb table
+Fri Apr 18 12:06:18 2008 :: Making wizlist
+Fri Apr 18 12:06:18 2008 :: Initializing request pipe
+Fri Apr 18 12:06:18 2008 :: Initializing random number generator
+Fri Apr 18 12:06:18 2008 :: Setting time and weather
+Fri Apr 18 12:06:18 2008 :: Assigning gsn's
+ASSIGN_GSN: Skill makehulltracker not found.
+ASSIGN_GSN: Skill makeinternaltracker not found.
+ASSIGN_GSN: Skill makemissile not found.
+ASSIGN_GSN: Skill shieldwork not found.
+ASSIGN_GSN: Skill feed not found.
+ASSIGN_GSN: Skill bite not found.
+ASSIGN_GSN: Skill claw not found.
+ASSIGN_GSN: Skill sting not found.
+ASSIGN_GSN: Skill tail not found.
+ASSIGN_GSN: Skill study not found.
+ASSIGN_GSN: Skill brew not found.
+ASSIGN_GSN: Skill slice not found.
+ASSIGN_GSN: Skill chill touch not found.
+ASSIGN_GSN: Skill curse not found.
+Fri Apr 18 12:06:18 2008 :: Reading in area files...
+(help.are)
+limbo.are     : Rooms:     1 - 45    Objs:     2 - 99    Mobs:     1 - 98
+newacad.are   : Rooms: 10300 - 10430 Objs: 10300 - 10499 Mobs: 10340 - 10499
+Fri Apr 18 12:06:18 2008 :: [*****] FILE: space.are LINE: 9717
+Fri Apr 18 12:06:18 2008 :: [*****] BUG: Get_obj_index: bad vnum 2700.
+Fri Apr 18 12:06:18 2008 :: [*****] BOOT: Load_resets: space.are (1) 'O': object 2700 doesn't exist.
+space.are     : Rooms: 32000 - 32499 Objs: 32000 - 32499 Mobs: 32000 - 32499
+omni_complex  : Rooms:   100 - 150   Objs:   100 - 150   Mobs:     0 - 0
+templaterooms.are: Rooms:  2700 - 3197  Objs:  2700 - 2700  Mobs:     0 - 0
+Fri Apr 18 12:06:18 2008 :: Fixing exits
+Fri Apr 18 12:06:18 2008 :: Initializing economy
+Fri Apr 18 12:06:18 2008 :: Loading buildlist
+Fri Apr 18 12:06:18 2008 :: ../gods/Darrik
+Fri Apr 18 12:06:18 2008 :: Loading boards
+Fri Apr 18 12:06:18 2008 :: Loading clans
+Fri Apr 18 12:06:18 2008 :: Loading clans...
+Fri Apr 18 12:06:18 2008 :: empire.clan
+Fri Apr 18 12:06:18 2008 :: Storeroom not found
+Fri Apr 18 12:06:18 2008 :: rebel.clan
+Fri Apr 18 12:06:18 2008 :: Storeroom not found
+Fri Apr 18 12:06:18 2008 :: assassins.guild
+Fri Apr 18 12:06:18 2008 :: Storeroom not found
+Fri Apr 18 12:06:18 2008 :: csa.clan
+Fri Apr 18 12:06:18 2008 :: Storeroom not found
+Fri Apr 18 12:06:18 2008 :: Triad.clan
+Fri Apr 18 12:06:18 2008 :: Storeroom not found
+Fri Apr 18 12:06:18 2008 :: BaClan
+Fri Apr 18 12:06:18 2008 :: Storeroom not found
+Fri Apr 18 12:06:18 2008 :: sexicouncil.clan
+Fri Apr 18 12:06:18 2008 :: Storeroom not found
+Fri Apr 18 12:06:18 2008 :: tttech.clan
+Fri Apr 18 12:06:18 2008 :: Storeroom not found
+Fri Apr 18 12:06:18 2008 :: $
+Fri Apr 18 12:06:18 2008 ::  Done clans
+Sorting clans....
+Fri Apr 18 12:06:18 2008 ::  Done sorting
+Fri Apr 18 12:06:18 2008 :: Loading senate
+Fri Apr 18 12:06:18 2008 :: Loading bans
+Fri Apr 18 12:06:18 2008 :: Loading corpses
+Fri Apr 18 12:06:18 2008 :: Loading space
+Fri Apr 18 12:06:18 2008 :: Loading space...
+Fri Apr 18 12:06:18 2008 :: [*****] BUG: Fread_spaceobject: no match: ~
+Fri Apr 18 12:06:18 2008 ::  Done spaceobjects 
+Fri Apr 18 12:06:18 2008 :: Loading ships
+Fri Apr 18 12:06:18 2008 :: Loading ships...
+Fri Apr 18 12:06:18 2008 :: [*****] BUG: Load_ship_file: # not found.
+Fri Apr 18 12:06:18 2008 :: [*****] BUG: Load_ship_file: # not found.
+Fri Apr 18 12:06:18 2008 :: [*****] BUG: Load_ship_file: # not found.
+Fri Apr 18 12:06:18 2008 :: [*****] BUG: Load_ship_file: # not found.
+Fri Apr 18 12:06:18 2008 :: [*****] BUG: Load_ship_file: # not found.
+Fri Apr 18 12:06:18 2008 :: [*****] BUG: Load_ship_file: # not found.
+Fri Apr 18 12:06:18 2008 :: [*****] BUG: Load_ship_file: # not found.
+Fri Apr 18 12:06:18 2008 :: [*****] BUG: Load_ship_file: # not found.
+Fri Apr 18 12:06:18 2008 :: [*****] BUG: Load_ship_file: # not found.
+Fri Apr 18 12:06:18 2008 :: [*****] BUG: Load_ship_file: # not found.
+Fri Apr 18 12:06:18 2008 :: [*****] BUG: Load_ship_file: # not found.
+Fri Apr 18 12:06:18 2008 :: [*****] BUG: Load_ship_file: # not found.
+Fri Apr 18 12:06:18 2008 ::  Done ships 
+Fri Apr 18 12:06:18 2008 :: Loading bounties
+Fri Apr 18 12:06:18 2008 :: Loading disintigrations...
+Fri Apr 18 12:06:18 2008 ::  Done bounties 
+Fri Apr 18 12:06:18 2008 :: Loading governments
+Fri Apr 18 12:06:18 2008 :: Loading planets...
+Fri Apr 18 12:06:18 2008 :: $
+Fri Apr 18 12:06:18 2008 ::  Done planets 
+Fri Apr 18 12:06:18 2008 :: Resetting areas
+Resetting: limbo.are
+Resetting: newacad.are
+Resetting: space.are
+Resetting: omni_complex
+Resetting: templaterooms.are
+Fri Apr 18 12:06:18 2008 :: Reading in Vendors
+Fri Apr 18 12:06:18 2008 :: Reading in Storerooms
+Fri Apr 18 12:06:18 2008 :: Initializing socket
+Fri Apr 18 12:06:18 2008 :: Rise in Power ready on port 7500.
+Fri Apr 18 12:06:23 2008 :: Sock.sinaddr:  127.0.0.1, port -20685.
+Fri Apr 18 12:06:32 2008 :: Closing link to Drake.
