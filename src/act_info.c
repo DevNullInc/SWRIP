@@ -509,8 +509,8 @@ void show_char_to_char_0( CHAR_DATA *victim, CHAR_DATA *ch )
       || (IS_NPC(victim) && IS_SET(victim->act, ACT_MOBINVIS)) ) 
     {
         if (!IS_NPC(victim))
-	sprintf( buf1,"(Invis %d) ", victim->pcdata->wizinvis );
-        else sprintf( buf1,"(Mobinvis %d) ", victim->mobinvis);
+  snprintf( buf1, sizeof(buf1), "(Invis %d) ", victim->pcdata->wizinvis );
+  else snprintf( buf1, sizeof(buf1), "(Mobinvis %d) ", victim->mobinvis);
 	strcat( buf, buf1 );
     }
     if ( IS_AFFECTED(victim, AFF_INVISIBLE)   ) strcat( buf, "(Invis) "      );
@@ -559,9 +559,9 @@ void show_char_to_char_0( CHAR_DATA *victim, CHAR_DATA *ch )
 	if (victim->on != NULL)
 	{
 	    if (victim->on->value[2] == SLEEP_AT)
-  	    {
-		sprintf(message," is sleeping at %s",
-		    victim->on->short_descr);
+         {
+           snprintf(message, sizeof(message), " is sleeping at %s",
+             victim->on->short_descr);
               if( ((ch->position < POS_FIGHTING) && (ch->position > POS_STUNNED)) 
               && ch->on && (ch->on == victim->on ) )
               	strcat(message, " with you");
@@ -570,8 +570,8 @@ void show_char_to_char_0( CHAR_DATA *victim, CHAR_DATA *ch )
 	    }
 	    else if (victim->on->value[2] == SLEEP_ON)
 	    {
-		sprintf(message," is sleeping on %s",
-		    victim->on->short_descr); 
+     snprintf(message, sizeof(message), " is sleeping on %s",
+       victim->on->short_descr); 
               if( ((ch->position < POS_FIGHTING) && (ch->position > POS_STUNNED)) 
               && ch->on && (ch->on == victim->on ) )
               	strcat(message, " with you");
@@ -580,8 +580,8 @@ void show_char_to_char_0( CHAR_DATA *victim, CHAR_DATA *ch )
 	    }
 	    else
 	    {
-		sprintf(message, " is sleeping in %s",
-		    victim->on->short_descr);
+     snprintf(message, sizeof(message), " is sleeping in %s",
+       victim->on->short_descr);
               if( ((ch->position < POS_FIGHTING) && (ch->position > POS_STUNNED)) 
               && ch->on && (ch->on == victim->on ) )
               	strcat(message, " with you");
@@ -603,8 +603,8 @@ void show_char_to_char_0( CHAR_DATA *victim, CHAR_DATA *ch )
 	{
             if (victim->on->value[2] == REST_AT)
             {
-                sprintf(message," is resting at %s",
-                    victim->on->short_descr);
+        snprintf(message, sizeof(message), " is resting at %s",
+          victim->on->short_descr);
               if( ((ch->position < POS_FIGHTING) && (ch->position > POS_STUNNED)) 
               && ch->on && (ch->on == victim->on ) )
               	strcat(message, " with you");
@@ -613,8 +613,8 @@ void show_char_to_char_0( CHAR_DATA *victim, CHAR_DATA *ch )
             }
             else if (victim->on->value[2] == REST_ON)
             {
-                sprintf(message," is resting on %s",
-                    victim->on->short_descr);
+        snprintf(message, sizeof(message), " is resting on %s",
+          victim->on->short_descr);
               if( ((ch->position < POS_FIGHTING) && (ch->position > POS_STUNNED)) 
               && ch->on && (ch->on == victim->on ) )
               	strcat(message, " with you");
@@ -623,8 +623,8 @@ void show_char_to_char_0( CHAR_DATA *victim, CHAR_DATA *ch )
             }
             else 
             {
-                sprintf(message, " is resting in %s",
-                    victim->on->short_descr);
+        snprintf(message, sizeof(message), " is resting in %s",
+          victim->on->short_descr);
               if( ((ch->position < POS_FIGHTING) && (ch->position > POS_STUNNED)) 
               && ch->on && (ch->on == victim->on ) )
               	strcat(message, " with you");
@@ -648,8 +648,8 @@ void show_char_to_char_0( CHAR_DATA *victim, CHAR_DATA *ch )
         {
             if (victim->on->value[2] == SIT_AT)
             {
-                sprintf(message," is sitting at %s",
-                    victim->on->short_descr);
+        snprintf(message, sizeof(message), " is sitting at %s",
+          victim->on->short_descr);
               if( (ch->position == POS_SITTING) 
               && ch->on && (ch->on == victim->on ) )
               	strcat(message, " with you");
@@ -658,8 +658,8 @@ void show_char_to_char_0( CHAR_DATA *victim, CHAR_DATA *ch )
             }
             else if (victim->on->value[2] == SIT_ON)
             {
-                sprintf(message," is sitting on %s",
-                    victim->on->short_descr);
+        snprintf(message, sizeof(message), " is sitting on %s",
+          victim->on->short_descr);
               if( (ch->position == POS_SITTING) 
               && ch->on && (ch->on == victim->on ) )
               	strcat(message, " with you");
@@ -668,8 +668,8 @@ void show_char_to_char_0( CHAR_DATA *victim, CHAR_DATA *ch )
             }
             else
             {
-                sprintf(message, " is sitting in %s",
-                    victim->on->short_descr);
+        snprintf(message, sizeof(message), " is sitting in %s",
+          victim->on->short_descr);
               if( (ch->position == POS_SITTING) 
               	&& ch->on && (ch->on == victim->on ) )
               	strcat(message, " with you");
@@ -1588,7 +1588,7 @@ void do_examine( CHAR_DATA *ch, char *argument )
 	return;
     }
 
-    sprintf( buf, "%s noprog", arg );
+  snprintf( buf, sizeof(buf), "%s noprog", arg );
     do_look( ch, buf );
 
     /*
@@ -1746,9 +1746,9 @@ void do_examine( CHAR_DATA *ch, char *argument )
             }
 	    if ( IS_OBJ_STAT( obj, ITEM_COVERING ) )
 	      break;
-	    send_to_char( "When you look inside, you see:\n\r", ch );
-	    sprintf( buf, "in %s noprog", arg );
-	    do_look( ch, buf );
+  send_to_char( "When you look inside, you see:\n\r", ch );
+  snprintf( buf, sizeof(buf), "in %s noprog", arg );
+  do_look( ch, buf );
 	    break;
 	
 	case ITEM_DROID_CORPSE:
@@ -1781,14 +1781,14 @@ void do_examine( CHAR_DATA *ch, char *argument )
 	      break;
 
 	case ITEM_DRINK_CON:
-	    send_to_char( "When you look inside, you see:\n\r", ch );
-	    sprintf( buf, "in %s noprog", arg );
-	    do_look( ch, buf );
+  send_to_char( "When you look inside, you see:\n\r", ch );
+  snprintf( buf, sizeof(buf), "in %s noprog", arg );
+  do_look( ch, buf );
 	}
 	if ( IS_OBJ_STAT( obj, ITEM_COVERING ) )
 	{
-	    sprintf( buf, "under %s noprog", arg );
-	    do_look( ch, buf );
+  snprintf( buf, sizeof(buf), "under %s noprog", arg );
+  do_look( ch, buf );
 	}
 	oprog_examine_trigger( ch, obj );
 	if( char_died(ch) || obj_extracted(obj) )
@@ -1808,13 +1808,13 @@ void do_exits( CHAR_DATA *ch, char *argument )
     bool fAuto;
 
     set_char_color( AT_EXITS, ch );
-    buf[0] = '\0';
+  buf[0] = '\0';
     fAuto  = !str_cmp( argument, "auto" );
 
     if ( !check_blind( ch ) )
 	return;
 
-    strcpy( buf, fAuto ? "Exits:" : "Obvious exits:\n\r" );
+  snprintf( buf, sizeof(buf), "%s", fAuto ? "Exits:" : "Obvious exits:\n\r" );
 
     found = FALSE;
     for ( pexit = ch->in_room->first_exit; pexit; pexit = pexit->next )
@@ -1825,30 +1825,30 @@ void do_exits( CHAR_DATA *ch, char *argument )
 	    found = TRUE;
 	    if ( !fAuto )
 	    {	
-		if ( IS_SET(pexit->exit_info, EX_CLOSED) )
-		{
-		    sprintf( buf + strlen(buf), "%-5s - (closed)\n\r",
-		    capitalize( dir_name[pexit->vdir] ) );
-		}
-		else if ( IS_SET(pexit->exit_info, EX_WINDOW) )
-		{
-		    sprintf( buf + strlen(buf), "%-5s - (window)\n\r",
-		    capitalize( dir_name[pexit->vdir] ) );
-		}
-		else if ( IS_SET(pexit->exit_info, EX_xAUTO) )
-		{
-		   sprintf( buf + strlen(buf), "%-5s - %s\n\r",
-		    capitalize( pexit->keyword ),
-		    room_is_dark( pexit->to_room )
-			?  "Too dark to tell"
-			: pexit->to_room->name );
-		}
-		else
-		    sprintf( buf + strlen(buf), "%-5s - %s\n\r",
-		    capitalize( dir_name[pexit->vdir] ),
-		    room_is_dark( pexit->to_room )
-			?  "Too dark to tell"
-			: pexit->to_room->name );
+    if ( IS_SET(pexit->exit_info, EX_CLOSED) )
+    {
+      snprintf( buf + strlen(buf), sizeof(buf) - strlen(buf), "%-5s - (closed)\n\r",
+      capitalize( dir_name[pexit->vdir] ) );
+    }
+    else if ( IS_SET(pexit->exit_info, EX_WINDOW) )
+    {
+      snprintf( buf + strlen(buf), sizeof(buf) - strlen(buf), "%-5s - (window)\n\r",
+      capitalize( dir_name[pexit->vdir] ) );
+    }
+    else if ( IS_SET(pexit->exit_info, EX_xAUTO) )
+    {
+       snprintf( buf + strlen(buf), sizeof(buf) - strlen(buf), "%-5s - %s\n\r",
+      capitalize( pexit->keyword ),
+      room_is_dark( pexit->to_room )
+        ?  "Too dark to tell"
+        : pexit->to_room->name );
+    }
+    else
+      snprintf( buf + strlen(buf), sizeof(buf) - strlen(buf), "%-5s - %s\n\r",
+      capitalize( dir_name[pexit->vdir] ),
+      room_is_dark( pexit->to_room )
+        ?  "Too dark to tell"
+        : pexit->to_room->name );
 	    }
 	    else
 	    {

@@ -52,7 +52,8 @@ void do_makeblade( CHAR_DATA *ch, char *argument )
     AFFECT_DATA *paf;
     AFFECT_DATA *paf2;
             
-    strcpy( arg , argument );
+   strncpy( arg, argument, sizeof(arg) - 1 );
+   arg[sizeof(arg) - 1] = '\0';
     
     switch( ch->substate )
     { 
@@ -128,11 +129,12 @@ void do_makeblade( CHAR_DATA *ch, char *argument )
          return; 
      
      case 1: 
-      if ( !ch->dest_buf )
-           return;
-      strcpy(arg, (const char* )ch->dest_buf);
-      DISPOSE( ch->dest_buf);
-      break;
+    if ( !ch->dest_buf )
+       return;
+    strncpy(arg, (const char* )ch->dest_buf, sizeof(arg) - 1);
+    arg[sizeof(arg) - 1] = '\0';
+    DISPOSE( ch->dest_buf);
+    break;
       
      case SUB_TIMER_DO_ABORT:
       DISPOSE( ch->dest_buf );
@@ -373,11 +375,12 @@ void do_makeblaster( CHAR_DATA *ch, char *argument )
          return; 
      
      case 1: 
-      if ( !ch->dest_buf )
-           return;
-      strcpy(arg, (const char*) ch->dest_buf);
-      DISPOSE( ch->dest_buf);
-      break;
+    if ( !ch->dest_buf )
+       return;
+    strncpy(arg, (const char*) ch->dest_buf, sizeof(arg) - 1);
+    arg[sizeof(arg) - 1] = '\0';
+    DISPOSE( ch->dest_buf);
+    break;
       
      case SUB_TIMER_DO_ABORT:
       DISPOSE( ch->dest_buf );
@@ -569,7 +572,8 @@ void do_makelightsaber( CHAR_DATA *ch, char *argument )
     AFFECT_DATA *paf;
     AFFECT_DATA *paf2;
     
-    strcpy( arg, argument );    
+   strncpy( arg, argument, sizeof(arg) - 1 );
+   arg[sizeof(arg) - 1] = '\0';
     
     switch( ch->substate )
     { 
@@ -688,11 +692,12 @@ void do_makelightsaber( CHAR_DATA *ch, char *argument )
          return; 
      
      case 1: 
-      if ( !ch->dest_buf )
-           return;
-      strcpy(arg, (const char*) ch->dest_buf);
-      DISPOSE( ch->dest_buf);
-      break;
+    if ( !ch->dest_buf )
+       return;
+    strncpy(arg, (const char*) ch->dest_buf, sizeof(arg) - 1);
+    arg[sizeof(arg) - 1] = '\0';
+    DISPOSE( ch->dest_buf);
+    break;
       
      case SUB_TIMER_DO_ABORT:
       DISPOSE( ch->dest_buf );
@@ -883,7 +888,8 @@ void do_makespice( CHAR_DATA *ch, char *argument )
     switch( ch->substate )
     { 
      default:
-             strcpy( arg, argument );
+        strncpy( arg, argument, sizeof(arg) - 1 );
+        arg[sizeof(arg) - 1] = '\0';
              
              if ( arg[0] == '\0' )
                 {
@@ -930,7 +936,8 @@ void do_makespice( CHAR_DATA *ch, char *argument )
      case 1:
       if ( !ch->dest_buf )
          return;
-      strcpy(arg, (const char*) ch->dest_buf);
+      strncpy(arg, (const char*) ch->dest_buf, sizeof(arg) - 1);
+      arg[sizeof(arg) - 1] = '\0';
       DISPOSE( ch->dest_buf);
       break;
       
@@ -997,7 +1004,8 @@ void do_improve_module( CHAR_DATA *ch, char *argument )
     switch( ch->substate )
     { 
      default:
-             strcpy( arg, argument );
+        strncpy( arg, argument, sizeof(arg) - 1 );
+        arg[sizeof(arg) - 1] = '\0';
              
              if ( arg[0] == '\0' )
                 {
@@ -1056,7 +1064,8 @@ void do_improve_module( CHAR_DATA *ch, char *argument )
      case 1:
       if ( !ch->dest_buf )
          return;
-      strcpy(arg, (const char*) ch->dest_buf);
+      strncpy(arg, (const char*) ch->dest_buf, sizeof(arg) - 1);
+      arg[sizeof(arg) - 1] = '\0';
       DISPOSE( ch->dest_buf);
       break;
       
@@ -1115,7 +1124,8 @@ void do_makegrenade( CHAR_DATA *ch, char *argument )
     OBJ_INDEX_DATA *pObjIndex;
     int vnum;
     
-    strcpy( arg , argument );
+   strncpy( arg , argument, sizeof(arg) - 1 );
+   arg[sizeof(arg) - 1] = '\0';
     
     switch( ch->substate )
     { 
@@ -1198,11 +1208,12 @@ void do_makegrenade( CHAR_DATA *ch, char *argument )
          return; 
      
      case 1: 
-      if ( !ch->dest_buf )
-           return;
-      strcpy(arg, (const char*) ch->dest_buf);
-      DISPOSE( ch->dest_buf);
-      break;
+    if ( !ch->dest_buf )
+       return;
+    strncpy(arg, (const char*) ch->dest_buf, sizeof(arg) - 1);
+    arg[sizeof(arg) - 1] = '\0';
+    DISPOSE( ch->dest_buf);
+    break;
       
      case SUB_TIMER_DO_ABORT:
       DISPOSE( ch->dest_buf );
@@ -1282,15 +1293,14 @@ void do_makegrenade( CHAR_DATA *ch, char *argument )
     obj->level = level;
     obj->weight = weight;
     STRFREE( obj->name );
-    strcpy( buf , arg );
-    strcat( buf , " grenade");
-    obj->name = STRALLOC( buf );
-    strcpy( buf, arg );
-    STRFREE( obj->short_descr );
-    obj->short_descr = STRALLOC( buf );        
-    STRFREE( obj->description );
-    strcat( buf, " was carelessly misplaced here." );
-    obj->description = STRALLOC( buf );
+   snprintf( buf, sizeof(buf), "%s grenade", arg );
+   obj->name = STRALLOC( buf );
+   snprintf( buf, sizeof(buf), "%s", arg );
+   STRFREE( obj->short_descr );
+   obj->short_descr = STRALLOC( buf );        
+   STRFREE( obj->description );
+   snprintf( buf, sizeof(buf), "%s was carelessly misplaced here.", arg );
+   obj->description = STRALLOC( buf );
     obj->value[0] = strength/2;
     obj->value[1] = strength;
     obj->cost = obj->value[1]*5;
@@ -1321,7 +1331,8 @@ void do_makelandmine( CHAR_DATA *ch, char *argument )
     OBJ_INDEX_DATA *pObjIndex;
     int vnum;
     
-    strcpy( arg , argument );
+   strncpy( arg , argument, sizeof(arg) - 1 );
+   arg[sizeof(arg) - 1] = '\0';
     
     switch( ch->substate )
     { 
@@ -1404,11 +1415,12 @@ void do_makelandmine( CHAR_DATA *ch, char *argument )
          return; 
      
      case 1: 
-      if ( !ch->dest_buf )
-           return;
-      strcpy(arg, (const char*) ch->dest_buf);
-      DISPOSE( ch->dest_buf);
-      break;
+    if ( !ch->dest_buf )
+       return;
+    strncpy(arg, (const char*) ch->dest_buf, sizeof(arg) - 1);
+    arg[sizeof(arg) - 1] = '\0';
+    DISPOSE( ch->dest_buf);
+    break;
       
      case SUB_TIMER_DO_ABORT:
       DISPOSE( ch->dest_buf );
@@ -1488,15 +1500,14 @@ void do_makelandmine( CHAR_DATA *ch, char *argument )
     obj->level = level;
     obj->weight = weight;
     STRFREE( obj->name );
-    strcpy( buf , arg );
-    strcat( buf , " landmine");
-    obj->name = STRALLOC( buf );
-    strcpy( buf, arg );
-    STRFREE( obj->short_descr );
-    obj->short_descr = STRALLOC( buf );        
-    STRFREE( obj->description );
-    strcat( buf, " was carelessly misplaced here." );
-    obj->description = STRALLOC( buf );
+   snprintf( buf, sizeof(buf), "%s landmine", arg );
+   obj->name = STRALLOC( buf );
+   snprintf( buf, sizeof(buf), "%s", arg );
+   STRFREE( obj->short_descr );
+   obj->short_descr = STRALLOC( buf );        
+   STRFREE( obj->description );
+   snprintf( buf, sizeof(buf), "%s was carelessly misplaced here.", arg );
+   obj->description = STRALLOC( buf );
     obj->value[0] = strength/2;
     obj->value[1] = strength;
     obj->cost = obj->value[1]*5;
@@ -1526,7 +1537,8 @@ void do_makelight( CHAR_DATA *ch, char *argument )
     OBJ_INDEX_DATA *pObjIndex;
     int vnum;
     
-    strcpy( arg , argument );
+   strncpy( arg , argument, sizeof(arg) - 1 );
+   arg[sizeof(arg) - 1] = '\0';
     
     switch( ch->substate )
     { 
@@ -1609,11 +1621,12 @@ void do_makelight( CHAR_DATA *ch, char *argument )
          return; 
      
      case 1: 
-      if ( !ch->dest_buf )
-           return;
-      strcpy(arg, (const char*) ch->dest_buf);
-      DISPOSE( ch->dest_buf);
-      break;
+    if ( !ch->dest_buf )
+       return;
+    strncpy(arg, (const char*) ch->dest_buf, sizeof(arg) - 1);
+    arg[sizeof(arg) - 1] = '\0';
+    DISPOSE( ch->dest_buf);
+    break;
       
      case SUB_TIMER_DO_ABORT:
       DISPOSE( ch->dest_buf );
@@ -1691,15 +1704,14 @@ void do_makelight( CHAR_DATA *ch, char *argument )
     obj->level = level;
     obj->weight = 3;
     STRFREE( obj->name );
-    strcpy( buf , arg );
-    strcat( buf , " light");
-    obj->name = STRALLOC( buf );
-    strcpy( buf, arg );
-    STRFREE( obj->short_descr );
-    obj->short_descr = STRALLOC( buf );        
-    STRFREE( obj->description );
-    strcat( buf, " was carelessly misplaced here." );
-    obj->description = STRALLOC( buf );
+   snprintf( buf, sizeof(buf), "%s light", arg );
+   obj->name = STRALLOC( buf );
+   snprintf( buf, sizeof(buf), "%s", arg );
+   STRFREE( obj->short_descr );
+   obj->short_descr = STRALLOC( buf );        
+   STRFREE( obj->description );
+   snprintf( buf, sizeof(buf), "%s was carelessly misplaced here.", arg );
+   obj->description = STRALLOC( buf );
     obj->value[2] = strength;
     obj->cost = obj->value[2];
                                                                    
@@ -1730,8 +1742,9 @@ void do_makejewelry( CHAR_DATA *ch, char *argument )
     OBJ_DATA *metal = NULL;
     int value, cost;
             
-    argument = one_argument( argument, arg );
-    strcpy ( arg2, argument);
+   argument = one_argument( argument, arg );
+   strncpy ( arg2, argument, sizeof(arg2) - 1 );
+   arg2[sizeof(arg2) - 1] = '\0';
     
     if ( !str_cmp( arg, "body" )
     || !str_cmp( arg, "head" )
@@ -1831,11 +1844,13 @@ void do_makejewelry( CHAR_DATA *ch, char *argument )
            return;
       if ( !ch->dest_buf_2 )
            return;
-      strcpy(arg, (const char*) ch->dest_buf);
-      DISPOSE( ch->dest_buf);
-      strcpy(arg2, (const char*) ch->dest_buf_2);
-      DISPOSE( ch->dest_buf_2);
-      break;
+   strncpy(arg, (const char*) ch->dest_buf, sizeof(arg) - 1);
+   arg[sizeof(arg) - 1] = '\0';
+   DISPOSE( ch->dest_buf);
+   strncpy(arg2, (const char*) ch->dest_buf_2, sizeof(arg2) - 1);
+   arg2[sizeof(arg2) - 1] = '\0';
+   DISPOSE( ch->dest_buf_2);
+   break;
 
      case SUB_TIMER_DO_ABORT:
       DISPOSE( ch->dest_buf );
@@ -1900,14 +1915,16 @@ void do_makejewelry( CHAR_DATA *ch, char *argument )
         SET_BIT( obj->wear_flags, 1 << value );
     obj->level = level;
     STRFREE( obj->name );
-    strcpy( buf, arg2 );
-    obj->name = STRALLOC( buf );
-    strcpy( buf, arg2 );
-    STRFREE( obj->short_descr );
-    obj->short_descr = STRALLOC( buf );        
-    STRFREE( obj->description );
-    strcat( buf, " was dropped here." );
-    obj->description = STRALLOC( buf );
+   strncpy( buf, arg2, sizeof(buf) - 1 );
+   buf[sizeof(buf) - 1] = '\0';
+   obj->name = STRALLOC( buf );
+   strncpy( buf, arg2, sizeof(buf) - 1 );
+   buf[sizeof(buf) - 1] = '\0';
+   STRFREE( obj->short_descr );
+   obj->short_descr = STRALLOC( buf );        
+   STRFREE( obj->description );
+   snprintf( buf, sizeof(buf), "%s was dropped here.", arg2 );
+   obj->description = STRALLOC( buf );
     obj->value[0] = obj->value[1];
     obj->cost *= 10;
     obj->cost += cost;
@@ -1940,8 +1957,9 @@ void do_makearmor( CHAR_DATA *ch, char *argument )
     OBJ_DATA *material = NULL;
     int value;
             
-    argument = one_argument( argument, arg );
-    strcpy ( arg2, argument);
+   argument = one_argument( argument, arg );
+   strncpy ( arg2, argument, sizeof(arg2) - 1 );
+   arg2[sizeof(arg2) - 1] = '\0';
     
     if ( !str_cmp( arg, "eyes" )
     || !str_cmp( arg, "ears" )
@@ -2027,11 +2045,13 @@ void do_makearmor( CHAR_DATA *ch, char *argument )
            return;
       if ( !ch->dest_buf_2 )
            return;
-      strcpy(arg, (const char*) ch->dest_buf);
-      DISPOSE( ch->dest_buf);
-      strcpy(arg2, (const char*) ch->dest_buf_2);
-      DISPOSE( ch->dest_buf_2);
-      break;
+   strncpy(arg, (const char*) ch->dest_buf, sizeof(arg) - 1);
+   arg[sizeof(arg) - 1] = '\0';
+   DISPOSE( ch->dest_buf);
+   strncpy(arg2, (const char*) ch->dest_buf_2, sizeof(arg2) - 1);
+   arg2[sizeof(arg2) - 1] = '\0';
+   DISPOSE( ch->dest_buf_2);
+   break;
       
      case SUB_TIMER_DO_ABORT:
       DISPOSE( ch->dest_buf );
@@ -2084,14 +2104,16 @@ void do_makearmor( CHAR_DATA *ch, char *argument )
         SET_BIT( obj->wear_flags, 1 << value );
     obj->level = level;
     STRFREE( obj->name );
-    strcpy( buf, arg2 );
-    obj->name = STRALLOC( buf );
-    strcpy( buf, arg2 );
-    STRFREE( obj->short_descr );
-    obj->short_descr = STRALLOC( buf );        
-    STRFREE( obj->description );
-    strcat( buf, " was dropped here." );
-    obj->description = STRALLOC( buf );
+   strncpy( buf, arg2, sizeof(buf) - 1 );
+   buf[sizeof(buf) - 1] = '\0';
+   obj->name = STRALLOC( buf );
+   strncpy( buf, arg2, sizeof(buf) - 1 );
+   buf[sizeof(buf) - 1] = '\0';
+   STRFREE( obj->short_descr );
+   obj->short_descr = STRALLOC( buf );        
+   STRFREE( obj->description );
+   snprintf( buf, sizeof(buf), "%s was dropped here.", arg2 );
+   obj->description = STRALLOC( buf );
     obj->value[0] = obj->value[1];
     obj->cost *= 10;
 
@@ -2124,8 +2146,9 @@ void do_makecomlink( CHAR_DATA *ch, char *argument )
     OBJ_INDEX_DATA *pObjIndex;
     int vnum;
 
-    argument = one_argument( argument, arg );
-    strcpy ( arg2, argument);
+   argument = one_argument( argument, arg );
+   strncpy ( arg2, argument, sizeof(arg2) - 1 );
+   arg2[sizeof(arg2) - 1] = '\0';
 
     if ( !str_cmp( arg, "body" )
     || !str_cmp( arg, "head" )
@@ -2228,13 +2251,15 @@ void do_makecomlink( CHAR_DATA *ch, char *argument )
      case 1:
       if ( !ch->dest_buf )
            return;
-      strcpy(arg, (const char*) ch->dest_buf);
-      DISPOSE( ch->dest_buf);
-      if ( !ch->dest_buf_2 )
-              return;
-         strcpy(arg2, (const char*) ch->dest_buf_2);
-         DISPOSE( ch->dest_buf_2);
-         break;
+   strncpy(arg, (const char*) ch->dest_buf, sizeof(arg) - 1);
+   arg[sizeof(arg) - 1] = '\0';
+   DISPOSE( ch->dest_buf);
+   if ( !ch->dest_buf_2 )
+        return;
+      strncpy(arg2, (const char*) ch->dest_buf_2, sizeof(arg2) - 1);
+      arg2[sizeof(arg2) - 1] = '\0';
+      DISPOSE( ch->dest_buf_2);
+      break;
      case SUB_TIMER_DO_ABORT:
       DISPOSE( ch->dest_buf );
       ch->substate = SUB_NONE;                                         
@@ -2306,15 +2331,15 @@ void do_makecomlink( CHAR_DATA *ch, char *argument )
         SET_BIT( obj->wear_flags, 1 << value );
     obj->weight = 1;
     STRFREE( obj->name );
-    strcpy( buf, arg2 );
-    strcat( buf, " comlink" );
-    obj->name = STRALLOC( buf );
-    strcpy( buf, arg2 );
-    STRFREE( obj->short_descr );
-    obj->short_descr = STRALLOC( buf );
-    STRFREE( obj->description );
-    strcat( buf, " was left here." );
-    obj->description = STRALLOC( buf );
+   snprintf( buf, sizeof(buf), "%s comlink", arg2 );
+   obj->name = STRALLOC( buf );
+   strncpy( buf, arg2, sizeof(buf) - 1 );
+   buf[sizeof(buf) - 1] = '\0';
+   STRFREE( obj->short_descr );
+   obj->short_descr = STRALLOC( buf );
+   STRFREE( obj->description );
+   snprintf( buf, sizeof(buf), "%s was left here.", arg2 );
+   obj->description = STRALLOC( buf );
     obj->cost = 50;
 
     obj = obj_to_char( obj, ch );
@@ -2344,7 +2369,8 @@ void do_makeshield( CHAR_DATA *ch, char *argument )
     OBJ_INDEX_DATA *pObjIndex;
     int vnum, level, charge, gemtype = 0;
     
-    strcpy( arg, argument );    
+   strncpy( arg, argument, sizeof(arg) - 1 );
+   arg[sizeof(arg) - 1] = '\0';
     
     switch( ch->substate )
     { 
@@ -2518,12 +2544,13 @@ void do_makeshield( CHAR_DATA *ch, char *argument )
     obj->weight = 2;
     STRFREE( obj->name );
     obj->name = STRALLOC( "energy shield" );
-    strcpy( buf, arg );
-    STRFREE( obj->short_descr );
-    obj->short_descr = STRALLOC( buf );        
-    STRFREE( obj->description );
-    strcat( buf, " was carelessly misplaced here." );
-    obj->description = STRALLOC( buf );
+   strncpy( buf, arg, sizeof(buf) - 1 );
+   buf[sizeof(buf) - 1] = '\0';
+   STRFREE( obj->short_descr );
+   obj->short_descr = STRALLOC( buf );        
+   STRFREE( obj->description );
+   snprintf( buf, sizeof(buf), "%s was carelessly misplaced here.", arg );
+   obj->description = STRALLOC( buf );
     obj->value[0] = (int) (level/10+gemtype*2);      /* condition */
     obj->value[1] = (int) (level/10+gemtype*2);      /* armor */
     obj->value[4] = charge;
@@ -2558,8 +2585,9 @@ void do_makecontainer( CHAR_DATA *ch, char *argument )
     OBJ_DATA *material = NULL;
     int value;
             
-    argument = one_argument( argument, arg );
-    strcpy( arg2 , argument );
+   argument = one_argument( argument, arg );
+   strncpy( arg2 , argument, sizeof(arg2) - 1 );
+   arg2[sizeof(arg2) - 1] = '\0';
     
     if ( !str_cmp( arg, "eyes" )
     || !str_cmp( arg, "ears" )
@@ -2650,15 +2678,17 @@ void do_makecontainer( CHAR_DATA *ch, char *argument )
          return; 
      
      case 1: 
-      if ( !ch->dest_buf )
-           return;
-      if ( !ch->dest_buf_2 )
-           return;
-      strcpy(arg, (const char*) ch->dest_buf);
-      DISPOSE( ch->dest_buf);
-      strcpy(arg2, (const char*) ch->dest_buf_2);
-      DISPOSE( ch->dest_buf_2);
-      break;
+    if ( !ch->dest_buf )
+       return;
+    if ( !ch->dest_buf_2 )
+       return;
+    strncpy(arg, (const char*) ch->dest_buf, sizeof(arg) - 1);
+    arg[sizeof(arg) - 1] = '\0';
+    DISPOSE( ch->dest_buf);
+    strncpy(arg2, (const char*) ch->dest_buf_2, sizeof(arg2) - 1);
+    arg2[sizeof(arg2) - 1] = '\0';
+    DISPOSE( ch->dest_buf_2);
+    break;
       
      case SUB_TIMER_DO_ABORT:
       DISPOSE( ch->dest_buf );
@@ -2711,14 +2741,16 @@ void do_makecontainer( CHAR_DATA *ch, char *argument )
         SET_BIT( obj->wear_flags, 1 << value );
     obj->level = level;
     STRFREE( obj->name );
-    strcpy( buf, arg2 );
-    obj->name = STRALLOC( buf );
-    strcpy( buf, arg2 );
-    STRFREE( obj->short_descr );
-    obj->short_descr = STRALLOC( buf );        
-    STRFREE( obj->description );
-    strcat( buf, " was dropped here." );
-    obj->description = STRALLOC( buf );
+   strncpy( buf, arg2, sizeof(buf) - 1 );
+   buf[sizeof(buf) - 1] = '\0';
+   obj->name = STRALLOC( buf );
+   strncpy( buf, arg2, sizeof(buf) - 1 );
+   buf[sizeof(buf) - 1] = '\0';
+   STRFREE( obj->short_descr );
+   obj->short_descr = STRALLOC( buf );        
+   STRFREE( obj->description );
+   snprintf( buf, sizeof(buf), "%s was dropped here.", arg2 );
+   obj->description = STRALLOC( buf );
     obj->value[0] = level;
     obj->value[1] = 0;
     obj->value[2] = 0;      
@@ -2756,11 +2788,12 @@ void do_reinforcements( CHAR_DATA *ch, char *argument )
 {
     char arg[MAX_INPUT_LENGTH];
     int chance, credits;
+
+   if ( IS_NPC( ch ) || !ch->pcdata )
+    return;
     
-    if ( IS_NPC( ch ) || !ch->pcdata )
-     return;
-     
-    strcpy( arg, argument );    
+   strncpy( arg, argument, sizeof(arg) - 1 );
+   arg[sizeof(arg) - 1] = '\0';
     
     switch( ch->substate )
     { 
