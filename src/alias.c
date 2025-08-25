@@ -134,7 +134,7 @@ bool check_alias( CHAR_DATA *ch, char *command, char *argument )
     if (!alias->cmd || !*alias->cmd)
 	return FALSE;
 
-    sprintf(arg, "%s", alias->cmd);
+    snprintf(arg, sizeof(arg), "%s", alias->cmd);
 
     if (ch->cmd_recurse==-1 || ++ch->cmd_recurse>50)
     {
@@ -150,13 +150,13 @@ bool check_alias( CHAR_DATA *ch, char *command, char *argument )
    {
     char buf[MAX_INPUT_LENGTH];
 
-    sprintf(buf, "%s", alias->name);
+    snprintf(buf, sizeof(buf), "%s", alias->name);
 
     if ( (alias=find_alias(ch,arg)) != NULL )
     {
-	sprintf(arg, "Your alias '%s' calls another alias and cannot be executed.\n\r", buf);
-	send_to_char(arg, ch);
-	return TRUE;
+    snprintf(arg, sizeof(arg), "Your alias '%s' calls another alias and cannot be executed.\n\r", buf);
+    send_to_char(arg, ch);
+    return TRUE;
     }
    }
 */

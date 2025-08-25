@@ -107,7 +107,7 @@ void write_boards_txt( )
     FILE *fpout;
     char filename[256];
 
-    sprintf( filename, "%s%s", BOARD_DIR, BOARD_FILE );
+	snprintf( filename, sizeof(filename), "%s%s", BOARD_DIR, BOARD_FILE );
     fpout = fopen( filename, "w" );
     if ( !fpout )
     {
@@ -211,7 +211,7 @@ void write_board( BOARD_DATA *board )
      * Rewrite entire list.
      */
     fclose( fpReserve );
-    sprintf( filename, "%s%s", BOARD_DIR, board->note_file );
+	snprintf( filename, sizeof(filename), "%s%s", BOARD_DIR, board->note_file );
     if ( ( fp = fopen( filename, "w" ) ) == NULL )
     {
 	perror( filename );
@@ -684,7 +684,7 @@ void do_note( CHAR_DATA *ch, char *arg_passed, bool IS_MAIL )
 	}
 
 	/* Can only vote once on a note. */
-	sprintf( buf, "%s %s %s", 
+	snprintf( buf, sizeof(buf), "%s %s %s", 
 		pnote->yesvotes, pnote->novotes, pnote->abstentions );
 	if ( is_name( ch->name, buf ) )
 	{
@@ -693,7 +693,7 @@ void do_note( CHAR_DATA *ch, char *arg_passed, bool IS_MAIL )
 	}
 	if ( !str_cmp( arg_passed, "yes" ) )
 	{
-	    sprintf( buf, "%s %s", pnote->yesvotes, ch->name );
+		snprintf( buf, sizeof(buf), "%s %s", pnote->yesvotes, ch->name );
 	    DISPOSE( pnote->yesvotes );
 	    pnote->yesvotes = str_dup( buf );
 	    act( AT_ACTION, "$n votes on a note.", ch, NULL, NULL, TO_ROOM );
@@ -703,7 +703,7 @@ void do_note( CHAR_DATA *ch, char *arg_passed, bool IS_MAIL )
 	}  
 	if ( !str_cmp( arg_passed, "no" ) )
 	{
-	    sprintf( buf, "%s %s", pnote->novotes, ch->name );
+		snprintf( buf, sizeof(buf), "%s %s", pnote->novotes, ch->name );
 	    DISPOSE( pnote->novotes );
 	    pnote->novotes = str_dup( buf );
 	    act( AT_ACTION, "$n votes on a note.", ch, NULL, NULL, TO_ROOM );
@@ -713,7 +713,7 @@ void do_note( CHAR_DATA *ch, char *arg_passed, bool IS_MAIL )
 	}  
 	if ( !str_cmp( arg_passed, "abstain" ) )
 	{
-	    sprintf( buf, "%s %s", pnote->abstentions, ch->name );
+		snprintf( buf, sizeof(buf), "%s %s", pnote->abstentions, ch->name );
 	    DISPOSE( pnote->abstentions );
 	    pnote->abstentions = str_dup( buf );
 	    act( AT_ACTION, "$n votes on a note.", ch, NULL, NULL, TO_ROOM );
@@ -885,8 +885,8 @@ void do_note( CHAR_DATA *ch, char *arg_passed, bool IS_MAIL )
 
         arg_passed[0] = UPPER(arg_passed[0]);
 
-        sprintf( fname, "%s%c/%s", PLAYER_DIR, tolower(arg_passed[0]),
-                 capitalize( arg_passed ) );
+	snprintf( fname, sizeof(fname), "%s%c/%s", PLAYER_DIR, tolower(arg_passed[0]),
+		 capitalize( arg_passed ) );
  
 	if ( !IS_MAIL || stat( fname, &fst ) != -1 || !str_cmp(arg_passed, "all") )
 	{                                       
@@ -920,10 +920,10 @@ void do_note( CHAR_DATA *ch, char *arg_passed, bool IS_MAIL )
 	  subject = "(no subject)";
 	if ( (to_list = get_extra_descr( "_to_", paper->first_extradesc )) == NULL )
 	  to_list = "(nobody)";
-	sprintf( buf, "%s: %s\n\rTo: %s\n\r",
-	    ch->name,
-	    subject,
-	    to_list );
+	snprintf( buf, sizeof(buf), "%s: %s\n\rTo: %s\n\r",
+		ch->name,
+		subject,
+		to_list );
 	send_to_char( buf, ch );
 	if ( (text = get_extra_descr( "_text_", paper->first_extradesc )) == NULL )
 	  text = "The disk is blank.\n\r";
@@ -1108,29 +1108,22 @@ void do_note( CHAR_DATA *ch, char *arg_passed, bool IS_MAIL )
 		    ed->description = QUICKLINK( pnote->date );
 		    ed = SetOExtra( paper, "note" );
 		    STRFREE( ed->description );
-		    sprintf(notebuf, "From: ");
-		    strcat(notebuf, pnote->sender);		 
-		    strcat(notebuf, "\n\rTo: ");
-		    strcat(notebuf, pnote->to_list);
-		    strcat(notebuf, "\n\rSubject: ");
-		    strcat(notebuf, pnote->subject);
-		    strcat(notebuf, "\n\r\n\r");
-		    strcat(notebuf, pnote->text);
-		    strcat(notebuf, "\n\r");
+			snprintf(notebuf, sizeof(notebuf), "From: %s\n\rTo: %s\n\rSubject: %s\n\r\n\r%s\n\r",
+				pnote->sender, pnote->to_list, pnote->subject, pnote->text);
 		    ed->description = STRALLOC(notebuf);
 		    paper->value[0] = 2;
 		    paper->value[1] = 2;
 	 	    paper->value[2] = 2;
-		    sprintf(short_desc_buf, "a note from %s to %s",
-			pnote->sender, pnote->to_list);
+			snprintf(short_desc_buf, sizeof(short_desc_buf), "a note from %s to %s",
+				pnote->sender, pnote->to_list);
 		    STRFREE(paper->short_descr);
 		    paper->short_descr = STRALLOC(short_desc_buf);
-		    sprintf(long_desc_buf, "A note from %s to %s lies on the ground.",
-			pnote->sender, pnote->to_list);
+			snprintf(long_desc_buf, sizeof(long_desc_buf), "A note from %s to %s lies on the ground.",
+				pnote->sender, pnote->to_list);
 		    STRFREE(paper->description);
 		    paper->description = STRALLOC(long_desc_buf);
-		    sprintf(keyword_buf, "note parchment paper %s", 
-			pnote->to_list);
+			snprintf(keyword_buf, sizeof(keyword_buf), "note parchment paper %s", 
+				pnote->to_list);
 		    STRFREE(paper->name);
 		    paper->name = STRALLOC(keyword_buf);
 		}
@@ -1246,7 +1239,7 @@ BOARD_DATA *read_board( char *boardfile, FILE *fp )
         }
 	if ( !fMatch )
 	{
-	    sprintf( buf, "read_board: no match: %s", word );
+	snprintf( buf, sizeof(buf), "read_board: no match: %s", word );
 	    bug( buf, 0 );
 	}
     }
@@ -1344,14 +1337,14 @@ void load_boards( void )
     first_board	= NULL;
     last_board	= NULL;
 
-    sprintf( boardfile, "%s%s", BOARD_DIR, BOARD_FILE );
+	snprintf( boardfile, sizeof(boardfile), "%s%s", BOARD_DIR, BOARD_FILE );
     if ( ( board_fp = fopen( boardfile, "r" ) ) == NULL )
 	return;
 
     while ( (board = read_board( boardfile, board_fp )) != NULL )
     {
 	LINK( board, first_board, last_board, next, prev );
-	sprintf( notefile, "%s%s", BOARD_DIR, board->note_file );
+	snprintf( notefile, sizeof(notefile), "%s%s", BOARD_DIR, board->note_file );
 	log_string( notefile );
 	if ( ( note_fp = fopen( notefile, "r" ) ) != NULL )
 	{
@@ -1493,7 +1486,7 @@ void do_bset( CHAR_DATA *ch, char *argument )
         if ( !str_cmp( argument, "none" ) )
             buf[0] = '\0';
         else
-            sprintf( buf, "%s %s", board->extra_removers, argument );
+			snprintf( buf, sizeof(buf), "%s %s", board->extra_removers, argument );
         DISPOSE( board->extra_removers );
         board->extra_removers = str_dup( buf ); 
         write_boards_txt( );
@@ -1511,7 +1504,7 @@ void do_bset( CHAR_DATA *ch, char *argument )
 	if ( !str_cmp( argument, "none" ) )
 	    buf[0] = '\0';
 	else
-	    sprintf( buf, "%s %s", board->extra_readers, argument );        
+	snprintf( buf, sizeof(buf), "%s %s", board->extra_readers, argument );        
 	DISPOSE( board->extra_readers );
 	board->extra_readers = str_dup( buf );
 	write_boards_txt( );
