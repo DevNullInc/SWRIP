@@ -1130,13 +1130,13 @@ void do_mset( CHAR_DATA *ch, char *argument )
 	ch->dest_buf = victim;
 	if ( ch->pcdata )
 	{
-	   if ( ch->pcdata->subprompt )
-		STRFREE( ch->pcdata->subprompt );
-	   if ( IS_NPC(victim) )
-		sprintf( buf, "<&CMset &W#%d&w> %%i", victim->pIndexData->vnum );
-	   else
-		sprintf( buf, "<&CMset &W%s&w> %%i", victim->name );
-	   ch->pcdata->subprompt = STRALLOC( buf );
+		if ( ch->pcdata->subprompt )
+		 STRFREE( ch->pcdata->subprompt );
+		if ( IS_NPC(victim) )
+		 snprintf( buf, sizeof(buf), "<&CMset &W#%d&w> %%i", victim->pIndexData->vnum );
+		else
+		 snprintf( buf, sizeof(buf), "<&CMset &W%s&w> %%i", victim->name );
+		ch->pcdata->subprompt = STRALLOC( buf );
 	}
 	return;
     }
@@ -1426,18 +1426,18 @@ void do_mset( CHAR_DATA *ch, char *argument )
 	  victim->pIndexData->hitroll = victim->hitroll;
 	  victim->pIndexData->damroll = victim->damroll;
 	}
-	sprintf(outbuf,"%s damnumdie %d",arg1, value/10);
-        do_mset( ch, outbuf );
-	sprintf(outbuf,"%s damsizedie %d",arg1, 4);
-        do_mset( ch, outbuf );
-	sprintf(outbuf,"%s damplus %d",arg1, 2);
-        do_mset( ch, outbuf );
-	sprintf(outbuf,"%s hitnumdie %d",arg1, value/5);
-        do_mset( ch, outbuf );
-	sprintf(outbuf,"%s hitsizedie %d",arg1, 10);
-        do_mset( ch, outbuf );
-        sprintf(outbuf,"%s hitplus %d",arg1, value*10 );
-        do_mset( ch, outbuf );
+	snprintf(outbuf, sizeof(outbuf), "%s damnumdie %d",arg1, value/10);
+		do_mset( ch, outbuf );
+	snprintf(outbuf, sizeof(outbuf), "%s damsizedie %d",arg1, 4);
+		do_mset( ch, outbuf );
+	snprintf(outbuf, sizeof(outbuf), "%s damplus %d",arg1, 2);
+		do_mset( ch, outbuf );
+	snprintf(outbuf, sizeof(outbuf), "%s hitnumdie %d",arg1, value/5);
+		do_mset( ch, outbuf );
+	snprintf(outbuf, sizeof(outbuf), "%s hitsizedie %d",arg1, 10);
+		do_mset( ch, outbuf );
+		snprintf(outbuf, sizeof(outbuf), "%s hitplus %d",arg1, value*10 );
+		do_mset( ch, outbuf );
 	
 	return;
     }
@@ -1457,7 +1457,7 @@ void do_mset( CHAR_DATA *ch, char *argument )
         {
           send_to_char("Command Groups: \n\r",ch);
           for (i = 0; i <  MAX_COMMAND_GROUP; i++) {
-            sprintf(buf,"%d) %s\n\r",i, command_groups[i]); 
+			snprintf(buf, sizeof(buf), "%d) %s\n\r",i, command_groups[i]); 
             send_to_char(buf,ch);
           }
           return;
@@ -2198,9 +2198,9 @@ void do_mset( CHAR_DATA *ch, char *argument )
 	if ( !can_mmodify( ch, victim ) )
 	    return;
 
-	sprintf(outbuf,"%s resistant %s",arg1, arg3);
-        do_mset( ch, outbuf );
-        return;
+	snprintf(outbuf, sizeof(outbuf), "%s resistant %s",arg1, arg3);
+		do_mset( ch, outbuf );
+		return;
     }
     if ( !str_cmp( arg2, "i" ) )
     {
@@ -2213,9 +2213,9 @@ void do_mset( CHAR_DATA *ch, char *argument )
 	    return;
 
 
-	sprintf(outbuf,"%s immune %s",arg1, arg3);
-        do_mset( ch, outbuf );
-        return;
+	snprintf(outbuf, sizeof(outbuf), "%s immune %s",arg1, arg3);
+		do_mset( ch, outbuf );
+		return;
     }
     if ( !str_cmp( arg2, "s" ) )
     {
@@ -2227,9 +2227,9 @@ void do_mset( CHAR_DATA *ch, char *argument )
 	if ( !can_mmodify( ch, victim ) )
 	    return;
 
-	sprintf(outbuf,"%s susceptible %s",arg1, arg3);
-        do_mset( ch, outbuf );
-        return;
+	snprintf(outbuf, sizeof(outbuf), "%s susceptible %s",arg1, arg3);
+		do_mset( ch, outbuf );
+		return;
     }
     if ( !str_cmp( arg2, "ri" ) )
     {
@@ -2241,11 +2241,11 @@ void do_mset( CHAR_DATA *ch, char *argument )
 	if ( !can_mmodify( ch, victim ) )
 	    return;
 
-	sprintf(outbuf,"%s resistant %s",arg1, arg3);
-        do_mset( ch, outbuf );
-	sprintf(outbuf,"%s immune %s",arg1, arg3);
-        do_mset( ch, outbuf );
-        return;
+	snprintf(outbuf, sizeof(outbuf), "%s resistant %s",arg1, arg3);
+		do_mset( ch, outbuf );
+	snprintf(outbuf, sizeof(outbuf), "%s immune %s",arg1, arg3);
+		do_mset( ch, outbuf );
+		return;
     }
 
     if ( !str_cmp( arg2, "rs" ) )
@@ -2258,11 +2258,11 @@ void do_mset( CHAR_DATA *ch, char *argument )
 	if ( !can_mmodify( ch, victim ) )
 	    return;
 
-	sprintf(outbuf,"%s resistant %s",arg1, arg3);
-        do_mset( ch, outbuf );
-	sprintf(outbuf,"%s susceptible %s",arg1, arg3);
-        do_mset( ch, outbuf );
-        return;
+	snprintf(outbuf, sizeof(outbuf), "%s resistant %s",arg1, arg3);
+		do_mset( ch, outbuf );
+	snprintf(outbuf, sizeof(outbuf), "%s susceptible %s",arg1, arg3);
+		do_mset( ch, outbuf );
+		return;
     }
     if ( !str_cmp( arg2, "is" ) )
     {
@@ -2274,11 +2274,11 @@ void do_mset( CHAR_DATA *ch, char *argument )
 	if ( !can_mmodify( ch, victim ) )
 	    return;
 
-	sprintf(outbuf,"%s immune %s",arg1, arg3);
-        do_mset( ch, outbuf );
-	sprintf(outbuf,"%s susceptible %s",arg1, arg3);
-        do_mset( ch, outbuf );
-        return;
+	snprintf(outbuf, sizeof(outbuf), "%s immune %s",arg1, arg3);
+		do_mset( ch, outbuf );
+	snprintf(outbuf, sizeof(outbuf), "%s susceptible %s",arg1, arg3);
+		do_mset( ch, outbuf );
+		return;
     }
     if ( !str_cmp( arg2, "ris" ) )
     {
@@ -2290,13 +2290,13 @@ void do_mset( CHAR_DATA *ch, char *argument )
 	if ( !can_mmodify( ch, victim ) )
 	    return;
 
-	sprintf(outbuf,"%s resistant %s",arg1, arg3);
-        do_mset( ch, outbuf );
-	sprintf(outbuf,"%s immune %s",arg1, arg3);
-        do_mset( ch, outbuf );
-	sprintf(outbuf,"%s susceptible %s",arg1, arg3);
-        do_mset( ch, outbuf );
-        return;
+	snprintf(outbuf, sizeof(outbuf), "%s resistant %s",arg1, arg3);
+		do_mset( ch, outbuf );
+	snprintf(outbuf, sizeof(outbuf), "%s immune %s",arg1, arg3);
+		do_mset( ch, outbuf );
+	snprintf(outbuf, sizeof(outbuf), "%s susceptible %s",arg1, arg3);
+		do_mset( ch, outbuf );
+		return;
     }
 
     if ( !str_cmp( arg2, "resistant" ) )
@@ -2525,17 +2525,18 @@ void do_mset( CHAR_DATA *ch, char *argument )
 	if ( !can_mmodify( ch, victim ) )
 	  return;
 
-        sscanf(arg3,"%d %c %d %c %d",&num,&char1,&size,&char2,&plus);
-	sprintf(outbuf,"%s hitnumdie %d",arg1, num);
-        do_mset( ch, outbuf );
+		sscanf(arg3,"%d %c %d %c %d",&num,&char1,&size,&char2,&plus);
+		// Use snprintf to avoid buffer overflow
+		snprintf(outbuf, sizeof(outbuf), "%s hitnumdie %d", arg1, num);
+		do_mset( ch, outbuf );
 
-	sprintf(outbuf,"%s hitsizedie %d",arg1, size);
-        do_mset( ch, outbuf );
+		snprintf(outbuf, sizeof(outbuf), "%s hitsizedie %d", arg1, size);
+		do_mset( ch, outbuf );
 
-	sprintf(outbuf,"%s hitplus %d",arg1, plus);
-        do_mset( ch, outbuf );
-        return;
-    }
+		snprintf(outbuf, sizeof(outbuf), "%s hitplus %d", arg1, plus);
+		do_mset( ch, outbuf );
+		return;
+	}
     /*
      * save some more finger-leather
      */
@@ -2549,15 +2550,15 @@ void do_mset( CHAR_DATA *ch, char *argument )
 	if ( !can_mmodify( ch, victim ) )
 	  return;
 
-        sscanf(arg3,"%d %c %d %c %d",&num,&char1,&size,&char2,&plus);
-	sprintf(outbuf,"%s damnumdie %d",arg1, num);
-        do_mset( ch, outbuf );
-	sprintf(outbuf,"%s damsizedie %d",arg1, size);
-        do_mset( ch, outbuf );
-	sprintf(outbuf,"%s damplus %d",arg1, plus);
-        do_mset( ch, outbuf );
-        return;
-    }
+		sscanf(arg3,"%d %c %d %c %d",&num,&char1,&size,&char2,&plus);
+		snprintf(outbuf, sizeof(outbuf), "%s damnumdie %d", arg1, num);
+		do_mset( ch, outbuf );
+		snprintf(outbuf, sizeof(outbuf), "%s damsizedie %d", arg1, size);
+		do_mset( ch, outbuf );
+		snprintf(outbuf, sizeof(outbuf), "%s damplus %d", arg1, plus);
+		do_mset( ch, outbuf );
+		return;
+	}
 
     if ( !str_cmp( arg2, "hitnumdie" ) )
     {
@@ -3011,8 +3012,8 @@ void do_oset( CHAR_DATA *ch, char *argument )
 	{
 	   if ( ch->pcdata->subprompt )
 		STRFREE( ch->pcdata->subprompt );
-	   sprintf( buf, "<&COset &W#%d&w> %%i", obj->pIndexData->vnum );
-	   ch->pcdata->subprompt = STRALLOC( buf );
+		snprintf( buf, sizeof(buf), "<&COset &W#%d&w> %%i", obj->pIndexData->vnum );
+		ch->pcdata->subprompt = STRALLOC( buf );
 	}
 	return;
     }
@@ -3264,12 +3265,12 @@ void do_oset( CHAR_DATA *ch, char *argument )
 	 * if it is not already there.
 	 */
         {
-          if ( str_infix( "rename", obj->name ) )
-          {
-            sprintf( buf, "%s %s", obj->name, "rename" );
-	    STRFREE( obj->name );
-	    obj->name = STRALLOC( buf );
-          }
+					if ( str_infix( "rename", obj->name ) )
+					{
+						snprintf( buf, sizeof(buf), "%s %s", obj->name, "rename" );
+		STRFREE( obj->name );
+		obj->name = STRALLOC( buf );
+					}
         }
 	return;
     }
@@ -3541,62 +3542,62 @@ void do_oset( CHAR_DATA *ch, char *argument )
      * save some finger-leather
      */
     if ( !str_cmp( arg2, "ris" ) )
-    {
-	sprintf(outbuf, "%s affect resistant %s", arg1, arg3);
-        do_oset( ch, outbuf );
-	sprintf(outbuf, "%s affect immune %s", arg1, arg3);
-        do_oset( ch, outbuf );
-	sprintf(outbuf, "%s affect susceptible %s", arg1, arg3);
-        do_oset( ch, outbuf );
-        return;
-    }
+	{
+	snprintf(outbuf, sizeof(outbuf), "%s affect resistant %s", arg1, arg3);
+		do_oset( ch, outbuf );
+	snprintf(outbuf, sizeof(outbuf), "%s affect immune %s", arg1, arg3);
+		do_oset( ch, outbuf );
+	snprintf(outbuf, sizeof(outbuf), "%s affect susceptible %s", arg1, arg3);
+		do_oset( ch, outbuf );
+		return;
+	}
 
     if ( !str_cmp( arg2, "r" ) )
-    {
-	sprintf(outbuf, "%s affect resistant %s", arg1, arg3);
-        do_oset( ch, outbuf );
-        return;
-    }
+	{
+	snprintf(outbuf, sizeof(outbuf), "%s affect resistant %s", arg1, arg3);
+		do_oset( ch, outbuf );
+		return;
+	}
 
     if ( !str_cmp( arg2, "i" ) )
-    {
-	sprintf(outbuf, "%s affect immune %s", arg1, arg3);
-        do_oset( ch, outbuf );
-        return;
-    }
+	{
+	snprintf(outbuf, sizeof(outbuf), "%s affect immune %s", arg1, arg3);
+		do_oset( ch, outbuf );
+		return;
+	}
     if ( !str_cmp( arg2, "s" ) )
-    {
-	sprintf(outbuf, "%s affect susceptible %s", arg1, arg3);
-        do_oset( ch, outbuf );
-        return;
-    }
+	{
+	snprintf(outbuf, sizeof(outbuf), "%s affect susceptible %s", arg1, arg3);
+		do_oset( ch, outbuf );
+		return;
+	}
 
     if ( !str_cmp( arg2, "ri" ) )
-    {
-	sprintf(outbuf, "%s affect resistant %s", arg1, arg3);
-        do_oset( ch, outbuf );
-	sprintf(outbuf, "%s affect immune %s", arg1, arg3);
-        do_oset( ch, outbuf );
-        return;
-    }
+	{
+	snprintf(outbuf, sizeof(outbuf), "%s affect resistant %s", arg1, arg3);
+		do_oset( ch, outbuf );
+	snprintf(outbuf, sizeof(outbuf), "%s affect immune %s", arg1, arg3);
+		do_oset( ch, outbuf );
+		return;
+	}
 
     if ( !str_cmp( arg2, "rs" ) )
-    {
-	sprintf(outbuf, "%s affect resistant %s", arg1, arg3);
-        do_oset( ch, outbuf );
-	sprintf(outbuf, "%s affect susceptible %s", arg1, arg3);
-        do_oset( ch, outbuf );
-        return;
-    }
+	{
+	snprintf(outbuf, sizeof(outbuf), "%s affect resistant %s", arg1, arg3);
+		do_oset( ch, outbuf );
+	snprintf(outbuf, sizeof(outbuf), "%s affect susceptible %s", arg1, arg3);
+		do_oset( ch, outbuf );
+		return;
+	}
 
     if ( !str_cmp( arg2, "is" ) )
-    {
-	sprintf(outbuf, "%s affect immune %s", arg1, arg3);
-        do_oset( ch, outbuf );
-	sprintf(outbuf, "%s affect susceptible %s", arg1, arg3);
-        do_oset( ch, outbuf );
-        return;
-    }
+	{
+	snprintf(outbuf, sizeof(outbuf), "%s affect immune %s", arg1, arg3);
+		do_oset( ch, outbuf );
+	snprintf(outbuf, sizeof(outbuf), "%s affect susceptible %s", arg1, arg3);
+		do_oset( ch, outbuf );
+		return;
+	}
 
     /*
      * Make it easier to set special object values by name than number
@@ -3906,15 +3907,15 @@ char *sprint_reset( CHAR_DATA *ch, RESET_DATA *pReset, sh_int num, bool rlist )
 
     switch( pReset->command )
     {
-	default:
-	  sprintf( buf, "%2d) *** BAD RESET: %c %d %d %d %d ***\n\r",
-	  			num,
-	  			pReset->command,
-	  			pReset->extra,
-	  			pReset->arg1,
-	  			pReset->arg2,
-	  			pReset->arg3 );
-	  break;
+    default:
+      snprintf( buf, sizeof(buf), "%2d) *** BAD RESET: %c %d %d %d %d ***\n\r",
+       			num,
+       			pReset->command,
+       			pReset->extra,
+       			pReset->arg1,
+       			pReset->arg2,
+       			pReset->arg3 );
+      break;
 	case 'M':
 	  mob = get_mob_index( pReset->arg1 );
 	  room = get_room_index( pReset->arg3 );
@@ -3926,13 +3927,13 @@ char *sprint_reset( CHAR_DATA *ch, RESET_DATA *pReset, sh_int num, bool rlist )
 	    strcpy( roomname, room->name );
 	  else
 	    strcpy( roomname, "Room: *BAD VNUM*" );
-	  sprintf( buf, "%2d) %s (%d) -> %s (%d) [%d]\n\r",
-	  			num,
-	  			mobname,
-	  			pReset->arg1,
-	  			roomname,
-	  			pReset->arg3,
-	  			pReset->arg2 );
+      snprintf( buf, sizeof(buf), "%2d) %s (%d) -> %s (%d) [%d]\n\r",
+       			num,
+       			mobname,
+       			pReset->arg1,
+       			roomname,
+       			pReset->arg3,
+       			pReset->arg2 );
 	  break; 
 	case 'E':
 	  if ( !mob )
@@ -3941,13 +3942,13 @@ char *sprint_reset( CHAR_DATA *ch, RESET_DATA *pReset, sh_int num, bool rlist )
 	      strcpy( objname, "Object: *BAD VNUM*" );
 	  else
 	      strcpy( objname, obj->name );
-	  sprintf( buf, "%2d) %s (%d) -> %s (%s) [%d]\n\r",
-	  			num,
-	  			objname,
-	  			pReset->arg1,
-	  			mobname,
-	  			wear_locs[pReset->arg3],
-	  			pReset->arg2 );
+      snprintf( buf, sizeof(buf), "%2d) %s (%d) -> %s (%s) [%d]\n\r",
+       			num,
+       			objname,
+       			pReset->arg1,
+       			mobname,
+       			wear_locs[pReset->arg3],
+       			pReset->arg2 );
 	  break;
 	case 'H':
 	  if ( pReset->arg1 > 0
@@ -3956,10 +3957,10 @@ char *sprint_reset( CHAR_DATA *ch, RESET_DATA *pReset, sh_int num, bool rlist )
 	  else
 	  if ( !obj )
 	      strcpy( objname, "Object: *NULL obj*" );
-	  sprintf( buf, "%2d) Hide %s (%d)\n\r",
-	  			num,
-	  			objname,
-	  			obj ? obj->vnum : pReset->arg1 );
+      snprintf( buf, sizeof(buf), "%2d) Hide %s (%d)\n\r",
+       			num,
+       			objname,
+       			obj ? obj->vnum : pReset->arg1 );
 	  break;
 	case 'G':
 	  if ( !mob )
@@ -3968,12 +3969,12 @@ char *sprint_reset( CHAR_DATA *ch, RESET_DATA *pReset, sh_int num, bool rlist )
 	      strcpy( objname, "Object: *BAD VNUM*" );
 	  else
 	      strcpy( objname, obj->name );
-	  sprintf( buf, "%2d) %s (%d) -> %s (carry) [%d]\n\r",
-	  			num,
-	  			objname,
-	  			pReset->arg1,
-	  			mobname,
-	  			pReset->arg2 );
+      snprintf( buf, sizeof(buf), "%2d) %s (%d) -> %s (carry) [%d]\n\r",
+       			num,
+       			objname,
+       			pReset->arg1,
+       			mobname,
+       			pReset->arg2 );
 	  break;
 	case 'O':
 	  if ( (obj = get_obj_index( pReset->arg1 )) == NULL )
@@ -3985,13 +3986,13 @@ char *sprint_reset( CHAR_DATA *ch, RESET_DATA *pReset, sh_int num, bool rlist )
 	      strcpy( roomname, "Room: *BAD VNUM*" );
 	  else
 	      strcpy( roomname, room->name );
-	  sprintf( buf, "%2d) (object) %s (%d) -> %s (%d) [%d]\n\r",
-	  			num,
-	  			objname,
-	  			pReset->arg1,
-	  			roomname,
-	  			pReset->arg3,
-	  			pReset->arg2 );
+      snprintf( buf, sizeof(buf), "%2d) (object) %s (%d) -> %s (%d) [%d]\n\r",
+       			num,
+       			objname,
+       			pReset->arg1,
+       			roomname,
+       			pReset->arg3,
+       			pReset->arg2 );
 	  break;
 	case 'P':
 	  if ( (obj2 = get_obj_index( pReset->arg1 )) == NULL )
@@ -4005,14 +4006,14 @@ char *sprint_reset( CHAR_DATA *ch, RESET_DATA *pReset, sh_int num, bool rlist )
 	  if ( !obj )
 	      strcpy( roomname, "Object2: *NULL obj*" );
 	  else
-	      strcpy( roomname, obj->name );
-	  sprintf( buf, "%2d) (Put) %s (%d) -> %s (%d) [%d]\n\r",
-	  			num,
-	  			objname,
-	  			pReset->arg1,
-	  			roomname,
-	  			obj ? obj->vnum : pReset->arg3,
-	  			pReset->arg2 );
+		  strcpy( roomname, obj->name );
+	  snprintf( buf, sizeof(buf), "%2d) (Put) %s (%d) -> %s (%d) [%d]\n\r",
+				num,
+				objname,
+				pReset->arg1,
+				roomname,
+				obj ? obj->vnum : pReset->arg3,
+				pReset->arg2 );
 	  break;
 	case 'D':
 	  if ( pReset->arg2 < 0 || pReset->arg2 > MAX_DIR+1 )
@@ -4020,56 +4021,56 @@ char *sprint_reset( CHAR_DATA *ch, RESET_DATA *pReset, sh_int num, bool rlist )
 	  if ( (room = get_room_index( pReset->arg1 )) == NULL )
 	  {
 		strcpy( roomname, "Room: *BAD VNUM*" );
-		sprintf( objname, "%s (no exit)",
+		snprintf( objname, sizeof(objname), "%s (no exit)",
 				dir_name[pReset->arg2] );
 	  }
 	  else
 	  {
 		strcpy( roomname, room->name );
-		sprintf( objname, "%s%s",
+		snprintf( objname, sizeof(objname), "%s%s",
 				dir_name[pReset->arg2],
 		get_exit(room,pReset->arg2) ? "" : " (NO EXIT!)" );
 	  }
 	  switch( pReset->arg3 )
 	  {
-	    default:	strcpy( mobname, "(* ERROR *)" );	break;
-	    case 0:	strcpy( mobname, "Open" );		break;
-	    case 1:	strcpy( mobname, "Close" );		break;
-	    case 2:	strcpy( mobname, "Close and lock" );	break;
+		default:	strcpy( mobname, "(* ERROR *)" );	break;
+		case 0:	strcpy( mobname, "Open" );		break;
+		case 1:	strcpy( mobname, "Close" );		break;
+		case 2:	strcpy( mobname, "Close and lock" );	break;
 	  }
-	  sprintf( buf, "%2d) %s [%d] the %s [%d] door %s (%d)\n\r",
-	  			num,
-	  			mobname,
-	  			pReset->arg3,
-	  			objname,
-	  			pReset->arg2,
-	  			roomname,
-	  			pReset->arg1 );
+	  snprintf( buf, sizeof(buf), "%2d) %s [%d] the %s [%d] door %s (%d)\n\r",
+				num,
+				mobname,
+				pReset->arg3,
+				objname,
+				pReset->arg2,
+				roomname,
+				pReset->arg1 );
 	  break;
 	case 'R':
 	  if ( (room = get_room_index( pReset->arg1 )) == NULL )
 		strcpy( roomname, "Room: *BAD VNUM*" );
 	  else
 		strcpy( roomname, room->name );
-	  sprintf( buf, "%2d) Randomize exits 0 to %d -> %s (%d)\n\r",
-	  			num,
-	  			pReset->arg2,
-	  			roomname,
-	  			pReset->arg1 );
+	  snprintf( buf, sizeof(buf), "%2d) Randomize exits 0 to %d -> %s (%d)\n\r",
+				num,
+				pReset->arg2,
+				roomname,
+				pReset->arg1 );
 	  break;
 	case 'T':
-	  sprintf( buf, "%2d) TRAP: %d %d %d %d (%s)\n\r",
-	  		num,
+	  snprintf( buf, sizeof(buf), "%2d) TRAP: %d %d %d %d (%s)\n\r",
+			num,
 			pReset->extra,
 			pReset->arg1,
 			pReset->arg2,
 			pReset->arg3,
 			flag_string(pReset->extra, trap_flags) );
 	  break;
-    }
-    if ( rlist && (!room || (room && room->vnum != rvnum)) )
+	}
+	if ( rlist && (!room || (room && room->vnum != rvnum)) )
 	return NULL;
-    return buf;
+	return buf;
 }
 
 void do_redit( CHAR_DATA *ch, char *argument )
@@ -4481,17 +4482,17 @@ void do_redit( CHAR_DATA *ch, char *argument )
 	}
 	if ( argument[0] == '\0' )
 	{
-	   sprintf( buf, "Flags for exit direction: %d  Keywords: %s  Key: %d\n\r[ ",
-	   	xit->vdir, xit->keyword, xit->key );
+	   snprintf( buf, sizeof(buf), "Flags for exit direction: %d  Keywords: %s  Key: %d\n\r[ ",
+		xit->vdir, xit->keyword, xit->key );
 	   for ( value = 0; value <= MAX_EXFLAG; value++ )
 	   {
 		if ( IS_SET( xit->exit_info, 1 << value ) )
 		{
-		    strcat( buf, ex_flags[value] );
-		    strcat( buf, " " );
+			strncat( buf, ex_flags[value], sizeof(buf) - strlen(buf) - 1 );
+			strncat( buf, " ", sizeof(buf) - strlen(buf) - 1 );
 		}
 	   }
-	   strcat( buf, "]\n\r" );
+	   strncat( buf, "]\n\r", sizeof(buf) - strlen(buf) - 1 );
 	   send_to_char( buf, ch );
 	   return;
 	}
@@ -4531,7 +4532,7 @@ void do_redit( CHAR_DATA *ch, char *argument )
 	}
 	if ( (xit = get_exit(location,edir)) == NULL )
 	{ 
-	   sprintf(buf,"exit %c 1",dir);
+		snprintf(buf, sizeof(buf), "exit %c 1", dir);
 	   do_redit(ch,buf);
 	   xit = get_exit(location,edir);
 	}     
@@ -4566,7 +4567,7 @@ void do_redit( CHAR_DATA *ch, char *argument )
 	}
 	if ( (xit = get_exit(location,edir)) == NULL )
 	{ 
-	   sprintf(buf,"exit %c 1",dir);
+		snprintf(buf, sizeof(buf), "exit %c 1", dir);
 	   do_redit(ch,buf);
 	   xit = get_exit(location,edir);
 	}     
@@ -4589,7 +4590,7 @@ void do_redit( CHAR_DATA *ch, char *argument )
 	}
 	if ( (xit = get_exit(location,edir)) == NULL )
 	{ 
-	   sprintf(buf,"exit %c 1",dir);
+		snprintf(buf, sizeof(buf), "exit %c 1", dir);
 	   do_redit(ch,buf);
 	   xit = get_exit(location,edir);
 	}     
@@ -4611,10 +4612,10 @@ void do_redit( CHAR_DATA *ch, char *argument )
 	}
 	if ( (xit = get_exit(location, edir)) == NULL )
 	{ 
-	   sprintf(buf,"exit %c 1",dir);
+		snprintf(buf, sizeof(buf), "exit %c 1", dir);
 	   do_redit(ch,buf);
 	}     
-	sprintf(buf,"exdesc %c %s",dir,argument);
+		snprintf(buf, sizeof(buf), "exdesc %c %s", dir, argument);
 	do_redit(ch,buf);
 	return;
     }
@@ -4633,12 +4634,12 @@ void do_redit( CHAR_DATA *ch, char *argument )
 	}
 	if ( (xit = get_exit(location, edir)) == NULL )
 	{ 
-	   sprintf(buf, "exit %c 1", dir);
+		snprintf(buf, sizeof(buf), "exit %c 1", dir);
 	   do_redit(ch,buf);
 	   if ( (xit = get_exit(location, edir)) == NULL )
 	     return;
 	}     
-	sprintf( buf, "%s %s", xit->keyword, argument );
+		snprintf(buf, sizeof(buf), "%s %s", xit->keyword, argument);
 	STRFREE( xit->keyword );
 	xit->keyword = STRALLOC( buf );
 	return;
@@ -4801,40 +4802,40 @@ void do_redit( CHAR_DATA *ch, char *argument )
 	rxit = NULL;
 	vnum = 0;
 	rvnum[0] = '\0';
-	if ( xit )
-	{
-	    vnum = xit->vnum;
-	    if ( arg3[0] != '\0' )
-	      sprintf( rvnum, "%d", tmploc->vnum );
-	    if ( xit->to_room )
-	      rxit = get_exit(xit->to_room, rev_dir[edir]);
-	    else
-	      rxit = NULL;
-	}
-	sprintf( tmpcmd, "exit %s %s %s", arg2, arg3, argument );
-	do_redit( ch, tmpcmd );
+		if ( xit )
+		{
+				vnum = xit->vnum;
+				if ( arg3[0] != '\0' )
+					snprintf( rvnum, sizeof(rvnum), "%d", tmploc->vnum );
+				if ( xit->to_room )
+					rxit = get_exit(xit->to_room, rev_dir[edir]);
+				else
+					rxit = NULL;
+		}
+		snprintf( tmpcmd, sizeof(tmpcmd), "exit %s %s %s", arg2, arg3, argument );
+		do_redit( ch, tmpcmd );
 	if ( numnotdir )
 	  xit = get_exit_num(tmploc, exnum);
 	else
 	  xit = get_exit(tmploc, edir);
-	if ( !rxit && xit )
-	{
-	    vnum = xit->vnum;
-	    if ( arg3[0] != '\0' )
-	      sprintf( rvnum, "%d", tmploc->vnum );
-	    if ( xit->to_room )
-	      rxit = get_exit(xit->to_room, rev_dir[edir]);
-	    else
-	      rxit = NULL;
-	}
+		if ( !rxit && xit )
+		{
+				vnum = xit->vnum;
+				if ( arg3[0] != '\0' )
+					snprintf( rvnum, sizeof(rvnum), "%d", tmploc->vnum );
+				if ( xit->to_room )
+					rxit = get_exit(xit->to_room, rev_dir[edir]);
+				else
+					rxit = NULL;
+		}
 	if ( vnum )
 	{
-	    sprintf( tmpcmd, "%d redit exit %d %s %s",
-				vnum,
-				rev_dir[edir],
-				rvnum,
-				argument );
-	    do_at( ch, tmpcmd );
+		snprintf( tmpcmd, sizeof(tmpcmd), "%d redit exit %d %s %s",
+					vnum,
+					rev_dir[edir],
+					rvnum,
+					argument );
+		do_at( ch, tmpcmd );
 	}
 	return;
     }
@@ -4894,8 +4895,8 @@ void do_redit( CHAR_DATA *ch, char *argument )
 	     xit->description = STRALLOC( "" );
 	   else
 	   {
-	     sprintf( buf, "%s\n\r", argument );
-	     xit->description = STRALLOC( buf );
+		   snprintf( buf, sizeof(buf), "%s\n\r", argument );
+		   xit->description = STRALLOC( buf );
 	   }
 	   send_to_char( "Done.\n\r", ch );
 	   return;
@@ -5179,7 +5180,7 @@ void edit_buffer( CHAR_DATA *ch, char *argument )
 		{
 		    sptr = lwptr;
 		    lwptr = wptr + wordln;
-		    sprintf( buf, "%s%s", word2, wptr + wordln );
+			snprintf(buf, sizeof(buf), "%s%s", word2, wptr + wordln);
 		    lineln = wptr - edit->line[x] - wordln;
 		    ++count;
 		    if ( strlen(buf) + lineln > 79 )
@@ -5468,7 +5469,7 @@ void assign_area( CHAR_DATA *ch )
 	&&   ch->pcdata->r_range_hi )
 	{
 	  tarea = ch->pcdata->area;
-	  sprintf( taf, "%s.are", capitalize( ch->name ) );
+		snprintf(taf, sizeof(taf), "%s.are", capitalize(ch->name));
 	  if ( !tarea )
 	  {
 		for ( tmp = first_build; tmp; tmp = tmp->next )
@@ -5480,16 +5481,16 @@ void assign_area( CHAR_DATA *ch )
 	  }
 	  if ( !tarea )
 	  {
-	    sprintf( buf, "Creating area entry for %s", ch->name );
+		snprintf(buf, sizeof(buf), "Creating area entry for %s", ch->name);
 	    log_string_plus( buf, LOG_NORMAL, ch->top_level );
 	    CREATE( tarea, AREA_DATA, 1 );
 	    LINK( tarea, first_build, last_build, next, prev );
 	    tarea->first_reset	= NULL;
 	    tarea->last_reset	= NULL;
-	    sprintf( buf, "{PROTO} %s's area in progress", ch->name );
+		snprintf(buf, sizeof(buf), "{PROTO} %s's area in progress", ch->name);
 	    tarea->name		= str_dup( buf );
 	    tarea->filename	= str_dup( taf );
-	    sprintf( buf2, "%s", ch->name );
+		snprintf(buf2, sizeof(buf2), "%s", ch->name);
 	    tarea->author 	= STRALLOC( buf2 );
 	    tarea->age		= 0;
 	    tarea->nplayer	= 0;
@@ -5499,7 +5500,7 @@ void assign_area( CHAR_DATA *ch )
 	  }
 	  else
 	  {
-	    sprintf( buf, "Updating area entry for %s", ch->name );
+		snprintf(buf, sizeof(buf), "Updating area entry for %s", ch->name);
 	    log_string_plus( buf, LOG_NORMAL, ch->top_level );
 	  }
 	  tarea->low_r_vnum	= ch->pcdata->r_range_lo;
@@ -5541,7 +5542,7 @@ void do_aassign( CHAR_DATA *ch, char *argument )
 	    return;
 	} 
 
-	sprintf( buf, "%s", argument );
+	snprintf(buf, sizeof(buf), "%s", argument);
         tarea = NULL;
 
 /*	if ( get_trust(ch) >= sysdata.level_modify_proto )   */
@@ -5723,13 +5724,13 @@ void fold_area( AREA_DATA *tarea, char *filename, bool install )
     int			 val0, val1, val2, val3, val4, val5;
     bool		 complexmob;
 
-    sprintf( buf, "Saving %s...", tarea->filename );
+	snprintf(buf, sizeof(buf), "Saving %s...", tarea->filename);
     log_string_plus( buf, LOG_ALL, LEVEL_GREATER );
 
-    sprintf( buf, "%s.bak", filename );
+	snprintf(buf, sizeof(buf), "%s.bak", filename);
     rename( filename, buf );
     fclose( fpReserve );
-    sprintf( buf, "%s.tmp", filename );
+	snprintf(buf, sizeof(buf), "%s.tmp", filename);
     if ( ( fpout = fopen( buf, "w" ) ) == NULL )
     {
 	bug( "fold_area: fopen", 0 );
@@ -6173,9 +6174,10 @@ void do_savearea( CHAR_DATA *ch, char *argument )
 	return;
     }
 
-    sprintf( filename, "%s%s", BUILD_DIR, tarea->filename );
-    fold_area( tarea, filename, FALSE );
-    send_to_char( "Done.\n\r", ch );
+	// Use snprintf to avoid potential buffer overflow
+	snprintf( filename, sizeof(filename), "%s%s", BUILD_DIR, tarea->filename );
+	fold_area( tarea, filename, FALSE );
+	send_to_char( "Done.\n\r", ch );
 }
 
 void do_loadarea( CHAR_DATA *ch, char *argument )
@@ -6228,11 +6230,12 @@ void do_loadarea( CHAR_DATA *ch, char *argument )
 	send_to_char( "Your area is already loaded.\n\r", ch );
 	return;
     }
-    sprintf( filename, "%s%s", BUILD_DIR, tarea->filename );
-    send_to_char( "Loading...\n\r", ch );
-    load_area_file( tarea, filename );
-    send_to_char( "Linking exits...\n\r", ch );
-    fix_area_exits( tarea );
+	// Use snprintf to avoid potential buffer overflow
+	snprintf( filename, sizeof(filename), "%s%s", BUILD_DIR, tarea->filename );
+	send_to_char( "Loading...\n\r", ch );
+	load_area_file( tarea, filename );
+	send_to_char( "Linking exits...\n\r", ch );
+	fix_area_exits( tarea );
     if ( tarea->first_reset )
     {
 	tmp = tarea->nplayer;
@@ -6385,8 +6388,8 @@ void do_installarea( CHAR_DATA *ch, char *argument )
 	  reset_area( tarea );
 	  tarea->nplayer = num;
 	  send_to_char( "Renaming author's building file.\n\r", ch );
-	  sprintf( buf, "%s%s.installed", BUILD_DIR, tarea->filename );
-	  sprintf( arg, "%s%s", BUILD_DIR, tarea->filename );
+	  snprintf( buf, sizeof(buf), "%s%s.installed", BUILD_DIR, tarea->filename );
+	  snprintf( arg, sizeof(arg), "%s%s", BUILD_DIR, tarea->filename );
 	  rename( arg, buf );
 	  send_to_char( "Done.\n\r", ch );
 	  return;
