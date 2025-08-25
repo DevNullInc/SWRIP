@@ -787,8 +787,8 @@ void mobile_update( void )
 	
 	if ( gch_prev && gch_prev->next != ch )
 	{
-	    sprintf( buf, "FATAL: Mobile_update: %s->prev->next doesn't point to ch.",
-		ch->name );
+		snprintf( buf, sizeof(buf), "FATAL: Mobile_update: %s->prev->next doesn't point to ch.",
+			ch->name );
 	    bug( buf, 0 );	    
 	    bug( "Short-cutting here", 0 );
 	    gch_prev = NULL;
@@ -996,18 +996,18 @@ void mobile_update( void )
 		{
 		    switch( number_bits(2) )
 		    {
-			case 0:
-			  sprintf( buf, "Get away from me, %s!", rch->name );
-			  break;
-			case 1:
-			  sprintf( buf, "Leave me be, %s!", rch->name );
-			  break;
-			case 2:
-			  sprintf( buf, "%s is trying to kill me!  Help!", rch->name );
-			  break;
-			case 3:
-			  sprintf( buf, "Someone save me from %s!", rch->name );
-			  break;
+						case 0:
+							snprintf( buf, sizeof(buf), "Get away from me, %s!", rch->name );
+							break;
+						case 1:
+							snprintf( buf, sizeof(buf), "Leave me be, %s!", rch->name );
+							break;
+						case 2:
+							snprintf( buf, sizeof(buf), "%s is trying to kill me!  Help!", rch->name );
+							break;
+						case 3:
+							snprintf( buf, sizeof(buf), "Someone save me from %s!", rch->name );
+							break;
 		    }
 		    do_yell( ch, buf );
 		    found = TRUE;
@@ -1684,12 +1684,12 @@ void obj_update( void )
 
 	    separate_obj(obj);
             obj->value[2] = timerfrac;
-            if ( obj->item_type == ITEM_DROID_CORPSE )
-              sprintf( buf, d_corpse_descs[ UMIN( timerfrac - 1, 4 ) ], 
-                          bufptr ); 
-            else 
-              sprintf( buf, corpse_descs[ UMIN( timerfrac - 1, 4 ) ], 
-                          capitalize( bufptr ) ); 
+						if ( obj->item_type == ITEM_DROID_CORPSE )
+							snprintf( buf, sizeof(buf), d_corpse_descs[ UMIN( timerfrac - 1, 4 ) ], 
+													bufptr ); 
+						else 
+							snprintf( buf, sizeof(buf), corpse_descs[ UMIN( timerfrac - 1, 4 ) ], 
+													capitalize( bufptr ) ); 
 
             STRFREE( obj->description );
             obj->description = STRALLOC( buf ); 
@@ -2472,7 +2472,7 @@ void reboot_check( time_t reset )
   
   if ( (current_time % 1800) == 0 )
   {
-    sprintf(buf, "%.24s: %d players", ctime(&current_time), num_descriptors);
+	snprintf(buf, sizeof(buf), "%.24s: %d players", ctime(&current_time), num_descriptors);
     append_to_file(USAGE_FILE, buf);
   }
   
@@ -2563,7 +2563,7 @@ void reboot_check( char *arg )
 
 if ((current_time % 1800) == 0)
 {
-  sprintf(buf, "%s: %d players", ctime(&current_time), num_descriptors);  
+	snprintf(buf, sizeof(buf), "%s: %d players", ctime(&current_time), num_descriptors);  
   append_to_file(USAGE_FILE, buf);
 }
 
@@ -2585,8 +2585,8 @@ if ((current_time % 1800) == 0)
        /* Return auction item to seller */
        if (auction->item != NULL)
        {
-        sprintf (buf,"Sale of %s has been stopped by mud.",
-                 auction->item->short_descr);
+	snprintf (buf, sizeof(buf), "Sale of %s has been stopped by mud.",
+		 auction->item->short_descr);
         talk_auction (buf);
         obj_to_char (auction->item, auction->seller);
         auction->item = NULL;
@@ -2597,9 +2597,9 @@ if ((current_time % 1800) == 0)
         }
        }      
 
-       sprintf( buf, "You are forced from these realms by a strong magical presence" ); 
+	snprintf( buf, sizeof(buf), "You are forced from these realms by a strong magical presence" ); 
        echo_to_all( AT_YELLOW, buf, ECHOTAR_ALL );
-       sprintf( buf, "as life here is reconstructed." );
+	snprintf( buf, sizeof(buf), "as life here is reconstructed." );
        echo_to_all( AT_YELLOW, buf, ECHOTAR_ALL );
 
        /* Save all characters before booting. */
@@ -2622,7 +2622,7 @@ if ((current_time % 1800) == 0)
   {
     if ( one == FALSE )
     {
-	sprintf( buf, "You feel the ground shake as the end comes near!" );
+	snprintf( buf, sizeof(buf), "You feel the ground shake as the end comes near!" );
 	echo_to_all( AT_YELLOW, buf, ECHOTAR_ALL );
 	one = TRUE;
 	sysdata.DENY_NEW_PLAYERS = TRUE;
@@ -2635,7 +2635,7 @@ if ((current_time % 1800) == 0)
   {
     if ( two == FALSE )
     {
-	sprintf( buf, "Lightning crackles in the sky above!" );
+	snprintf( buf, sizeof(buf), "Lightning crackles in the sky above!" );
 	echo_to_all( AT_YELLOW, buf, ECHOTAR_ALL );
 	two = TRUE;
 	sysdata.DENY_NEW_PLAYERS = TRUE;
@@ -2648,7 +2648,7 @@ if ((current_time % 1800) == 0)
   {
     if ( three == FALSE )
     {
-	sprintf( buf, "Crashes of thunder sound across the land!" );
+	snprintf( buf, sizeof(buf), "Crashes of thunder sound across the land!" );
 	echo_to_all( AT_YELLOW, buf, ECHOTAR_ALL );
 	three = TRUE;
 	sysdata.DENY_NEW_PLAYERS = TRUE;
@@ -2661,7 +2661,7 @@ if ((current_time % 1800) == 0)
   {
     if ( four == FALSE )
     {
-	sprintf( buf, "The sky has suddenly turned midnight black." );
+	snprintf( buf, sizeof(buf), "The sky has suddenly turned midnight black." );
 	echo_to_all( AT_YELLOW, buf, ECHOTAR_ALL );
 	four = TRUE;
 	sysdata.DENY_NEW_PLAYERS = TRUE;
@@ -2674,7 +2674,7 @@ if ((current_time % 1800) == 0)
   {
     if ( five == FALSE )
     {
-	sprintf( buf, "You notice the life forms around you slowly dwindling away." );
+	snprintf( buf, sizeof(buf), "You notice the life forms around you slowly dwindling away." );
 	echo_to_all( AT_YELLOW, buf, ECHOTAR_ALL );
 	five = TRUE;
 	sysdata.DENY_NEW_PLAYERS = TRUE;
@@ -2687,7 +2687,7 @@ if ((current_time % 1800) == 0)
   {
     if ( ten == FALSE )
     {
-	sprintf( buf, "The seas across the realm have turned frigid." );
+	snprintf( buf, sizeof(buf), "The seas across the realm have turned frigid." );
 	echo_to_all( AT_YELLOW, buf, ECHOTAR_ALL );
 	ten = TRUE;
     }
@@ -2699,7 +2699,7 @@ if ((current_time % 1800) == 0)
   {
     if ( fifteen == FALSE )
     {
-	sprintf( buf, "The aura of magic which once surrounded the realms seems slightly unstable." );
+	snprintf( buf, sizeof(buf), "The aura of magic which once surrounded the realms seems slightly unstable." );
 	echo_to_all( AT_YELLOW, buf, ECHOTAR_ALL );
 	fifteen = TRUE;
     }
@@ -2711,7 +2711,7 @@ if ((current_time % 1800) == 0)
   { 
     if ( thirty == FALSE )
     {
-	sprintf( buf, "You sense a change in the magical forces surrounding you." );
+	snprintf( buf, sizeof(buf), "You sense a change in the magical forces surrounding you." );
 	echo_to_all( AT_YELLOW, buf, ECHOTAR_ALL );
 	thirty = TRUE;
     }

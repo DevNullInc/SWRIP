@@ -236,7 +236,7 @@ void do_track( CHAR_DATA *ch, char *argument )
          send_to_char("You're already in the same room!\n\r", ch);
          break;
       case BFS_NO_PATH:
-         sprintf(buf, "You can't sense a trail from here.\n\r" );
+         snprintf(buf, sizeof(buf), "You can't sense a trail from here.\n\r" );
          send_to_char(buf, ch);
 	 learn_from_failure( ch, gsn_track );
          break;
@@ -273,7 +273,7 @@ void found_prey( CHAR_DATA *ch, CHAR_DATA *victim )
         return;
      }
 
-     sprintf( victname, IS_NPC( victim ) ? victim->short_descr : victim->name );
+   snprintf( victname, sizeof(victname), "%s", IS_NPC( victim ) ? victim->short_descr : victim->name );
 
      if ( !can_see(ch, victim) )
      {
@@ -281,16 +281,16 @@ void found_prey( CHAR_DATA *ch, CHAR_DATA *victim )
 	  return;
 	switch( number_bits( 2 ) )
  	{
-	case 0: sprintf( buf, "Don't make me find you!" );
+      case 0: snprintf( buf, sizeof(buf), "Don't make me find you!" );
 		do_say( ch, buf );
 	        break;
 	case 1: act( AT_ACTION, "$n sniffs around the room for someone.", ch, NULL, victim, TO_NOTVICT );
 		act( AT_ACTION, "You sniff around the room for someone.", ch, NULL, victim, TO_CHAR );
 		act( AT_ACTION, "$n sniffs around the room for someone.", ch, NULL, victim, TO_VICT );
-		sprintf( buf, "I can smell your blood!" );
+   snprintf( buf, sizeof(buf), "I can smell your blood!" );
 		do_say( ch, buf );
 		break;
-	case 2: sprintf( buf, "I'm going to tear you apart!" );
+      case 2: snprintf( buf, sizeof(buf), "I'm going to tear you apart!" );
 		do_yell( ch, buf );
 		break;
 	case 3: do_say( ch, "Just wait until I find you...");
@@ -306,13 +306,13 @@ void found_prey( CHAR_DATA *ch, CHAR_DATA *victim )
 	switch( number_bits( 2 ) )
 	{
 	case 0:	do_say( ch, "C'mon out, you coward!" );
-		sprintf( buf, "%s is a bloody coward!", victname );
+   snprintf( buf, sizeof(buf), "%s is a bloody coward!", victname );
 		do_yell( ch, buf );
 		break;
-	case 1: sprintf( buf, "Let's take this outside, %s", victname );
+      case 1: snprintf( buf, sizeof(buf), "Let's take this outside, %s", victname );
 		do_say( ch, buf );
 		break;
-	case 2: sprintf( buf, "%s is a yellow-bellied wimp!", victname );
+      case 2: snprintf( buf, sizeof(buf), "%s is a yellow-bellied wimp!", victname );
 		do_yell( ch, buf );
 		break;
 	case 3: act( AT_ACTION, "$n takes a few swipes at someone.", ch, NULL, victim, TO_NOTVICT );
@@ -325,13 +325,13 @@ void found_prey( CHAR_DATA *ch, CHAR_DATA *victim )
 
      switch( number_bits( 2 ) )
      {
-     case 0: sprintf( buf, "Your blood is mine!" );
+   case 0: snprintf( buf, sizeof(buf), "Your blood is mine!" );
 	     do_yell( ch, buf);
 	     break;
-     case 1: sprintf( buf, "Alas, we meet again!" );
+   case 1: snprintf( buf, sizeof(buf), "Alas, we meet again!" );
      	     do_say( ch, buf );
      	     break;
-     case 2: sprintf( buf, "What do you want on your tombstone?" );
+   case 2: snprintf( buf, sizeof(buf), "What do you want on your tombstone?" );
      	     do_say( ch, buf );
      	     break;
      case 3: act( AT_ACTION, "$n lunges at $N from out of nowhere!", ch, NULL, victim, TO_NOTVICT );
@@ -419,7 +419,7 @@ void hunt_victim( CHAR_DATA *ch )
         if ( !ch->in_room )
         {
           char buf[MAX_STRING_LENGTH];
-          sprintf( buf, "Hunt_victim: no ch->in_room!  Mob #%d, name: %s.  Placing mob in limbo.",
+          snprintf( buf, sizeof(buf), "Hunt_victim: no ch->in_room!  Mob #%d, name: %s.  Placing mob in limbo.",
                    ch->pIndexData->vnum, ch->name );
           bug( buf, 0 );
           char_to_room( ch, get_room_index( ROOM_VNUM_LIMBO ) );
@@ -544,10 +544,10 @@ bool mob_snipe( CHAR_DATA *ch, CHAR_DATA *victim )
     char_from_room( ch );
     char_to_room( ch, victim->in_room );    
                 
-       sprintf( buf , "A blaster shot fires at you from the %s." , dir_name[dir] );
+   snprintf( buf , sizeof(buf), "A blaster shot fires at you from the %s." , dir_name[dir] );
        act( AT_ACTION, buf , victim, NULL, ch, TO_CHAR );      
        act( AT_ACTION, "You fire at $N.", ch, NULL, victim, TO_CHAR );         
-       sprintf( buf, "A blaster shot fires at $N from the %s." , dir_name[dir] );
+   snprintf( buf, sizeof(buf), "A blaster shot fires at $N from the %s." , dir_name[dir] );
        act( AT_ACTION, buf, ch, NULL, victim, TO_NOTVICT );  
                                                    
        one_hit( ch, victim, TYPE_UNDEFINED );  

@@ -59,7 +59,7 @@ void check_requests( )
 	   buf[c] = '\0';
 	   break;
 	}
-     sprintf( buf2, "REQUEST: %s", buf );
+  snprintf( buf2, sizeof(buf2), "REQUEST: %s", buf );
      log_string( buf2 );
      if ( strcmp( buf, "who" ) == 0 )
 	do_who( NULL, "" );

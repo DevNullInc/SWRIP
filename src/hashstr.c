@@ -200,11 +200,11 @@ char *check_hash( char *str )
 	fnd = ptr;
 	p = c+1;
      }
-   if ( fnd )
-     sprintf( buf, "Hash info on string: %s\n\rLinks: %d  Position: %d/%d  Hash: %d  Length: %d\n\r",
+     if ( fnd )
+         snprintf( buf, sizeof(buf), "Hash info on string: %s\n\rLinks: %d  Position: %d/%d  Hash: %d  Length: %d\n\r",
 	  str, fnd->links, p, c, hash, fnd->length );
-   else
-     sprintf( buf, "%s not found.\n\r", str );
+     else
+         snprintf( buf, sizeof(buf), "%s not found.\n\r", str );
    return buf;
 }
 
@@ -229,7 +229,7 @@ char *hash_stats( void )
 	   wouldhave += (ptr->links * (ptr->length + 1));
 	}
     }
-    sprintf( buf, "Hash strings allocated:%8d  Total links  : %d\n\rString bytes allocated:%8d  Bytes saved  : %d\n\rUnique (wasted) links :%8d  Hi-Link count: %d\n\r",
+    snprintf( buf, sizeof(buf), "Hash strings allocated:%8d  Total links  : %d\n\rString bytes allocated:%8d  Bytes saved  : %d\n\rUnique (wasted) links :%8d  Hi-Link count: %d\n\r",
 	total, totlinks, bytesused, wouldhave - bytesused, unique, hilink );
     return buf;
 }

@@ -71,7 +71,7 @@ void do_trivia(CHAR_DATA *ch, char *argument)
 	     }
 	   send_to_char("Use tquestion to ask a question\n\rUse twinner to announce the winner\n\rUse trivia end to end the game\n\r",ch);
 	   echo_to_all(AT_WHITE, "A new trivia game has begun!\n\rType &Ctjoin&W to play!\n\r", ECHOTAR_ALL); 
-	   sprintf(buf,"Todays prize is %s!\n\r",obj->short_descr);
+    	snprintf(buf,sizeof(buf),"Todays prize is %s!\n\r",obj->short_descr);
 	   extract_obj(obj);
 	   echo_to_all(AT_WHITE, buf, ECHOTAR_ALL);
 	 }
@@ -112,20 +112,20 @@ void do_trivia(CHAR_DATA *ch, char *argument)
 		     }
 		 }
 	     }
-	   sprintf(buf,"The Winners are:\n\r1st: %s with %d correct answers\n\r"
-		   "2nd: %s with %d correct answers\n\r3rd: %s with %d correct answers\n\r",
-		   win1!=NULL?win1->ch->name:"",win1!=NULL?win1->correct:0,
-		   win2!=NULL?win2->ch->name:"",win2!=NULL?win2->correct:0, 
-		   win3!=NULL?win3->ch->name:"",win3!=NULL?win3->correct:0);
+    	snprintf(buf,sizeof(buf),"The Winners are:\n\r1st: %s with %d correct answers\n\r"
+    	   "2nd: %s with %d correct answers\n\r3rd: %s with %d correct answers\n\r",
+    	   win1!=NULL?win1->ch->name:"",win1!=NULL?win1->correct:0,
+    	   win2!=NULL?win2->ch->name:"",win2!=NULL?win2->correct:0, 
+    	   win3!=NULL?win3->ch->name:"",win3!=NULL?win3->correct:0);
 		   send_to_trivia(buf);*/
 
-	   sprintf(buf,"Trivia Standings\n\r");
+    	snprintf(buf,sizeof(buf),"Trivia Standings\n\r");
 	   
 	   i = 0;
 	   for(ws=g_trivia->winners; ws; ws = ws->next)
 	     {
 	       i++;
-	       sprintf(buf2,"%2d. %-15s ",i,ws->ch->name);
+        	snprintf(buf2,sizeof(buf2),"%2d. %-15s ",i,ws->ch->name);
 	       strcat(buf, buf2);
 	       if(i % 3 == 0)
 		 strcat(buf,"\n\r");
@@ -204,13 +204,13 @@ void do_trivia_score(CHAR_DATA *ch, char *argument)
       return;
     }
 
-  sprintf(buf,"Trivia Standings\n\r");
+  snprintf(buf,sizeof(buf),"Trivia Standings\n\r");
   
   i = 0;
   for(ws=g_trivia->winners; ws; ws = ws->next)
     {
       i++;
-      sprintf(buf2,"%2d. %-15s ",i, ws->ch->name);
+  snprintf(buf2,sizeof(buf2),"%2d. %-15s ",i, ws->ch->name);
       strcat(buf, buf2);
       if(i % 3 == 0)
 	strcat(buf,"\n\r");
@@ -237,7 +237,7 @@ void do_trivia_chat(CHAR_DATA *ch, char *argument)
       send_to_char("You are not in the trivia game.\n\r",ch);
       return;
     }
-  sprintf(buf,"&C<<&wTChat&C>> &w%s: %s\n\r",ch->name,argument);
+  snprintf(buf,sizeof(buf),"&C<<&wTChat&C>> &w%s: %s\n\r",ch->name,argument);
   send_to_trivia(buf);
 }
 
@@ -261,7 +261,7 @@ void do_trivia_join(CHAR_DATA *ch, char *argument)
       return;
     }
   send_to_char("You have joined the trivia game.\n\rType &Ctanswer&W to answer\n\rType &Ctchat&W to use Trivia chat\n\rType &Ctscore&w to see the scores\n\r",ch);
-  sprintf(buf,"%s has joined the trivia game.\n\r",ch->name);
+  snprintf(buf,sizeof(buf),"%s has joined the trivia game.\n\r",ch->name);
   send_to_trivia(buf);
   CREATE(p, struct player_struct, 1);
   p->ch = ch;
@@ -288,7 +288,7 @@ void do_trivia_answer(CHAR_DATA *ch, char *argument)
       send_to_char("You aren't playing trivia.\n\r",ch);
       return;
     }
-  sprintf(buf,"&C<<&WAnswer&C>> &W%s: %s\n\r",ch->name,argument);
+  snprintf(buf,sizeof(buf),"&C<<&WAnswer&C>> &W%s: %s\n\r",ch->name,argument);
   send_to_trivia(buf);
 }
 
@@ -317,7 +317,7 @@ void do_trivia_question(CHAR_DATA *ch, char *argument)
       return;
     }
   g_trivia->current_question++;
-  sprintf(buf,"&C<<&WQuestion %d&C>> &W%s\n\r",g_trivia->current_question,argument);
+  snprintf(buf,sizeof(buf),"&C<<&WQuestion %d&C>> &W%s\n\r",g_trivia->current_question,argument);
   send_to_trivia(buf);
 }
 
@@ -413,7 +413,7 @@ void do_trivia_winner(CHAR_DATA *ch, char *argument)
       send_to_char("There is no one with that name playing\n\r",ch);
       return;
     }
-  sprintf(buf,"&C<<&wWinner&C>> &w%s has won question %d!\n\r",argument,g_trivia->current_question);
+  snprintf(buf,sizeof(buf),"&C<<&wWinner&C>> &w%s has won question %d!\n\r",argument,g_trivia->current_question);
   send_to_trivia(buf);
 //GIVE PRIZE!
   if (g_trivia->prize != -1) 

@@ -199,8 +199,8 @@ void violence_update( void )
 
 	if ( gch_prev && gch_prev->next != ch )
 	{
-	    sprintf( buf, "FATAL: violence_update: %s->prev->next doesn't point to ch.",
-		ch->name );
+    snprintf( buf, sizeof(buf), "FATAL: violence_update: %s->prev->next doesn't point to ch.",
+      ch->name );
 	    bug( buf, 0 );	    
 	    bug( "Short-cutting here", 0 );
 	    ch->prev = NULL;
@@ -224,13 +224,13 @@ void violence_update( void )
 	if ( !ch->in_room || !ch->name )
 	{
 	    log_string( "violence_update: bad ch record!  (Shortcutting.)" );
-	    sprintf( buf, "ch: %d  ch->in_room: %d  ch->prev: %d  ch->next: %d",
-	    	(int) ch, (int) ch->in_room, (int) ch->prev, (int) ch->next );
+    snprintf( buf, sizeof(buf), "ch: %d  ch->in_room: %d  ch->prev: %d  ch->next: %d",
+    	(int) ch, (int) ch->in_room, (int) ch->prev, (int) ch->next );
 	    log_string( buf );
 	    log_string( lastplayercmd );
 	    if ( lst_ch )
-	      sprintf( buf, "lst_ch: %d  lst_ch->prev: %d  lst_ch->next: %d",
-	      		(int) lst_ch, (int) lst_ch->prev, (int) lst_ch->next );
+    snprintf( buf, sizeof(buf), "lst_ch: %d  lst_ch->prev: %d  lst_ch->next: %d",
+      		(int) lst_ch, (int) lst_ch->prev, (int) lst_ch->next );
 	    else
 	      strcpy( buf, "lst_ch: NULL" );
 	    log_string( buf );
@@ -1690,7 +1690,7 @@ ch_ret damage_optional_fighting( CHAR_DATA *ch, CHAR_DATA *victim, int dam, int 
 		gold_diff = (new_gold - init_gold);
 		if (gold_diff > 0)
                 {
-                  sprintf(buf1,"%d",gold_diff);
+                  snprintf(buf1, sizeof(buf1), "%d",gold_diff);
 		  do_split( ch, buf1 );
 		} 
 	    }
@@ -1842,8 +1842,8 @@ void check_killer( CHAR_DATA *ch, CHAR_DATA *victim )
 	{
 	    char buf[MAX_STRING_LENGTH];
 
-	    sprintf( buf, "Check_killer: %s bad AFF_CHARM",
-		IS_NPC(ch) ? ch->short_descr : ch->name );
+    snprintf( buf, sizeof(buf), "Check_killer: %s bad AFF_CHARM",
+      IS_NPC(ch) ? ch->short_descr : ch->name );
 	    bug( buf, 0 );
 	    affect_strip( ch, gsn_charm_person );
 	    REMOVE_BIT( ch->affected_by, AFF_CHARM );
@@ -1962,8 +1962,8 @@ void set_fighting( CHAR_DATA *ch, CHAR_DATA *victim )
     {
 	char buf[MAX_STRING_LENGTH];
 
-	sprintf( buf, "Set_fighting: %s -> %s (already fighting %s)",
-		ch->name, victim->name, ch->fighting->who->name );
+  snprintf( buf, sizeof(buf), "Set_fighting: %s -> %s (already fighting %s)",
+    ch->name, victim->name, ch->fighting->who->name );
 	bug( buf, 0 );
 	return;
     }
@@ -2272,21 +2272,21 @@ else
 	    save_equipment[x][y] = NULL;
   }
   
-  sprintf( buf, "%s%c/%s", PLAYER_DIR, tolower(arg[0]),
-          capitalize( arg ) );
-  sprintf( buf2, "%s%c/%s", BACKUP_DIR, tolower(arg[0]),
-          capitalize( arg ) );
+  snprintf( buf, sizeof(buf), "%s%c/%s", PLAYER_DIR, tolower(arg[0]),
+    capitalize( arg ) );
+  snprintf( buf2, sizeof(buf2), "%s%c/%s", BACKUP_DIR, tolower(arg[0]),
+    capitalize( arg ) );
   
   rename( buf, buf2 );
   
-  sprintf( buf, "%s%c/%s.clone", PLAYER_DIR, tolower(arg[0]),
-          capitalize( arg ) );
-  sprintf( buf2, "%s%c/%s", PLAYER_DIR, tolower(arg[0]),
-          capitalize( arg ) );
+  snprintf( buf, sizeof(buf), "%s%c/%s.clone", PLAYER_DIR, tolower(arg[0]),
+    capitalize( arg ) );
+  snprintf( buf2, sizeof(buf2), "%s%c/%s", PLAYER_DIR, tolower(arg[0]),
+    capitalize( arg ) );
 
   rename( buf, buf2 );
 
-    sprintf( buf, "%s%s", GOD_DIR, capitalize(victim->name) );  
+  snprintf( buf, sizeof(buf), "%s%s", GOD_DIR, capitalize(victim->name) );  
  
     if ( !remove( buf ) )
       send_to_char( "Player's immortal data destroyed.\n\r", ch );
@@ -2294,12 +2294,12 @@ else
     {
       ch_printf( ch, "Unknown error #%d - %s (immortal data).  Report to Thoric\n\r",
               errno, strerror( errno ) );
-      sprintf( buf2, "%s slaying %s", ch->name, buf );
+  snprintf( buf2, sizeof(buf2), "%s slaying %s", ch->name, buf );
       perror( buf2 );
     }
 
-    sprintf( buf, "%s%c/%s.home", PLAYER_DIR, tolower(arg[0]),
-          capitalize( arg ) );
+  snprintf( buf, sizeof(buf), "%s%c/%s.home", PLAYER_DIR, tolower(arg[0]),
+      capitalize( arg ) );
     remove( buf );
   
   return;
@@ -2398,12 +2398,12 @@ void group_gain( CHAR_DATA *ch, CHAR_DATA *victim )
 	&& !str_cmp ( gch->pcdata->clan->name , victim->mob_clan ) )
 	{
 	     xp = 0;
-	     sprintf( buf, "You receive no experience for killing your organizations resources.\n\r");
+         snprintf( buf, sizeof(buf), "You receive no experience for killing your organizations resources.\n\r");
 	     send_to_char( buf, gch );
 	}
 	else
 	{
-	   sprintf( buf, "You receive %d combat experience.\n\r", xp );
+    snprintf( buf, sizeof(buf), "You receive %d combat experience.\n\r", xp );
 	   send_to_char( buf, gch );
 	}
         
@@ -2412,7 +2412,7 @@ void group_gain( CHAR_DATA *ch, CHAR_DATA *victim )
         if ( lch == gch && members > 1 )
         {
            xp = URANGE( members, xp*members, (exp_level( gch->skill_level[LEADERSHIP_ABILITY]+1) - exp_level(gch->skill_level[LEADERSHIP_ABILITY] )/10) );  
-           sprintf( buf, "You get %d leadership experience for leading your group to victory.\n\r", xp ); 
+           snprintf( buf, sizeof(buf), "You get %d leadership experience for leading your group to victory.\n\r", xp ); 
 	   send_to_char( buf, gch );
            gain_exp( gch, xp , LEADERSHIP_ABILITY );
         }   
@@ -2575,15 +2575,15 @@ void dam_message( CHAR_DATA *ch, CHAR_DATA *victim, int dam, int dt )
          char sound[MAX_STRING_LENGTH];
          int vol = number_range( 20 , 80 );
          
-         sprintf( sound , "!!SOUND(blaster V=%d)" , vol );
+         snprintf( sound , sizeof(sound), "!!SOUND(blaster V=%d)" , vol );
          sound_to_room(ch->in_room, sound);
     }
     
     if ( dt == TYPE_HIT || dam==0 )
     {
-	sprintf( buf1, "$n %s $N%c",  vp, punct );
-	sprintf( buf2, "You %s $N%c", vs, punct );
-	sprintf( buf3, "$n %s you%c", vp, punct );
+	snprintf( buf1, sizeof(buf1), "$n %s $N%c",  vp, punct );
+	snprintf( buf2, sizeof(buf2), "You %s $N%c", vs, punct );
+	snprintf( buf3, sizeof(buf3), "$n %s you%c", vp, punct );
     }
     else
     if ( dt > TYPE_HIT && is_wielding_poisoned( ch ) )
@@ -2597,9 +2597,9 @@ void dam_message( CHAR_DATA *ch, CHAR_DATA *victim, int dam, int dt )
 	    attack  = attack_table[0];
         }
 
-	sprintf( buf1, "$n's poisoned %s %s $N%c", attack, vp, punct );
-	sprintf( buf2, "Your poisoned %s %s $N%c", attack, vp, punct );
-	sprintf( buf3, "$n's poisoned %s %s you%c", attack, vp, punct ); 
+	snprintf( buf1, sizeof(buf1), "$n's poisoned %s %s $N%c", attack, vp, punct );
+	snprintf( buf2, sizeof(buf2), "Your poisoned %s %s $N%c", attack, vp, punct );
+	snprintf( buf3, sizeof(buf3), "$n's poisoned %s %s you%c", attack, vp, punct ); 
     }
     else
     {
@@ -2648,13 +2648,13 @@ void dam_message( CHAR_DATA *ch, CHAR_DATA *victim, int dam, int dt )
 	    attack  = attack_table[0];
 	}
 
-	sprintf( buf1, "$n's %s %s $N%c",  attack, vp, punct );
-	sprintf( buf2, "Your %s %s $N%c",  attack, vp, punct );
-	sprintf( buf3, "$n's %s %s you%c", attack, vp, punct );
+	snprintf( buf1, sizeof(buf1), "$n's %s %s $N%c",  attack, vp, punct );
+	snprintf( buf2, sizeof(buf2), "Your %s %s $N%c",  attack, vp, punct );
+	snprintf( buf3, sizeof(buf3), "$n's %s %s you%c", attack, vp, punct );
     }
 
     if ( ch->skill_level[COMBAT_ABILITY] >= 50 )
-       sprintf( buf2, "%s You do %d points of damage.", buf2, dam);
+  snprintf( buf2, sizeof(buf2), "%s You do %d points of damage.", buf2, dam);
     
     act( AT_ACTION, buf1, ch, NULL, victim, TO_NOTVICT );
     if (!gcflag)  act( AT_HIT, buf2, ch, NULL, victim, TO_CHAR );

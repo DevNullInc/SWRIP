@@ -209,19 +209,14 @@ void do_makeblade( CHAR_DATA *ch, char *argument )
     obj->level = level;
     obj->weight = 3;
     STRFREE( obj->name );
-    strcpy( buf, arg );
-   if (!checkstaff)
-    strcat( buf, " vibro-blade blade" );
-   else
-    strcat( buf, " force pike" );
-   
-    obj->name = STRALLOC( buf );
-    strcpy( buf, arg );
-    STRFREE( obj->short_descr );
-    obj->short_descr = STRALLOC( buf );        
-    STRFREE( obj->description );
-    strcat( buf, " was left here." );
-    obj->description = STRALLOC( buf );
+   snprintf(buf, sizeof(buf), "%s%s", arg, (!checkstaff) ? " vibro-blade blade" : " force pike");
+   obj->name = STRALLOC( buf );
+   snprintf(buf, sizeof(buf), "%s", arg);
+   STRFREE( obj->short_descr );
+   obj->short_descr = STRALLOC( buf );
+   STRFREE( obj->description );
+   snprintf(buf, sizeof(buf), "%s was left here.", arg);
+   obj->description = STRALLOC( buf );
     CREATE( paf, AFFECT_DATA, 1 );
     paf->type               = -1;
     paf->duration           = -1;
@@ -499,15 +494,14 @@ void do_makeblaster( CHAR_DATA *ch, char *argument )
     obj->level = level;
     obj->weight = 2+level/10;
     STRFREE( obj->name );
-    strcpy( buf , arg );
-    strcat( buf , " blaster");
-    obj->name = STRALLOC( buf );
-    strcpy( buf, arg );
-    STRFREE( obj->short_descr );
-    obj->short_descr = STRALLOC( buf );        
-    STRFREE( obj->description );
-    strcat( buf, " was carelessly misplaced here." );
-    obj->description = STRALLOC( buf );
+   snprintf(buf, sizeof(buf), "%s blaster", arg);
+   obj->name = STRALLOC( buf );
+   snprintf(buf, sizeof(buf), "%s", arg);
+   STRFREE( obj->short_descr );
+   obj->short_descr = STRALLOC( buf );
+   STRFREE( obj->description );
+   snprintf(buf, sizeof(buf), "%s was carelessly misplaced here.", arg);
+   obj->description = STRALLOC( buf );
     CREATE( paf, AFFECT_DATA, 1 );
     paf->type               = -1;
     paf->duration           = -1;
@@ -827,16 +821,15 @@ void do_makelightsaber( CHAR_DATA *ch, char *argument )
     obj->weight = 5;
     STRFREE( obj->name );
     obj->name = STRALLOC( "lightsaber saber" );
-    strcpy( buf, arg );
-    STRFREE( obj->short_descr );
-    obj->short_descr = STRALLOC( buf );        
-    STRFREE( obj->description );
-    strcat( buf, " was carelessly misplaced here." );
-    obj->description = STRALLOC( buf );
-    STRFREE( obj->action_desc );
-    strcpy( buf, arg );
-    strcat( buf, " ignites with a hum and a soft glow." );
-    obj->action_desc = STRALLOC( buf );
+   snprintf(buf, sizeof(buf), "%s", arg);
+   STRFREE( obj->short_descr );
+   obj->short_descr = STRALLOC( buf );
+   STRFREE( obj->description );
+   snprintf(buf, sizeof(buf), "%s was carelessly misplaced here.", arg);
+   obj->description = STRALLOC( buf );
+   STRFREE( obj->action_desc );
+   snprintf(buf, sizeof(buf), "%s ignites with a hum and a soft glow.", arg);
+   obj->action_desc = STRALLOC( buf );
     CREATE( paf, AFFECT_DATA, 1 );
     paf->type               = -1;
     paf->duration           = -1;
@@ -963,17 +956,15 @@ void do_makespice( CHAR_DATA *ch, char *argument )
     
     obj->value[1] = URANGE (10, obj->value[1], ( IS_NPC(ch) ? ch->top_level
                   : (int) (ch->pcdata->learned[gsn_spice_refining]) ) +10);
-    strcpy( buf, obj->name );
-    STRFREE( obj->name );
-    strcat( buf, " drug spice" );
-    obj->name = STRALLOC( buf );
-    strcpy( buf, "a drug made from " );
-    strcat( buf, obj->short_descr );   
-    STRFREE( obj->short_descr );
-    obj->short_descr = STRALLOC( buf ); 
-    strcat( buf, " was foolishly left lying around here." );
-    STRFREE( obj->description );
-    obj->description = STRALLOC( buf ); 
+   snprintf(buf, sizeof(buf), "%s drug spice", obj->name);
+   STRFREE( obj->name );
+   obj->name = STRALLOC( buf );
+   snprintf(buf, sizeof(buf), "a drug made from %s", obj->short_descr);
+   STRFREE( obj->short_descr );
+   obj->short_descr = STRALLOC( buf );
+   snprintf(buf, sizeof(buf), "%s was foolishly left lying around here.", obj->short_descr);
+   STRFREE( obj->description );
+   obj->description = STRALLOC( buf );
     obj->item_type = ITEM_SPICE;
     
     send_to_char( "&GYou finish your work.\n\r", ch);
@@ -2931,7 +2922,7 @@ void add_reinforcements( CHAR_DATA *ch )
      if ( ( pMobIndex = get_mob_index( ch->backup_mob ) ) == NULL )
         return;
 
-     sprintf(buf, "%s just posted a guard on %d!", ch->name, ch->in_room ? ch->in_room->vnum : 0 );
+   snprintf(buf, sizeof(buf), "%s just posted a guard on %d!", ch->name, ch->in_room ? ch->in_room->vnum : 0 );
      bug(buf, 0);
 
 
@@ -2999,7 +2990,7 @@ void add_reinforcements( CHAR_DATA *ch )
 
           STRFREE( mob->name );
           mob->name = STRALLOC( ch->pcdata->clan->name );
-          sprintf( tmpbuf , "(%s) %s" , ch->pcdata->clan->name  , mob->long_descr );
+          snprintf( tmpbuf, sizeof(tmpbuf), "(%s) %s", ch->pcdata->clan->name, mob->long_descr );
           STRFREE( mob->long_descr );
           mob->long_descr = STRALLOC( tmpbuf );
         }
@@ -3330,16 +3321,16 @@ void do_first_aid( CHAR_DATA *ch, char *argument )
    if ( victim == ch )
    {
        ch_printf( ch, "You tend to your wounds.\n\r");
-       sprintf( buf , "$n uses %s to help heal $s wounds." , medpac->short_descr );        
+   snprintf( buf, sizeof(buf), "$n uses %s to help heal $s wounds.", medpac->short_descr );
        act( AT_ACTION, buf, ch, NULL, victim, TO_ROOM );  
    }
    else
    {
-       sprintf( buf , "You tend to $N's wounds." );        
+   snprintf( buf, sizeof(buf), "You tend to $N's wounds." );
        act( AT_ACTION, buf, ch, NULL, victim, TO_CHAR );  
-       sprintf( buf , "$n uses %s to help heal $N's wounds." , medpac->short_descr );        
+   snprintf( buf, sizeof(buf), "$n uses %s to help heal $N's wounds.", medpac->short_descr );
        act( AT_ACTION, buf, ch, NULL, victim, TO_NOTVICT );  
-       sprintf( buf , "$n uses %s to help heal your wounds." , medpac->short_descr );        
+   snprintf( buf, sizeof(buf), "$n uses %s to help heal your wounds.", medpac->short_descr );
        act( AT_ACTION, buf, ch, NULL, victim, TO_VICT );  
    }
 
@@ -3527,10 +3518,10 @@ void do_snipe( CHAR_DATA *ch, char *argument )
                 
     if ( number_percent() < chance )
     {                         
-       sprintf( buf , "A blaster shot fires at you from the %s." , dir_name[dir] );
+   snprintf( buf, sizeof(buf), "A blaster shot fires at you from the %s." , dir_name[dir] );
        act( AT_ACTION, buf , victim, NULL, ch, TO_CHAR );      
        act( AT_ACTION, "You fire at $N.", ch, NULL, victim, TO_CHAR );         
-       sprintf( buf, "A blaster shot fires at $N from the %s." , dir_name[dir] );
+   snprintf( buf, sizeof(buf), "A blaster shot fires at $N from the %s." , dir_name[dir] );
        act( AT_ACTION, buf, ch, NULL, victim, TO_NOTVICT );  
                                                    
        one_hit( ch, victim, TYPE_UNDEFINED );  
@@ -3545,7 +3536,7 @@ void do_snipe( CHAR_DATA *ch, char *argument )
     else
     {
        act( AT_ACTION, "You fire at $N but don't even come close.", ch, NULL, victim, TO_CHAR );         
-       sprintf( buf, "A blaster shot fired from the %s barely misses you." , dir_name[dir] );
+   snprintf( buf, sizeof(buf), "A blaster shot fired from the %s barely misses you." , dir_name[dir] );
        act( AT_ACTION, buf, ch, NULL, victim, TO_ROOM );  
        learn_from_failure( ch, gsn_snipe );
     }
@@ -3647,7 +3638,7 @@ void do_throw( CHAR_DATA *ch, char *argument )
    }
    else if ( arg2[0] == '\0' )
    {
-       sprintf( buf, "$n throws %s at the floor." , obj->short_descr );
+   snprintf( buf, sizeof(buf), "$n throws %s at the floor." , obj->short_descr );
        act( AT_ACTION, buf, ch, NULL, NULL, TO_ROOM );  
        ch_printf( ch, "You throw %s at the floor.\n\r", obj->short_descr );
        
@@ -3747,10 +3738,10 @@ void do_throw( CHAR_DATA *ch, char *argument )
         char_from_room( ch );
         char_to_room( ch, to_room );    
         
-        sprintf( buf , "Someone throws %s at you from the %s." , obj->short_descr , dir_name[dir] );
+   snprintf( buf, sizeof(buf), "Someone throws %s at you from the %s." , obj->short_descr , dir_name[dir] );
         act( AT_ACTION, buf , victim, NULL, ch, TO_CHAR );      
         act( AT_ACTION, "You throw %p at $N.", ch, obj, victim, TO_CHAR );         
-        sprintf( buf, "%s is thrown at $N from the %s." , obj->short_descr , dir_name[dir] );
+   snprintf( buf, sizeof(buf), "%s is thrown at $N from the %s." , obj->short_descr , dir_name[dir] );
         act( AT_ACTION, buf, ch, NULL, victim, TO_NOTVICT );  
 
 
@@ -3758,7 +3749,7 @@ void do_throw( CHAR_DATA *ch, char *argument )
       else
       {   
          ch_printf( ch, "You throw %s %s.\n\r", obj->short_descr , dir_name[get_dir( arg2 )] );
-         sprintf( buf, "%s is thrown from the %s." , obj->short_descr , dir_name[dir] );
+         snprintf( buf, sizeof(buf), "%s is thrown from the %s." , obj->short_descr , dir_name[dir] );
          act( AT_ACTION, buf, ch, NULL, NULL, TO_ROOM );  
 
       }
@@ -3939,7 +3930,7 @@ void do_beg( CHAR_DATA *ch, char *argument )
 
         if ( victim->alignment < 0 && victim->top_level >= ch->top_level+5 )
  {
-   sprintf( buf, "%s is an annoying beggar and needs to be taught a lesson!", ch->name );
+   snprintf( buf, sizeof(buf), "%s is an annoying beggar and needs to be taught a lesson!", ch->name );
    do_yell( victim, buf );
           global_retcode = multi_hit( victim, ch, TYPE_UNDEFINED );
  }
@@ -4069,7 +4060,7 @@ void do_hijack( CHAR_DATA *ch, char *argument )
          if (ship->hatchopen)
          {
            ship->hatchopen = FALSE;
-           sprintf( buf , "The hatch on %s closes." , ship->name);
+           snprintf( buf, sizeof(buf), "The hatch on %s closes.", ship->name);
                      echo_to_room( AT_YELLOW , get_room_index(ship->location) , buf );
                      echo_to_room( AT_YELLOW , get_room_index(ship->entrance) , "The hatch slides shut." );
                    }
@@ -4078,7 +4069,7 @@ void do_hijack( CHAR_DATA *ch, char *argument )
          act( AT_PLAIN, "$n starts up the ship and begins the launch sequence.", ch,
           NULL, argument , TO_ROOM );
      echo_to_ship( AT_YELLOW , ship , "The ship hums as it lifts off the ground.");
-         sprintf( buf, "%s begins to launch.", ship->name );
+         snprintf( buf, sizeof(buf), "%s begins to launch.", ship->name );
          echo_to_room( AT_YELLOW , get_room_index(ship->location) , buf );
          ship->shipstate = SHIP_LAUNCH;
          ship->currspeed = ship->realspeed;
@@ -4097,7 +4088,7 @@ void do_hijack( CHAR_DATA *ch, char *argument )
    p_prev = p->prev;  /* TRI */
    if (!IS_NPC(p) && get_trust(p) >= LEVEL_GOD)
                         {
-                          sprintf( buf2, "%s(%s)", ship->name, ship->personalname );
+                          snprintf( buf2, sizeof(buf2), "%s(%s)", ship->name, ship->personalname );
                           ch_printf(p, "&R[alarm] %s has been hijacked by %s!\n\r", buf2, ch->name);
                         }
         }
@@ -4690,7 +4681,7 @@ void do_smalltalk ( CHAR_DATA *ch , char *argument )
 
         if ( victim->alignment < -500 && victim->top_level >= ch->top_level+5 )
  {
-   sprintf( buf, "SHUT UP %s!", ch->name );
+   snprintf( buf, sizeof(buf), "SHUT UP %s!", ch->name );
    do_yell( victim, buf );
           global_retcode = multi_hit( victim, ch, TYPE_UNDEFINED );
  }
@@ -4805,7 +4796,7 @@ void do_propeganda ( CHAR_DATA *ch , char *argument )
 
     if ( !ch->pcdata->clan )
     {
-    sprintf( buf, "You speak to them about the evils of %s" , planet->governed_by ? planet->governed_by->name : "their current leaders" );
+   snprintf( buf, sizeof(buf), "You speak to them about the evils of %s", planet->governed_by ? planet->governed_by->name : "their current leaders" );
     ch_printf( ch, buf );
     act( AT_ACTION, "$n speaks about the planets organization.\n\r", ch, NULL, victim, TO_VICT    );
     act( AT_ACTION, "$n tells $N about the evils of their organization.\n\r",  ch, NULL, victim, TO_NOTVICT );
@@ -4817,7 +4808,7 @@ void do_propeganda ( CHAR_DATA *ch , char *argument )
 
     planet = ch->in_room->area->planet;
 
-    sprintf( buf, ", and the evils of %s" , planet->governed_by ? planet->governed_by->name : "their current leaders" );
+   snprintf( buf, sizeof(buf), ", and the evils of %s", planet->governed_by ? planet->governed_by->name : "their current leaders" );
     ch_printf( ch, "You speak to them about the benifits of the %s%s.\n\r", ch->pcdata->clan->name,
         planet->governed_by == clan ? "" : buf );
     act( AT_ACTION, "$n speaks about his organization.\n\r", ch, NULL, victim, TO_VICT    );
@@ -4830,7 +4821,7 @@ void do_propeganda ( CHAR_DATA *ch , char *argument )
 
         if ( (ch->pcdata->clan) ? planet->governed_by != clan : TRUE)
  {
-   sprintf( buf, "%s is a traitor!" , ch->name);
+   snprintf( buf, sizeof(buf), "%s is a traitor!", ch->name);
    do_yell( victim, buf );
           global_retcode = multi_hit( victim, ch, TYPE_UNDEFINED );
  }
@@ -5030,7 +5021,7 @@ void do_seduce ( CHAR_DATA *ch , char *argument )
     if ( victim->top_level - get_curr_cha(ch) > ch->pcdata->learned[gsn_seduce] )
     {
       send_to_char("You failed.\n\r", ch);
-      sprintf(buf, "%s failed to seduce you.", ch->name);
+   snprintf(buf, sizeof(buf), "%s failed to seduce you.", ch->name);
       send_to_char(buf, victim);
       global_retcode = multi_hit( victim, ch, TYPE_UNDEFINED );
       return;
@@ -5091,7 +5082,7 @@ void do_mass_propeganda ( CHAR_DATA *ch , char *argument )
        
     planet = ch->in_room->area->planet;
         
-    sprintf( buf, ", and the evils of %s" , planet->governed_by ? planet->governed_by->name : "their current leaders" );
+   snprintf( buf, sizeof(buf), ", and the evils of %s", planet->governed_by ? planet->governed_by->name : "their current leaders" );
     ch_printf( ch, "You speak to the people about the benifits of the %s%s.\n\r", ch->pcdata->clan->name,
         planet->governed_by == clan ? "" : buf );
     act( AT_ACTION, "$n speaks about his organization.\n\r", ch, NULL, NULL, TO_ROOM    );
@@ -5217,13 +5208,13 @@ void do_gather_intelligence ( CHAR_DATA *ch , char *argument )
     {
       if ( ( planet = victim->in_room->area->planet ) == NULL )
       {
-      sprintf( buf, "Information has been recieved that %s is travelling.", victim->name );
+   snprintf( buf, sizeof(buf), "Information has been recieved that %s is travelling.", victim->name );
         send_to_char(buf, ch);
         return;
       }
       else
       {
-        sprintf( buf, "Information has been recieved that %s is on %s.", victim->name, planet->name );
+   snprintf( buf, sizeof(buf), "Information has been recieved that %s is on %s.", victim->name, planet->name );
         send_to_char(buf, ch);
         return;
       }
@@ -5233,13 +5224,13 @@ void do_gather_intelligence ( CHAR_DATA *ch , char *argument )
     {
       if ( victim->pcdata->clan )
       {
-        sprintf( buf, "%s seems to be involved with %s.", victim->name, victim->pcdata->clan->name );
+   snprintf( buf, sizeof(buf), "%s seems to be involved with %s.", victim->name, victim->pcdata->clan->name );
         send_to_char( buf, ch );
         return;
       }
       else
       {
-        sprintf( buf, "%s does not seem to be involved with any organization.", victim->name );
+   snprintf( buf, sizeof(buf), "%s does not seem to be involved with any organization.", victim->name );
         send_to_char( buf, ch );
         return;
       }
@@ -5250,25 +5241,25 @@ void do_gather_intelligence ( CHAR_DATA *ch , char *argument )
     {
       if ( victim->hit < ((victim->max_hit)/4) )
       {
-        sprintf( buf, "Hospital records show that %s has had a very serious injury and has not fully recovered.", victim->name );
+   snprintf( buf, sizeof(buf), "Hospital records show that %s has had a very serious injury and has not fully recovered.", victim->name );
         send_to_char( buf, ch);
         return;
       }
       if ( victim->hit < ((victim->max_hit)/2) )
       {
-        sprintf( buf, "Hospital records show that %s has had a serious injury and has begun to recover.", victim->name );
+   snprintf( buf, sizeof(buf), "Hospital records show that %s has had a serious injury and has begun to recover.", victim->name );
         send_to_char( buf, ch);
         return;
       }
       if ( victim->hit < ((victim->max_hit)) )
       {
-        sprintf( buf, "Hospital records show that %s has had a minor injury recently.", victim->name );
+   snprintf( buf, sizeof(buf), "Hospital records show that %s has had a minor injury recently.", victim->name );
         send_to_char( buf, ch);
         return;
       }
       if ( victim->hit == victim->max_hit )
       {
-        sprintf( buf, "There has been no recently medical history for %s", victim->name );
+   snprintf( buf, sizeof(buf), "There has been no recently medical history for %s", victim->name );
         send_to_char( buf, ch);
         return;
       }
@@ -5280,31 +5271,31 @@ void do_gather_intelligence ( CHAR_DATA *ch , char *argument )
       switch(victim->main_ability)
       {
       case 0:
-      sprintf( buf, "%s appears to have centered training on combat.", victim->name );
+   snprintf( buf, sizeof(buf), "%s appears to have centered training on combat.", victim->name );
       break;
       case 1:
-      sprintf( buf, "%s appears to have centered training on piloting ships.", victim->name );
+   snprintf( buf, sizeof(buf), "%s appears to have centered training on piloting ships.", victim->name );
       break;
       case 2:
-      sprintf( buf, "%s appears to have centered training on engineering.", victim->name );
+   snprintf( buf, sizeof(buf), "%s appears to have centered training on engineering.", victim->name );
       break;
       case 3:
-      sprintf( buf, "%s appears to have centered training on bounty hunting.", victim->name );
+   snprintf( buf, sizeof(buf), "%s appears to have centered training on bounty hunting.", victim->name );
       break;
       case 4:
-      sprintf( buf, "%s appears to have centered training on smuggling.",  victim->name );
+   snprintf( buf, sizeof(buf), "%s appears to have centered training on smuggling.",  victim->name );
       break;
       case 5:
-      sprintf( buf, "%s appears to have centered training on diplomacy.", victim->name );
+   snprintf( buf, sizeof(buf), "%s appears to have centered training on diplomacy.", victim->name );
       break;
       case 6:
-      sprintf( buf, "%s appears to have centered training on leadership.", victim->name );
+   snprintf( buf, sizeof(buf), "%s appears to have centered training on leadership.", victim->name );
       break;
       case 7:
-      sprintf( buf, "%s appears to have centered attention on studying the force.", victim->name );
+   snprintf( buf, sizeof(buf), "%s appears to have centered attention on studying the force.", victim->name );
       break;
       case 8:
-      sprintf( buf, "%s has not centered training on anything, but seems to mix smuggling with piloting abilities.", victim->name );
+   snprintf( buf, sizeof(buf), "%s has not centered training on anything, but seems to mix smuggling with piloting abilities.", victim->name );
       break;
       default:
       break;
@@ -5317,17 +5308,17 @@ void do_gather_intelligence ( CHAR_DATA *ch , char *argument )
     {
       if ( victim->skill_level[7] > 1 )
       {
-        if ( victim->mana > 1000 )
-          sprintf( buf, "%s appears to have centered his attention on studying the force, and is rumored to excell at its use.", victim->name );
-        else if ( victim->mana > 200 )
-          sprintf( buf, "%s appears to have centered his attention on studying the force, and is rumored to have some skill.", victim->name );
-        else
-          sprintf( buf, "%s appears to have centered his attention on studying the force, and is rumored to have found some minor ability in it.", victim->name );
+            if ( victim->mana > 1000 )
+               snprintf( buf, sizeof(buf), "%s appears to have centered his attention on studying the force, and is rumored to excell at its use.", victim->name );
+            else if ( victim->mana > 200 )
+               snprintf( buf, sizeof(buf), "%s appears to have centered his attention on studying the force, and is rumored to have some skill.", victim->name );
+            else
+               snprintf( buf, sizeof(buf), "%s appears to have centered his attention on studying the force, and is rumored to have found some minor ability in it.", victim->name );
       }
-        else
-          sprintf( buf, "%s appears to have centered his attention on the mundane", victim->name );
-        send_to_char( buf, ch );
-        return;
+            else
+               snprintf( buf, sizeof(buf), "%s appears to have centered his attention on the mundane", victim->name );
+            send_to_char( buf, ch );
+            return;
     }
 
     send_to_char ( "You fail to gather information on that individual.", ch );
@@ -5364,11 +5355,11 @@ void do_bind ( CHAR_DATA *ch , char *argument )
  return;
     }
 
-    if ( IS_SET(victim->act, PLR_AFK))
-    {
-      sprintf( logbuf , "%s just bound %s with an afk flag on!." , ch->name, victim->name );
-      log_string( logbuf );
-    }
+      if ( IS_SET(victim->act, PLR_AFK))
+      {
+         snprintf( logbuf , sizeof(logbuf), "%s just bound %s with an afk flag on!." , ch->name, victim->name );
+         log_string( logbuf );
+      }
 
     if ( is_safe( ch, victim ) )
        return;
@@ -5911,7 +5902,7 @@ void do_makedisguise( CHAR_DATA *ch, char *argument )
 //                   return;
 //                }
                 
-  sprintf( sexrace, "%d", (sex*1000) + race ); 
+   snprintf( sexrace, sizeof(sexrace), "%d", (sex*1000) + race ); 
              chance = IS_NPC(ch) ? ch->top_level
                   : (int) (ch->pcdata->learned[gsn_disguise]);
                 if ( number_percent( ) < chance )
@@ -6154,17 +6145,17 @@ void do_makemedpac( CHAR_DATA *ch, char *argument )
  return;
     }
 
-    cont->item_type = ITEM_MEDPAC;
-    cont->value[0] = level/10;
-    sprintf( buf, "%s medkit medpac", arg );
-    STRFREE( cont->name );
-    cont->name = STRALLOC( buf );
-    STRFREE( cont->short_descr );
-    cont->short_descr = STRALLOC( arg );
-    sprintf( buf, " was left here.");
-    STRFREE( cont->description );
-    cont->description = STRALLOC( buf );
-    if( !CAN_WEAR( cont, 1 << wearbit ) )
+   cont->item_type = ITEM_MEDPAC;
+   cont->value[0] = level/10;
+   snprintf( buf, sizeof(buf), "%s medkit medpac", arg );
+   STRFREE( cont->name );
+   cont->name = STRALLOC( buf );
+   STRFREE( cont->short_descr );
+   cont->short_descr = STRALLOC( arg );
+   snprintf( buf, sizeof(buf), " was left here.");
+   STRFREE( cont->description );
+   cont->description = STRALLOC( buf );
+   if( !CAN_WEAR( cont, 1 << wearbit ) )
  SET_BIT( cont->wear_flags, 1 << wearbit );
 
     send_to_char("&GYou hold up your newly created medpac!\n\r",ch);
@@ -6545,16 +6536,16 @@ void do_makefurniture( CHAR_DATA *ch, char *argument )
 		obj->value[0] = furn_table[i].people;
 		obj->value[2] = SIT_ON;
 		obj->weight = furn_table[i].weight;
-		sprintf( buf, "%s %s", arg2, furn_table[i].name );
-		STRFREE( obj->name );
-		obj->name = STRALLOC( buf );
-		/*sprintf( buf, "A %s is sitting here.",
+   snprintf( buf, sizeof(buf), "%s %s", arg2, furn_table[i].name );
+   STRFREE( obj->name );
+   obj->name = STRALLOC( buf );
+   /*snprintf( buf, sizeof(buf), "A %s is sitting here.",
 furn_table[i].name );*/
-		STRFREE( obj->short_descr );
-		obj->short_descr = STRALLOC( arg2 );
-		STRFREE( obj->description );
-		obj->description = STRALLOC( arg2 );
-		obj_to_char( obj, ch );
+   STRFREE( obj->short_descr );
+   obj->short_descr = STRALLOC( arg2 );
+   STRFREE( obj->description );
+   obj->description = STRALLOC( arg2 );
+   obj_to_char( obj, ch );
 
 		send_to_char("You complete your new piece of furniture!\n\r",ch);
 		act( AT_PLAIN, "$n finishes thier new piece of furniture.", ch, NULL, NULL, TO_ROOM );

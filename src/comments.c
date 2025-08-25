@@ -201,11 +201,11 @@ void do_comment( CHAR_DATA *ch, char *argument )
 	for ( pnote = victim->pcdata->comments; pnote; pnote = pnote->next )
 	{
 	  vnum++;
-	  sprintf( buf, "%2d) %-10s [%s] %s\n\r",
-	     vnum,
-	     pnote->sender,
-             pnote->date, 
-	     pnote->subject );
+			 snprintf( buf, sizeof(buf), "%2d) %-10s [%s] %s\n\r",
+				 vnum,
+				 pnote->sender,
+				 pnote->date, 
+				 pnote->subject );
 /* Brittany added date to comment list and whois with above change */
 	  send_to_char( buf, ch );
 	}
@@ -269,13 +269,13 @@ void do_comment( CHAR_DATA *ch, char *argument )
 	    vnum++;
 	    if ( vnum == anum || fAll )
 	    {
-		sprintf( buf, "[%3d] %s: %s\n\r%s\n\rTo: %s\n\r",
-		    vnum,
-		    pnote->sender,
-		    pnote->subject,
-		    pnote->date,
-		    pnote->to_list
-		    );
+			   snprintf( buf, sizeof(buf), "[%3d] %s: %s\n\r%s\n\rTo: %s\n\r",
+				   vnum,
+				   pnote->sender,
+				   pnote->subject,
+				   pnote->date,
+				   pnote->to_list
+				   );
 		send_to_char( buf, ch );
 		send_to_char( pnote->text, ch );
 		/* act( AT_ACTION, "$n reads a note.", ch, NULL, NULL, TO_ROOM ); */
@@ -339,11 +339,11 @@ void do_comment( CHAR_DATA *ch, char *argument )
 	    return;
 	}
 
-	sprintf( buf, "%s: %s\n\rTo: %s\n\r",
-	    ch->pcdata->pnote->sender,
-	    ch->pcdata->pnote->subject,
-	    ch->pcdata->pnote->to_list
-	    );
+	   snprintf( buf, sizeof(buf), "%s: %s\n\rTo: %s\n\r",
+		   ch->pcdata->pnote->sender,
+		   ch->pcdata->pnote->subject,
+		   ch->pcdata->pnote->to_list
+		   );
 	send_to_char( buf, ch );
 	send_to_char( ch->pcdata->pnote->text, ch );
 	return;
@@ -401,7 +401,7 @@ void do_comment( CHAR_DATA *ch, char *argument )
 
 #ifdef NOTDEFD
 	fclose( fpReserve );
-	sprintf( notefile, "%s/%s", BOARD_DIR, board->note_file );
+	snprintf( notefile, sizeof(notefile), "%s/%s", BOARD_DIR, board->note_file );
 	if ( ( fp = fopen( notefile, "a" ) ) == NULL )
 	{
 	    perror( notefile );

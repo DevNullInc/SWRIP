@@ -122,7 +122,7 @@ void map_exits( CHAR_DATA *ch, ROOM_INDEX_DATA *pRoom,
     for ( rch = pRoom->first_person; rch; rch = rch->next_in_room )
 	count++;
    
-    sprintf( buf, "%d", count );
+    snprintf( buf, sizeof(buf), "%d", count );
 */
     /* Setup this coord as a room */
     map[x][y].mapch = 'O';
@@ -241,7 +241,7 @@ void reformat_desc( char *desc )
     buf[j] = '\0';
 
     /* Copy to desc */
-    sprintf( desc, buf );
+    snprintf( desc, sizeof(desc), "%s", buf );
 }
 
 int get_line( char *desc, int max_len )
@@ -291,7 +291,7 @@ void show_map( CHAR_DATA *ch, char *text )
     /* Place Marker 2 - referred to later */
 
     /* Top of map frame */
-    sprintf( buf, "+-----------+ " );
+    snprintf( buf, sizeof(buf), "+-----------+ " );
     /* First line of text */
     strcat( buf, "\n\r" );
 
@@ -305,7 +305,7 @@ void show_map( CHAR_DATA *ch, char *text )
             /* Choose a color based on map contents here */
 
             /* Write the map character */
-            sprintf( buf + strlen( buf ), "%c", map[x][y].mapch );
+            snprintf( buf + strlen( buf ), sizeof(buf) - strlen(buf), "%c", map[x][y].mapch );
         }
 
         strcat( buf, "| \n\r" );
