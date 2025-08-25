@@ -1237,8 +1237,8 @@ void wear_obj( CHAR_DATA *ch, OBJ_DATA *obj, bool fReplace, sh_int wear_bit )
 			send_to_char( "You cannot wield that.\n\r", ch );
 			break;
 		    default:
-			sprintf( buf, "You cannot wear that on your %s.\n\r",
-				w_flags[bit] );
+	    snprintf( buf, sizeof(buf), "You cannot wear that on your %s.\n\r",
+		    w_flags[bit] );
 			send_to_char( buf, ch );
 		}
 	    }
@@ -2344,7 +2344,7 @@ void save_clan_storeroom( CHAR_DATA *ch, CLAN_DATA *clan )
 	return;
     }
 
-    sprintf( filename, "%s%s.vault", CLAN_DIR, clan->filename );
+	snprintf( filename, sizeof(filename), "%s%s.vault", CLAN_DIR, clan->filename );
     if ( ( fp = fopen( filename, "w" ) ) == NULL )
     {
 	bug( "save_clan_storeroom: fopen", 0 );
@@ -2401,14 +2401,14 @@ void do_auction (CHAR_DATA *ch, char *argument)
 
             /* show item data here */
             if (auction->bet > 0)
-                sprintf (buf, "Current bid on this item is %d credits.\n\r",auction->bet);
+				snprintf (buf, sizeof(buf), "Current bid on this item is %d credits.\n\r",auction->bet);
             else
-                sprintf (buf, "No bids on this item have been received.\n\r");
+				snprintf (buf, sizeof(buf), "No bids on this item have been received.\n\r");
 	    set_char_color ( AT_BLUE, ch );
             send_to_char (buf,ch);
 /*          spell_identify (0, LEVEL_HERO - 1, ch, auction->item); */
 
-	    sprintf( buf,
+			snprintf( buf, sizeof(buf),
 		"Object '%s' is %s, special properties: %s %s.\n\rIts weight is %d, value is %d.\n\r",
 		obj->name,
 		aoran( item_type_name( obj ) ),
@@ -2419,8 +2419,8 @@ void do_auction (CHAR_DATA *ch, char *argument)
 	    set_char_color( AT_LBLUE, ch );
 	    send_to_char( buf, ch );
            
-            sprintf( buf, "Worn on: %s\n\r", 
-                     flag_string(obj->wear_flags -1, w_flags ) );
+			snprintf( buf, sizeof(buf), "Worn on: %s\n\r", 
+					 flag_string(obj->wear_flags -1, w_flags ) );
             send_to_char( buf, ch );
 
 	    set_char_color( AT_BLUE, ch );
@@ -2448,11 +2448,11 @@ void do_auction (CHAR_DATA *ch, char *argument)
 
 	    if (IS_IMMORTAL(ch))
 	    {
-		sprintf(buf, "Seller: %s.  Bidder: %s.  Round: %d.\n\r",
-                        auction->seller->name, auction->buyer->name,
-                        (auction->going + 1));
+	snprintf(buf, sizeof(buf), "Seller: %s.  Bidder: %s.  Round: %d.\n\r",
+			auction->seller->name, auction->buyer->name,
+			(auction->going + 1));
 		send_to_char(buf, ch);
-		sprintf(buf, "Time left in round: %d.\n\r", auction->pulse);
+	snprintf(buf, sizeof(buf), "Time left in round: %d.\n\r", auction->pulse);
 		send_to_char(buf, ch);
 	    }
             return;
@@ -2475,8 +2475,8 @@ void do_auction (CHAR_DATA *ch, char *argument)
       else /* stop the auction */
       {
 	set_char_color ( AT_LBLUE, ch );
-        sprintf (buf,"Sale of %s has been stopped by an Immortal.",
-                        auction->item->short_descr);
+	snprintf (buf,sizeof(buf),"Sale of %s has been stopped by an Immortal.",
+			auction->item->short_descr);
         talk_auction (buf);
         obj_to_char (auction->item, auction->seller);
 	if ( IS_SET( sysdata.save_flags, SV_AUCTION ) )
@@ -2555,7 +2555,7 @@ void do_auction (CHAR_DATA *ch, char *argument)
             auction->going = 0;
             auction->pulse = PULSE_AUCTION; /* start the auction over again */
 
-            sprintf (buf,"A bid of %d credits has been received on %s.\n\r",newbet,auction->item->short_descr);
+			snprintf (buf,sizeof(buf),"A bid of %d credits has been received on %s.\n\r",newbet,auction->item->short_descr);
             talk_auction (buf);
             return;
 
@@ -2640,7 +2640,7 @@ void do_auction (CHAR_DATA *ch, char *argument)
 	if (auction->starting > 0)
 	  auction->bet = auction->starting;
 
-	sprintf (buf, "A new item is being auctioned: %s at %d credits.", obj->short_descr, auction->starting);
+	snprintf (buf, sizeof(buf), "A new item is being auctioned: %s at %d credits.", obj->short_descr, auction->starting);
 	talk_auction (buf);
 
 	return;
@@ -2692,8 +2692,8 @@ void obj_fall( OBJ_DATA *obj, bool through )
 
 	if (obj->in_room == to_room)
 	{
-	    sprintf(buf, "Object falling into same room, room %d",
-		to_room->vnum);
+		snprintf(buf, sizeof(buf), "Object falling into same room, room %d",
+			to_room->vnum);
 	    bug( buf, 0 );
 	    extract_obj( obj );
             return;

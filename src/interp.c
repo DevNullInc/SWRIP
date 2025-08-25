@@ -26,6 +26,13 @@
 #include <time.h>
 #include "mud.h"
 
+#ifndef timercmp
+#define timercmp(a, b, CMP) \
+  (((a)->tv_sec == (b)->tv_sec) ? \
+	((a)->tv_usec CMP (b)->tv_usec) : \
+	((a)->tv_sec CMP (b)->tv_sec))
+#endif
+
 /*
  * Externals
  */
@@ -330,18 +337,19 @@ void interpret( CHAR_DATA *ch, char *argument )
 
     loglvl = found ? cmd->log : LOG_NORMAL;
 
-    if ( ( !IS_NPC(ch) && IS_SET(ch->act, PLR_LOG) )
-    ||   fLogAll
-    ||	 loglvl == LOG_BUILD
-    ||   loglvl == LOG_HIGH
-    ||   loglvl == LOG_ALWAYS )
-    {
-        /* Added by Narn to show who is switched into a mob that executes
-           a logged command.  Check for descriptor in case force is used. */
-        if ( ch->desc && ch->desc->original ) 
+	if ( ( !IS_NPC(ch) && IS_SET(ch->act, PLR_LOG) )
+	||   fLogAll
+	||	 loglvl == LOG_BUILD
+	||   loglvl == LOG_HIGH
+	||   loglvl == LOG_ALWAYS )
+	{
+		char log_buf[MAX_STRING_LENGTH];
+		/* Added by Narn to show who is switched into a mob that executes
+		   a logged command.  Check for descriptor in case force is used. */
+		if ( ch->desc && ch->desc->original ) 
 		  snprintf( log_buf, sizeof(log_buf), "Log %s (%s): %s", ch->name,
 				   ch->desc->original->name, logline );
-        else
+		else
 		  snprintf( log_buf, sizeof(log_buf), "Log %s: %s", ch->name, logline );
 
 	/*
@@ -358,7 +366,7 @@ void interpret( CHAR_DATA *ch, char *argument )
 		ch->desc->original->level );
 	else*/
 	  log_string_plus( log_buf, loglvl, ch->top_level );
-    }
+	}
 
     if ( ch->desc && ch->desc->snoop_by )
     {
@@ -454,15 +462,16 @@ void interpret( CHAR_DATA *ch, char *argument )
     update_userec(&time_used, &cmd->userec);
     tmptime = UMIN(time_used.tv_sec,19) * 1000000 + time_used.tv_usec;
 
-    /* laggy command notice: command took longer than 1.5 seconds */
-    if ( tmptime > 1500000 )
-    {
+	/* laggy command notice: command took longer than 1.5 seconds */
+	if ( tmptime > 1500000 )
+	{
+		char log_buf[MAX_STRING_LENGTH];
 	snprintf(log_buf, sizeof(log_buf), "[*****] LAG: %s: %s %s (R:%d S:%d.%06d)", ch->name,
 		cmd->name, (cmd->log == LOG_NEVER ? "XXX" : argument),
 	ch->in_room ? ch->in_room->vnum : 0,
 	(int) (time_used.tv_sec),(int) (time_used.tv_usec) );
 	log_string_plus(log_buf, LOG_NORMAL, get_trust(ch));
-    }
+	}
 
     tail_chain( );
 }
