@@ -313,13 +313,13 @@ void violence_update( void )
 
         retcode = rNONE;
 
-	if ( IS_SET(ch->in_room->room_flags, ROOM_SAFE ) )
-	{
-	   sprintf( buf, "violence_update: %s fighting %s in a SAFE room.",
-	   	ch->name, victim->name );
-	   log_string( buf );
-	   stop_fighting( ch, TRUE );
-	}
+  if ( IS_SET(ch->in_room->room_flags, ROOM_SAFE ) )
+  {
+     snprintf( buf, sizeof(buf), "violence_update: %s fighting %s in a SAFE room.",
+    ch->name, victim->name );
+     log_string( buf );
+     stop_fighting( ch, TRUE );
+  }
 	else
 	if ( IS_AWAKE(ch) && ch->in_room == victim->in_room )
 	    retcode = multi_hit( ch, victim, TYPE_UNDEFINED );
@@ -1651,13 +1651,6 @@ ch_ret damage_optional_fighting( CHAR_DATA *ch, CHAR_DATA *victim, int dam, int 
         
 	if ( !npcvict )
 	{
-//	    sprintf( log_buf, "%s killed by %s at %d",
-//		victim->name,
-//		(IS_NPC(ch) ? ch->short_descr : ch->name),
-//		victim->in_room->vnum );
-//	    log_string( log_buf );
-//	    to_channel( log_buf, CHANNEL_MONITOR, "Monitor", LEVEL_IMMORTAL );
-
 	}
 	else
 	if ( !IS_NPC(ch) )		/* keep track of mob vnum killed */
@@ -2096,7 +2089,7 @@ void raw_kill( CHAR_DATA *ch, CHAR_DATA *victim )
         remove_member( victim );
     if ( !IS_NPC( victim ) && !IS_NPC( ch ) )
     {
-      sprintf( log_buf, "%s killed by %s at %d",
+      snprintf( log_buf, MAX_STRING_LENGTH, "%s killed by %s at %d",
       victim->name,
       (IS_NPC(ch) ? ch->short_descr : ch->name),
       victim->in_room->vnum );
@@ -2767,16 +2760,15 @@ void do_murder( CHAR_DATA *ch, char *argument )
 	send_to_char( "Suicide is a mortal sin.\n\r", ch );
 	return;
     }
-
     if ( !IS_SET(ch->in_room->room_flags, ROOM_ARENA))
     {
-      sprintf( logbuf , "%s: murder %s" , ch->name, arg );
+      snprintf( logbuf, sizeof(logbuf), "%s: murder %s", ch->name, arg );
       log_string( logbuf );
     }
 
     if ( IS_SET(victim->act, PLR_AFK))
     {
-      sprintf( logbuf , "%s just attacked %s with an afk flag on!." , ch->name, victim->name );
+      snprintf( logbuf, sizeof(logbuf), "%s just attacked %s with an afk flag on!.", ch->name, victim->name );
       log_string( logbuf );
     }
 
@@ -2895,21 +2887,20 @@ void do_flee( CHAR_DATA *ch, char *argument )
     if ( char_died(ch) )
        return;
 
-	if ( ( now_in = ch->in_room ) == was_in )
-	    continue;
+  if ( ( now_in = ch->in_room ) == was_in )
+    continue;
 
-	ch->in_room = was_in;
-	act( AT_FLEE, "$n runs for cover!", ch, NULL, NULL, TO_ROOM );
-	ch->in_room = now_in;
-	act( AT_FLEE, "$n glances around for signs of pursuit.", ch, NULL, NULL, TO_ROOM );
-        sprintf(buf, "You run for cover!");
-        send_to_char( buf, ch );
-    
-	stop_fighting( ch, TRUE );
-	return;
-    }
-
-    sprintf(buf, "You attempt to run for cover!");
+  ch->in_room = was_in;
+  act( AT_FLEE, "$n runs for cover!", ch, NULL, NULL, TO_ROOM );
+  ch->in_room = now_in;
+  act( AT_FLEE, "$n glances around for signs of pursuit.", ch, NULL, NULL, TO_ROOM );
+    snprintf(buf, sizeof(buf), "You run for cover!");
+    send_to_char( buf, ch );
+  
+  stop_fighting( ch, TRUE );
+  return;
+  }
+    snprintf(buf, sizeof(buf), "You attempt to run for cover!");
     send_to_char( buf, ch );
     return;
 }

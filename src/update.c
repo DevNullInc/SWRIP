@@ -2485,19 +2485,19 @@ void reboot_check( time_t reset )
     CHAR_DATA *vch;
     extern bool mud_down;
     
-    if ( auction->item )
-    {
-      sprintf(buf, "Sale of %s has been stopped by mud.",
-          auction->item->short_descr);
-      talk_auction(buf);
-      obj_to_char(auction->item, auction->seller);
-      auction->item = NULL;
-      if ( auction->buyer && auction->buyer != auction->seller )
-      {
-        auction->buyer->gold += auction->bet;
-        send_to_char("Your money has been returned.\n\r", auction->buyer);
-      }
-    }
+	if ( auction->item )
+	{
+	  snprintf(buf, sizeof(buf), "Sale of %s has been stopped by mud.",
+		  auction->item->short_descr);
+	  talk_auction(buf);
+	  obj_to_char(auction->item, auction->seller);
+	  auction->item = NULL;
+	  if ( auction->buyer && auction->buyer != auction->seller )
+	  {
+		auction->buyer->gold += auction->bet;
+		send_to_char("Your money has been returned.\n\r", auction->buyer);
+	  }
+	}
     echo_to_all(AT_YELLOW, "You are forced from these realms by a strong "
         "presence\n\ras life here is reconstructed.", ECHOTAR_ALL);
     
@@ -2726,22 +2726,22 @@ if ((current_time % 1800) == 0)
 
 void auction_update (void)
 {
-    int tax, pay;
-    char buf[MAX_STRING_LENGTH];
+	int tax, pay;
+	char buf[MAX_STRING_LENGTH];
 
-    switch (++auction->going) /* increase the going state */
-    {
+	switch (++auction->going) /* increase the going state */
+	{
 	case 1 : /* going once */
 	case 2 : /* going twice */
-	    if (auction->bet > auction->starting)
-		sprintf (buf, "%s: going %s for %d.", auction->item->short_descr,
+		if (auction->bet > auction->starting)
+		snprintf (buf, sizeof(buf), "%s: going %s for %d.", auction->item->short_descr,
 			((auction->going == 1) ? "once" : "twice"), auction->bet);
-	    else
-		sprintf (buf, "%s: going %s (bid not received yet).", auction->item->short_descr,
+		else
+		snprintf (buf, sizeof(buf), "%s: going %s (bid not received yet).", auction->item->short_descr,
 			((auction->going == 1) ? "once" : "twice"));
 
-	    talk_auction (buf);
-	    break;
+		talk_auction (buf);
+		break;
 
 	case 3 : /* SOLD! */
 	    if (!auction->buyer && auction->bet)
@@ -2750,13 +2750,12 @@ void auction_update (void)
 		auction->bet = 0;
 	    }
 	    if (auction->bet > 0 && auction->buyer != auction->seller)
-	    {
-		sprintf (buf, "%s sold to %s for %d.",
+		{
+		snprintf(buf, sizeof(buf), "%s sold to %s for %d.",
 			auction->item->short_descr,
 			IS_NPC(auction->buyer) ? auction->buyer->short_descr : auction->buyer->name,
 			auction->bet);
 		talk_auction(buf);
-
 		act(AT_ACTION, "The auctioneer materializes before you, and hands you $p.",
 			auction->buyer, auction->item, NULL, TO_CHAR);
 		act(AT_ACTION, "The auctioneer materializes before $n, and hands $m $p.",
@@ -2771,45 +2770,45 @@ void auction_update (void)
 		    obj_to_room( auction->item, auction->buyer->in_room );
 		}
 		else
-		    obj_to_char( auction->item, auction->buyer );
-	        pay = (int) (auction->bet * 0.9 );
+			obj_to_char( auction->item, auction->buyer );
+			pay = (int) (auction->bet * 0.9 );
 		tax = (int) (auction->bet * 0.1 );
 		boost_economy( auction->seller->in_room->area, tax );
-                auction->seller->gold += pay; /* give him the money, tax 10 % */
-		sprintf(buf, "The auctioneer pays you %d gold, charging an auction fee of %d.\n\r", pay, tax);
+				auction->seller->gold += pay; /* give him the money, tax 10 % */
+		snprintf(buf, sizeof(buf), "The auctioneer pays you %d gold, charging an auction fee of %d.\n\r", pay, tax);
 		send_to_char(buf, auction->seller);
-                auction->item = NULL; /* reset item */
+				auction->item = NULL; /* reset item */
 		if ( IS_SET( sysdata.save_flags, SV_AUCTION ) )
 		{
-		    save_char_obj( auction->buyer );
-		    save_char_obj( auction->seller );
+			save_char_obj( auction->buyer );
+			save_char_obj( auction->seller );
 		}
-            }
-            else /* not sold */
-            {
-                sprintf (buf, "No bids received for %s - object has been removed from auction\n\r.",auction->item->short_descr);
-                talk_auction(buf);
-                act (AT_ACTION, "The auctioneer appears before you to return $p to you.",
-                      auction->seller,auction->item,NULL,TO_CHAR);
-                act (AT_ACTION, "The auctioneer appears before $n to return $p to $m.",
-                      auction->seller,auction->item,NULL,TO_ROOM);
+			}
+			else /* not sold */
+			{
+				snprintf (buf, sizeof(buf), "No bids received for %s - object has been removed from auction\n\r.",auction->item->short_descr);
+				talk_auction(buf);
+				act (AT_ACTION, "The auctioneer appears before you to return $p to you.",
+					  auction->seller,auction->item,NULL,TO_CHAR);
+				act (AT_ACTION, "The auctioneer appears before $n to return $p to $m.",
+					  auction->seller,auction->item,NULL,TO_ROOM);
 		if ( (auction->seller->carry_weight
 		+     get_obj_weight( auction->item ))
 		>     can_carry_w( auction->seller ) )
 		{
-		    act( AT_PLAIN, "You drop $p as it is just too much to carry"
+			act( AT_PLAIN, "You drop $p as it is just too much to carry"
 			" with everything else you're carrying.", auction->seller,
 			auction->item, NULL, TO_CHAR );
-		    act( AT_PLAIN, "$n drops $p as it is too much extra weight"
+			act( AT_PLAIN, "$n drops $p as it is too much extra weight"
 			" for $m with everything else.", auction->seller,
 			auction->item, NULL, TO_ROOM );
-		    obj_to_room( auction->item, auction->seller->in_room );
+			obj_to_room( auction->item, auction->seller->in_room );
 		}
 		else
-		    obj_to_char (auction->item,auction->seller);
+			obj_to_char (auction->item,auction->seller);
 		tax = (int) ( auction->item->cost * 0.05 );
 		boost_economy( auction->seller->in_room->area, tax );
-		sprintf(buf, "The auctioneer charges you an auction fee of %d.\n\r", tax );
+		snprintf(buf, sizeof(buf), "The auctioneer charges you an auction fee of %d.\n\r", tax );
 		send_to_char(buf, auction->seller);
 		if ((auction->seller->gold - tax) < 0)
 		  auction->seller->gold = 0;

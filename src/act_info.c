@@ -1710,12 +1710,6 @@ void do_examine( CHAR_DATA *ch, char *argument )
 		send_to_char( "You notice that it is not depressed.\n\r", ch );
 	    break;
 
-/* Not needed due to check in do_look already
-	case ITEM_PORTAL:
-	    sprintf( buf, "in %s noprog", arg );
-	    do_look( ch, buf );
-	    break;
-*/
 
         case ITEM_CORPSE_PC:
 	case ITEM_CORPSE_NPC:
@@ -1852,8 +1846,8 @@ void do_exits( CHAR_DATA *ch, char *argument )
 	    }
 	    else
 	    {
-	        sprintf( buf + strlen(buf), " %s",
-		    capitalize( dir_name[pexit->vdir] ) );
+          snprintf( buf + strlen(buf), sizeof(buf) - strlen(buf), " %s",
+        capitalize( dir_name[pexit->vdir] ) );
 	    }
 	}
     }
@@ -2609,13 +2603,13 @@ void do_who( CHAR_DATA *ch, char *argument )
 	if ( fShowHomepage
 	&&   wch->pcdata->homepage
 	&&   wch->pcdata->homepage[0] != '\0' )
-	  sprintf( char_name, "<A HREF=\"%s\">%s</A>",
-		show_tilde( wch->pcdata->homepage ), wch->name );
+      snprintf( char_name, sizeof(char_name), "<A HREF=\"%s\">%s</A>",
+        show_tilde( wch->pcdata->homepage ), wch->name );
 	else
 	  strcpy( char_name, "") ;
 
 	if ( IS_GOD(ch) )
-	  sprintf( race_text, "(%s) ", race_table[wch->race].race_name);
+          snprintf( race_text, sizeof(race_text), "(%s) ", race_table[wch->race].race_name);
 	else
 	  strcpy( race_text, "" );
 	  
@@ -2641,7 +2635,7 @@ void do_who( CHAR_DATA *ch, char *argument )
 	}
 
         if ( !nifty_is_name(wch->name, wch->pcdata->title) && ch->top_level > wch->top_level )
-          sprintf( extra_title , " [%s]" , wch->name );
+          snprintf( extra_title , sizeof(extra_title), " [%s]" , wch->name );
         else
           strcpy(extra_title, "");
         
@@ -2675,11 +2669,11 @@ void do_who( CHAR_DATA *ch, char *argument )
 
 
 	if ( IS_SET(wch->act, PLR_WIZINVIS) )
-	  sprintf( invis_str, "(%d) ", wch->pcdata->wizinvis );
+  snprintf( invis_str, sizeof(invis_str), "(%d) ", wch->pcdata->wizinvis );
 	else
 	  invis_str[0] = '\0';
 
-	sprintf( buf, "%c%s %s%s%s%s %s%s%s%s\n\r",
+  snprintf( buf, sizeof(buf), "%c%s %s%s%s%s %s%s%s%s\n\r",
 	    force_char,
 	    race,
 	    invis_str,
@@ -3149,7 +3143,7 @@ void do_practice( CHAR_DATA *ch, char *argument )
 	 */
 	if ( skill_table[sn]->teachers && skill_table[sn]->teachers[0] != '\0' )
 	{
-	    sprintf( buf, "%d", mob->pIndexData->vnum );
+    snprintf( buf, sizeof(buf), "%d", mob->pIndexData->vnum );
 	    if ( !is_name( buf, skill_table[sn]->teachers ) )
 	    {
 		act( AT_TELL, "$n tells you, 'I know not know how to teach that.'",
@@ -3168,7 +3162,7 @@ void do_practice( CHAR_DATA *ch, char *argument )
 
         if ( ch->gold < skill_table[sn]->min_level*10 )
 	{
-	    sprintf ( buf , "$n tells you, 'I charge %d credits to teach that. You don't have enough.'" , skill_table[sn]->min_level*10 );
+    snprintf ( buf , sizeof(buf), "$n tells you, 'I charge %d credits to teach that. You don't have enough.'" , skill_table[sn]->min_level*10 );
 	    act( AT_TELL, "$n tells you 'You don't have enough credits.'",
 		mob, NULL, ch, TO_VICT );
 	    return;
@@ -3176,7 +3170,7 @@ void do_practice( CHAR_DATA *ch, char *argument )
 
 	if ( ch->pcdata->learned[sn] >= adept )
 	{
-	    sprintf( buf, "$n tells you, 'I've taught you everything I can about %s.'",
+    snprintf( buf, sizeof(buf), "$n tells you, 'I've taught you everything I can about %s.'",
 		skill_table[sn]->name );
 	    act( AT_TELL, buf, mob, NULL, ch, TO_VICT );
 	    act( AT_TELL, "$n tells you, 'You'll have to practice it on your own now...'",
@@ -3286,10 +3280,10 @@ void do_teach( CHAR_DATA *ch, char *argument )
 	else
 	{
 	    victim->pcdata->learned[sn] += int_app[get_curr_int(ch)].learn;
-	    sprintf( buf, "You teach %s $T.", victim->name );
+    snprintf( buf, sizeof(buf), "You teach %s $T.", victim->name );
 	    act( AT_ACTION, buf,
 		    ch, NULL, skill_table[sn]->name, TO_CHAR );
-	    sprintf( buf, "%s teaches you $T.", ch->name );
+    snprintf( buf, sizeof(buf), "%s teaches you $T.", ch->name );
 	    act( AT_ACTION, buf,
 		    victim, NULL, skill_table[sn]->name, TO_CHAR );
 	}
@@ -4100,11 +4094,11 @@ void do_slist( CHAR_DATA *ch, char *argument )
       continue;
    if ( ability >= 0 )
    {
-      sprintf(skn2, "** %s **", ability_name[ability] );
-      sprintf(skn, "\n\r\t\t\t  %s \n\r", skn2 );
+  snprintf(skn2, sizeof(skn2), "** %s **", ability_name[ability] );
+  snprintf(skn, sizeof(skn), "\n\r\t\t\t  %s \n\r", skn2 );
    }
    else
-      sprintf(skn, "\n\r\t\t\t** General Skills **\n\r" );
+  snprintf(skn, sizeof(skn), "\n\r\t\t\t** General Skills **\n\r" );
    set_pager_color( AT_CYAN, ch );
 
    send_to_pager(skn,ch);
@@ -4254,14 +4248,14 @@ void do_whois( CHAR_DATA *ch, char *argument)
 
     if(get_trust(victim) < get_trust(ch))
     {
-      sprintf(buf2, "list %s", buf);
+  snprintf(buf2, sizeof(buf2), "list %s", buf);
       do_comment(ch, buf2);
     }
 
     if(IS_SET(victim->act, PLR_SILENCE) || IS_SET(victim->act, PLR_NO_EMOTE) 
     || IS_SET(victim->act, PLR_NO_TELL) )
     {
-      sprintf(buf2, "This player has the following flags set:");
+  snprintf(buf2, sizeof(buf2), "This player has the following flags set:");
       if(IS_SET(victim->act, PLR_SILENCE)) 
         strcat(buf2, " silence");
       if(IS_SET(victim->act, PLR_NO_EMOTE)) 
@@ -4273,7 +4267,7 @@ void do_whois( CHAR_DATA *ch, char *argument)
     }
     if ( victim->desc && victim->desc->host[0]!='\0' )   /* added by Gorog */
     {
-      sprintf (buf2, "%s's IP info: %s ", victim->name, victim->desc->hostip);
+  snprintf (buf2, sizeof(buf2), "%s's IP info: %s ", victim->name, victim->desc->hostip);
       if (get_trust(ch) > LEVEL_GOD)
       {
         strcat (buf2, victim->desc->user);
@@ -4285,7 +4279,7 @@ void do_whois( CHAR_DATA *ch, char *argument)
     }
     if (get_trust(ch) >= LEVEL_GOD && get_trust(ch) >= get_trust( victim ) && victim->pcdata )
     {
-        sprintf (buf2, "Email: %s\n\r" , victim->pcdata->email );
+  snprintf (buf2, sizeof(buf2), "Email: %s\n\r" , victim->pcdata->email );
         send_to_char(buf2, ch);
     }
   }
@@ -4498,26 +4492,18 @@ void do_showstatistic( CHAR_DATA *ch, char *argument )
 
     if( chk_race )
     {
-	sprintf( buf, "&R%s Statistics\n\r", race_table[race].race_name );
+  snprintf( buf, sizeof(buf), "&R%s Statistics\n\r", race_table[race].race_name );
     	send_to_pager( buf, ch );
-	sprintf( buf, "&cStr: &C%d  &cWis: &C%d  &cInt: &C%d  &cDex: &C%d  &cCon: &C%d  &cCha: &C%d\n\r", 
-	         raceCh->perm_str, raceCh->perm_wis, raceCh->perm_int, 
-	         raceCh->perm_dex, raceCh->perm_con, raceCh->perm_cha );
+  snprintf( buf, sizeof(buf), "&cStr: &C%d  &cWis: &C%d  &cInt: &C%d  &cDex: &C%d  &cCon: &C%d  &cCha: &C%d\n\r", 
+       raceCh->perm_str, raceCh->perm_wis, raceCh->perm_int, 
+       raceCh->perm_dex, raceCh->perm_con, raceCh->perm_cha );
     	send_to_pager( buf, ch );
-/*
-        sprintf( "Resistant  : %s\n\r",
-	flag_string(race_table[raceCh->race].resist, ris_flags) );
-    	send_to_pager( buf, ch );
-    	sprintf( "Susceptible: %s\n\r",
-	flag_string(race_table[raceCh->race].suscept, ris_flags) );
-    	send_to_pager( buf, ch );
-*/    	
     	for( iC = 0; iC < MAX_ABILITY; iC++ )
     	{
     	  if( iC == FORCE_ABILITY )
     	    continue;
     	  raceCh->main_ability = iC;
-    	  sprintf( buf, "\n\r&c%-20s &B| &C", ability_name[iC] );
+          snprintf( buf, sizeof(buf), "\n\r&c%-20s &B| &C", ability_name[iC] );
     	  for( iC2 = 0; iC2 < MAX_ABILITY; iC2++ )
     	  {
     	  if( iC2 == FORCE_ABILITY )
@@ -4526,9 +4512,9 @@ void do_showstatistic( CHAR_DATA *ch, char *argument )
     	    continue;
 
     	   if( iC2 == SMUGGLING_ABILITY )
-    	    sprintf( buf2, "%-3d+ &B| &C", max_level( raceCh, iC2 ) );
+            snprintf( buf2, sizeof(buf2), "%-3d+ &B| &C", max_level( raceCh, iC2 ) );
 	   else    	   
-    	    sprintf( buf2, "%-3d &B| &C", max_level( raceCh, iC2 ) );
+           snprintf( buf2, sizeof(buf2), "%-3d &B| &C", max_level( raceCh, iC2 ) );
 
    	   strcat( buf, buf2 );
     	  }
@@ -4537,7 +4523,7 @@ void do_showstatistic( CHAR_DATA *ch, char *argument )
     }
     else
     {
-	sprintf( buf, "&R%s Statistics\n\r", ability_name[plrclass]);
+  snprintf( buf, sizeof(buf), "&R%s Statistics\n\r", ability_name[plrclass]);
     	send_to_pager( buf, ch );
     	
     	for( iR = 0; iR < MAX_RACE; iR++ )
@@ -4549,13 +4535,13 @@ void do_showstatistic( CHAR_DATA *ch, char *argument )
           raceCh->perm_dex = 20 + race_table[raceCh->race].dex_plus;
           raceCh->perm_con = 20 + race_table[raceCh->race].con_plus;
           raceCh->perm_cha = 20 + race_table[raceCh->race].cha_plus;
-    	  sprintf( buf, "\n\r&c%-20s &B| &C", race_table[iR].race_name );
+          snprintf( buf, sizeof(buf), "\n\r&c%-20s &B| &C", race_table[iR].race_name );
     	  for( iC2 = 0; iC2 < FORCE_ABILITY; iC2++ )
     	  {
     	   if( iC2 == SMUGGLING_ABILITY )
-    	    sprintf( buf2, "%-3d+ &B| &C", max_level( raceCh, iC2 ) );
+            snprintf( buf2, sizeof(buf2), "%-3d+ &B| &C", max_level( raceCh, iC2 ) );
 	   else
-    	    sprintf( buf2, "%-3d &B| &C", max_level( raceCh, iC2 ) );
+           snprintf( buf2, sizeof(buf2), "%-3d &B| &C", max_level( raceCh, iC2 ) );
     	   strcat( buf, buf2 );
     	  }
 	  send_to_pager( buf, ch );

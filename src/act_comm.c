@@ -2529,7 +2529,6 @@ void do_gtell( CHAR_DATA *ch, char *argument )
     /*
      * Note use of send_to_char, so gtell works on sleepers.
      */
-/*    sprintf( buf, "%s tells the group '%s'.\n\r", ch->name, argument );*/
     for ( gch = first_char; gch; gch = gch->next )
     {
 	if ( is_same_group( gch, ch ) )
