@@ -168,6 +168,11 @@ typedef struct	member_list		MEMBER_LIST; /* List of members in clan */
 typedef struct  membersort_data         MS_DATA;     /* List for sorted roster list */
 typedef struct  tracker_data    TRACKER_DATA;
 
+
+#ifndef __cplusplus
+typedef enum { false, true } bool;
+#endif
+
 /*
  * Function types.
  */
