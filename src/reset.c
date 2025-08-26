@@ -1016,7 +1016,7 @@ void do_reset( CHAR_DATA *ch, char *argument )
   {
     char fname[80];
     
-    sprintf(fname, "%s.are", capitalize(arg));
+  snprintf(fname, sizeof(fname), "%s.are", capitalize(arg));
     for ( pArea = first_build; pArea; pArea = pArea->next )
       if ( !str_cmp(fname, pArea->filename) )
       {
@@ -1711,12 +1711,12 @@ void list_resets( CHAR_DATA *ch, AREA_DATA *pArea, ROOM_INDEX_DATA *pRoom,
     if ( !is_room_reset(pReset, pRoom, pArea) )
       continue;
     ++num;
-    sprintf(buf, "%2d) ", num);
+    snprintf(buf, sizeof(buf), "%2d) ", num);
     pbuf = buf+strlen(buf);
     switch( pReset->command )
     {
     default:
-      sprintf(pbuf, "*** BAD RESET: %c %d %d %d %d ***\n\r",
+      snprintf(pbuf, sizeof(buf) - (pbuf - buf), "*** BAD RESET: %c %d %d %d %d ***\n\r",
           pReset->command, pReset->extra, pReset->arg1, pReset->arg2,
           pReset->arg3);
       break;
@@ -1729,8 +1729,8 @@ void list_resets( CHAR_DATA *ch, AREA_DATA *pArea, ROOM_INDEX_DATA *pRoom,
         rname = "Room: *BAD VNUM*";
       else
         rname = room->name;
-      sprintf( pbuf, "%s (%d) -> %s (%d) [%d]", mname, pReset->arg1, rname,
-          pReset->arg3, pReset->arg2 );
+    snprintf( pbuf, sizeof(buf) - (pbuf - buf), "%s (%d) -> %s (%d) [%d]", mname, pReset->arg1, rname,
+      pReset->arg3, pReset->arg2 );
       if ( !room )
         mob = NULL;
       if ( (room = get_room_index(pReset->arg3-1)) &&
@@ -1747,9 +1747,9 @@ void list_resets( CHAR_DATA *ch, AREA_DATA *pArea, ROOM_INDEX_DATA *pRoom,
         oname = "Object: *BAD VNUM*";
       else
         oname = obj->name;
-      sprintf( pbuf, "%s (%d) -> %s (%s) [%d]", oname, pReset->arg1, mname,
-          (pReset->command == 'G' ? "carry" : wear_locs[pReset->arg3]),
-          pReset->arg2 );
+    snprintf( pbuf, sizeof(buf) - (pbuf - buf), "%s (%d) -> %s (%s) [%d]", oname, pReset->arg1, mname,
+      (pReset->command == 'G' ? "carry" : wear_locs[pReset->arg3]),
+      pReset->arg2 );
       if ( mob && mob->pShop )
         strcat( buf, " (shop)\n\r" );
       else
@@ -1766,8 +1766,8 @@ void list_resets( CHAR_DATA *ch, AREA_DATA *pArea, ROOM_INDEX_DATA *pRoom,
         rname = "Room: *BAD VNUM*";
       else
         rname = room->name;
-      sprintf( pbuf, "(object) %s (%d) -> %s (%d) [%d]\n\r", oname,
-          pReset->arg1, rname, pReset->arg3, pReset->arg2 );
+    snprintf( pbuf, sizeof(buf) - (pbuf - buf), "(object) %s (%d) -> %s (%d) [%d]\n\r", oname,
+      pReset->arg1, rname, pReset->arg3, pReset->arg2 );
       if ( !room )
         obj = NULL;
       lastobj = obj;
@@ -1815,13 +1815,13 @@ void list_resets( CHAR_DATA *ch, AREA_DATA *pArea, ROOM_INDEX_DATA *pRoom,
         else
           rname = obj2->name;
       }
-      sprintf( pbuf, "(Put) %s (%d) -> %s (%d) [%d] {nest %d}\n\r", oname,
-          pReset->arg1, rname, (obj2 ? obj2->vnum : pReset->arg3),
-          pReset->arg2, pReset->extra );
+    snprintf( pbuf, sizeof(buf) - (pbuf - buf), "(Put) %s (%d) -> %s (%d) [%d] {nest %d}\n\r", oname,
+      pReset->arg1, rname, (obj2 ? obj2->vnum : pReset->arg3),
+      pReset->arg2, pReset->extra );
       break;
     case 'T':
-      sprintf(pbuf, "TRAP: %d %d %d %d (%s)\n\r", pReset->extra, pReset->arg1,
-          pReset->arg2, pReset->arg3, flag_string(pReset->extra, trap_flags));
+    snprintf(pbuf, sizeof(buf) - (pbuf - buf), "TRAP: %d %d %d %d (%s)\n\r", pReset->extra, pReset->arg1,
+      pReset->arg2, pReset->arg3, flag_string(pReset->extra, trap_flags));
       break;
     case 'H':
       if ( pReset->arg1 > 0 )
@@ -1833,8 +1833,8 @@ void list_resets( CHAR_DATA *ch, AREA_DATA *pArea, ROOM_INDEX_DATA *pRoom,
         rname = "Object: *NULL obj*";
       else
         rname = oname;
-      sprintf(pbuf, "Hide %s (%d)\n\r", rname,
-          (pReset->arg1 > 0 ? pReset->arg1 : obj ? obj->vnum : 0));
+    snprintf(pbuf, sizeof(buf) - (pbuf - buf), "Hide %s (%d)\n\r", rname,
+      (pReset->arg1 > 0 ? pReset->arg1 : obj ? obj->vnum : 0));
       break;
     case 'B':
       {
@@ -1870,9 +1870,9 @@ void list_resets( CHAR_DATA *ch, AREA_DATA *pArea, ROOM_INDEX_DATA *pRoom,
         door = (pReset->arg2 & BIT_RESET_DOOR_MASK)
              >> BIT_RESET_DOOR_THRESHOLD;
         door = URANGE(0, door, MAX_DIR+1);
-        sprintf(pbuf, "Exit %s%s (%d), Room %s (%d)", dir_name[door],
-            (room && get_exit(room, door) ? "" : " (NO EXIT!)"), door,
-            rname, pReset->arg1);
+    snprintf(pbuf, sizeof(buf) - (pbuf - buf), "Exit %s%s (%d), Room %s (%d)", dir_name[door],
+      (room && get_exit(room, door) ? "" : " (NO EXIT!)"), door,
+      rname, pReset->arg1);
         }
         flagarray = ex_flags;
         break;
@@ -1881,7 +1881,7 @@ void list_resets( CHAR_DATA *ch, AREA_DATA *pArea, ROOM_INDEX_DATA *pRoom,
           rname = "Room: *BAD VNUM*";
         else
           rname = room->name;
-        sprintf(pbuf, "Room %s (%d)", rname, pReset->arg1);
+  snprintf(pbuf, sizeof(buf) - (pbuf - buf), "Room %s (%d)", rname, pReset->arg1);
         flagarray = r_flags;
         break;
       case BIT_RESET_OBJECT:
@@ -1894,8 +1894,8 @@ void list_resets( CHAR_DATA *ch, AREA_DATA *pArea, ROOM_INDEX_DATA *pRoom,
           rname = "Object: *NULL obj*";
         else
           rname = oname;
-        sprintf(pbuf, "Object %s (%d)", rname,
-            (pReset->arg1 > 0 ? pReset->arg1 : obj ? obj->vnum : 0));
+    snprintf(pbuf, sizeof(buf) - (pbuf - buf), "Object %s (%d)", rname,
+      (pReset->arg1 > 0 ? pReset->arg1 : obj ? obj->vnum : 0));
         flagarray = o_flags;
         break;
       case BIT_RESET_MOBILE:
@@ -1912,21 +1912,21 @@ void list_resets( CHAR_DATA *ch, AREA_DATA *pArea, ROOM_INDEX_DATA *pRoom,
           rname = "Mobile: *NULL mob*";
         else
           rname = mname;
-        sprintf(pbuf, "Mobile %s (%d)", rname,
-            (pReset->arg1 > 0 ? pReset->arg1 : mob ? mob->vnum : 0));
+    snprintf(pbuf, sizeof(buf) - (pbuf - buf), "Mobile %s (%d)", rname,
+      (pReset->arg1 > 0 ? pReset->arg1 : mob ? mob->vnum : 0));
         flagarray = a_flags;
         break;
       default:
-        sprintf(pbuf, "bad type %d", pReset->arg2 & BIT_RESET_TYPE_MASK);
+    snprintf(pbuf, sizeof(buf) - (pbuf - buf), "bad type %d", pReset->arg2 & BIT_RESET_TYPE_MASK);
         flagarray = NULL;
         break;
       }
       pbuf += strlen(pbuf);
       if ( flagarray )
-        sprintf(pbuf, "; flags: %s [%d]\n\r",
-            flag_string(pReset->arg3, flagarray), pReset->arg3);
+    snprintf(pbuf, sizeof(buf) - (pbuf - buf), "; flags: %s [%d]\n\r",
+      flag_string(pReset->arg3, flagarray), pReset->arg3);
       else
-        sprintf(pbuf, "; flags %d\n\r", pReset->arg3);
+    snprintf(pbuf, sizeof(buf) - (pbuf - buf), "; flags %d\n\r", pReset->arg3);
       }
       break;
     case 'D':
@@ -1945,10 +1945,10 @@ void list_resets( CHAR_DATA *ch, AREA_DATA *pArea, ROOM_INDEX_DATA *pRoom,
       case 1:	ef_name = "Close";		break;
       case 2:	ef_name = "Close and lock";	break;
       }
-      sprintf(pbuf, "%s [%d] the %s%s [%d] door %s (%d)\n\r", ef_name,
-          pReset->arg3, dir_name[pReset->arg2],
-          (room && get_exit(room, pReset->arg2) ? "" : " (NO EXIT!)"),
-          pReset->arg2, rname, pReset->arg1);
+    snprintf(pbuf, sizeof(buf) - (pbuf - buf), "%s [%d] the %s%s [%d] door %s (%d)\n\r", ef_name,
+      pReset->arg3, dir_name[pReset->arg2],
+      (room && get_exit(room, pReset->arg2) ? "" : " (NO EXIT!)"),
+      pReset->arg2, rname, pReset->arg1);
       }
       break;
     case 'R':
@@ -1956,8 +1956,8 @@ void list_resets( CHAR_DATA *ch, AREA_DATA *pArea, ROOM_INDEX_DATA *pRoom,
         rname = "Room: *BAD VNUM*";
       else
         rname = room->name;
-      sprintf(pbuf, "Randomize exits 0 to %d -> %s (%d)\n\r", pReset->arg2,
-          rname, pReset->arg1);
+    snprintf(pbuf, sizeof(buf) - (pbuf - buf), "Randomize exits 0 to %d -> %s (%d)\n\r", pReset->arg2,
+      rname, pReset->arg1);
       break;
     }
     if ( start == -1 || num >= start )
