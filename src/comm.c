@@ -240,24 +240,30 @@ int main( int argc, char **argv )
     /*
      * Run the game.
      */
-    sprintf(log_buf,"PID: %d",getpid());
-    bootup = TRUE;
-    log_string(log_buf);
-    log_string("Booting Database");
-    boot_db( );
-    log_string("Initializing socket");
-    control  = init_socket( port   );
-    control2 = init_socket( port+1 );
-    conclient= init_socket( port+10);
-    conjava  = init_socket( port+20);
-    sprintf( log_buf, "Rise in Power ready on port %d.", port );
-    log_string( log_buf );
-    bootup = FALSE;
-    game_loop( );
-    close( control  );
-    close( control2 );
-    close( conclient);
-    close( conjava  );
+    {
+      char pid_buf[32];
+      snprintf(pid_buf, sizeof(pid_buf), "PID: %d", getpid());
+      bootup = TRUE;
+      log_string(pid_buf);
+      log_string("Booting Database");
+      boot_db();
+      log_string("Initializing socket");
+      control  = init_socket(port);
+      control2 = init_socket(port + 1);
+      conclient = init_socket(port + 10);
+      conjava = init_socket(port + 20);
+      {
+        char ready_buf[64];
+        snprintf(ready_buf, sizeof(ready_buf), "Rise in Power ready on port %d.", port);
+        log_string(ready_buf);
+      }
+      bootup = FALSE;
+      game_loop();
+      close(control);
+      close(control2);
+      close(conclient);
+      close(conjava);
+    }
     /*
      * That's all, folks.
      */
@@ -336,24 +342,6 @@ int init_socket( int port )
 
     return fd;
 }
-
-/*
-static void SegVio()
-{
-  CHAR_DATA *ch;
-  char buf[MAX_STRING_LENGTH];
-
-  log_string( "SEGMENTATION VIOLATION" );
-  log_string( lastplayercmd );
-  for ( ch = first_char; ch; ch = ch->next )
-  {
-    sprintf( buf, "%cPC: %-20s room: %d", IS_NPC(ch) ? 'N' : ' ',
-    		ch->name, ch->in_room->vnum );
-    log_string( buf );  
-  }
-  exit(0);
-}
-*/
 
 /*
  * LAG alarm!							-Thoric
@@ -740,8 +728,6 @@ void new_descriptor( int new_desc )
     if ( ( desc = accept( new_desc, (struct sockaddr *) &sock, (socklen_t *)&size) ) < 0 )
     {
 	perror( "New_descriptor: accept");
-/*	sprintf(bugbuf, "[*****] BUG: New_descriptor: accept");
-	log_string_plus( bugbuf, LOG_COMM, sysdata.log_level ); */
 	set_alarm( 0 );
 	return;
     }
@@ -801,51 +787,33 @@ void new_descriptor( int new_desc )
  /* Noresolve now does something useful - DV - Stuff for dontresolve. - Ulysses */
      if ( !sysdata.NO_NAME_RESOLVING && !check_dont_resolve(buf) )
          from = gethostbyaddr( (char *) &sock.sin_addr,
-     	  	sizeof(sock.sin_addr), AF_INET );
+          sizeof(sock.sin_addr), AF_INET );
      else
          from = NULL;
     hostname = STRALLOC( (char *)( from ? from->h_name : "") );
 
-/*	
-    if ( !str_prefix( dnew->host, "172.1" ) )
+    for ( pban = first_ban; pban; pban = pban->next )
     {
-//    log_string_plus( "AOL Ping!", LOG_COMM, sysdata.log_level );
-      strcpy( buf, inet_ntoa( sock.sin_addr ) );
-      sprintf( log_buf, "Sock.sinaddr: AOL Ping! %s, port %hd.",
-		buf, dnew->port );
-      log_string_plus( log_buf, LOG_COMM, sysdata.log_level );
-      
+  if ( 
+    ( 
+      !str_prefix( pban->name, dnew->host ) 
+      || !str_suffix ( pban->name , hostname ) 
+    )
+    &&  pban->level >= LEVEL_SUPREME 
+  )
+  {
       write_to_descriptor( desc,
-      "AOL users have been banned from this site.  We apologize for the inconvenience.\n\r", 0 );
+    "Your site has been banned from this Mud.\n\r", 0 );
       free_desc( dnew );
       set_alarm( 0 );
       return;
-    }
-*/
-
-    for ( pban = first_ban; pban; pban = pban->next )
-    {
-	if ( 
-	  ( 
-	    !str_prefix( pban->name, dnew->host ) 
-	    || !str_suffix ( pban->name , hostname ) 
-	  )
-	  &&  pban->level >= LEVEL_SUPREME 
-	)
-	{
-	    write_to_descriptor( desc,
-		"Your site has been banned from this Mud.\n\r", 0 );
-	    free_desc( dnew );
-	    set_alarm( 0 );
-	    return;
-	}
+  }
     }
 
     strcpy( buf, inet_ntoa( sock.sin_addr ) );
-    sprintf( log_buf, "Sock.sinaddr:  %s, port %hd.",
-		buf, dnew->port );
+    char log_buf[256];
+    snprintf( log_buf, sizeof(log_buf), "Sock.sinaddr:  %s, port %d.", buf, dnew->port );
     log_string_plus( log_buf, LOG_COMM, sysdata.log_level );
-
     if ( !sysdata.NO_NAME_RESOLVING )
     {
        STRFREE ( dnew->host);
@@ -888,18 +856,21 @@ void new_descriptor( int new_desc )
     start_auth( dnew ); /* Start username authorization */
 
     if ( ++num_descriptors > sysdata.maxplayers )
-	sysdata.maxplayers = num_descriptors;
+      sysdata.maxplayers = num_descriptors;
     if ( sysdata.maxplayers > sysdata.alltimemax )
     {
-	if ( sysdata.time_of_max )
-	  DISPOSE(sysdata.time_of_max);
-	sprintf(buf, "%24.24s", ctime(&current_time));
-	sysdata.time_of_max = str_dup(buf);
-	sysdata.alltimemax = sysdata.maxplayers;
-	sprintf( log_buf, "Broke all-time maximum player record: %d", sysdata.alltimemax );
-	log_string_plus( log_buf, LOG_COMM, sysdata.log_level );
-	to_channel( log_buf, CHANNEL_MONITOR, "Monitor", LEVEL_IMMORTAL );
-	save_sysdata( sysdata );
+      if ( sysdata.time_of_max )
+        DISPOSE(sysdata.time_of_max);
+      char timebuf[25];
+      time_t now = current_time;
+      strncpy(timebuf, ctime(&now), sizeof(timebuf) - 1);
+      timebuf[24] = '\0'; /* ctime returns 26 chars including newline, we want 24 */
+      sysdata.time_of_max = str_dup(timebuf);
+      sysdata.alltimemax = sysdata.maxplayers;
+      snprintf( log_buf, sizeof(log_buf), "Broke all-time maximum player record: %d", sysdata.alltimemax );
+      log_string_plus( log_buf, LOG_COMM, sysdata.log_level );
+      to_channel( log_buf, CHANNEL_MONITOR, "Monitor", LEVEL_IMMORTAL );
+      save_sysdata( sysdata );
     }
     set_alarm(0);
     return;
@@ -929,33 +900,34 @@ void close_socket( DESCRIPTOR_DATA *dclose, bool force )
     CHAR_DATA *ch;
     DESCRIPTOR_DATA *d;
     bool DoNotUnlink = FALSE;
+    char log_buf[256];
 
     /* flush outbuf */
     if ( !force && dclose->outtop > 0 )
-	flush_buffer( dclose, FALSE );
+  flush_buffer( dclose, FALSE );
 
     /* say bye to whoever's snooping this descriptor */
     if ( dclose->snoop_by )
-	write_to_buffer( dclose->snoop_by,
-	    "Your victim has left the game.\n\r", 0 );
+  write_to_buffer( dclose->snoop_by,
+      "Your victim has left the game.\n\r", 0 );
 
     /* stop snooping everyone else */
     for ( d = first_descriptor; d; d = d->next )
-	if ( d->snoop_by == dclose )
-	  d->snoop_by = NULL;
+  if ( d->snoop_by == dclose )
+    d->snoop_by = NULL;
 
     /* Check for switched people who go link-dead. -- Altrag */
     if ( dclose->original )
     {
-	if ( ( ch = dclose->character ) != NULL )
-	  do_return(ch, "");
-	else
-	{
-	  bug( "Close_socket: dclose->original without character %s",
-		(dclose->original->name ? dclose->original->name : "unknown") );
-	  dclose->character = dclose->original;
-	  dclose->original = NULL;
-	}
+  if ( ( ch = dclose->character ) != NULL )
+    do_return(ch, "");
+  else
+  {
+    bug( "Close_socket: dclose->original without character %s",
+    (dclose->original->name ? dclose->original->name : "unknown") );
+    dclose->character = dclose->original;
+    dclose->original = NULL;
+  }
     }
     
     ch = dclose->character;
@@ -963,75 +935,71 @@ void close_socket( DESCRIPTOR_DATA *dclose, bool force )
     /* sanity check :( */
     if ( !dclose->prev && dclose != first_descriptor )
     {
-	DESCRIPTOR_DATA *dp, *dn;
-	bug( "Close_socket: %s desc:%p != first_desc:%p and desc->prev = NULL!",
-		ch ? ch->name : d->host, dclose, first_descriptor );
-	dp = NULL;
-	for ( d = first_descriptor; d; d = dn )
-	{
-	   dn = d->next;
-	   if ( d == dclose )
-	   {
-		bug( "Close_socket: %s desc:%p found, prev should be:%p, fixing.",
-		    ch ? ch->name : d->host, dclose, dp );
-		dclose->prev = dp;
-		break;
-	   }
-	   dp = d;
-	}
-	if ( !dclose->prev )
-	{
-	    bug( "Close_socket: %s desc:%p could not be found!.",
-		    ch ? ch->name : dclose->host, dclose );
-	    DoNotUnlink = TRUE;
-	}
+  DESCRIPTOR_DATA *dp, *dn;
+  bug( "Close_socket: %s desc:%p != first_desc:%p and desc->prev = NULL!",
+    ch ? ch->name : d->host, dclose, first_descriptor );
+  dp = NULL;
+  for ( d = first_descriptor; d; d = dn )
+  {
+     dn = d->next;
+     if ( d == dclose )
+     {
+    bug( "Close_socket: %s desc:%p found, prev should be:%p, fixing.",
+        ch ? ch->name : d->host, dclose, dp );
+    dclose->prev = dp;
+    break;
+     }
+     dp = d;
+  }
+  if ( !dclose->prev )
+  {
+      bug( "Close_socket: %s desc:%p could not be found!.",
+        ch ? ch->name : dclose->host, dclose );
+      DoNotUnlink = TRUE;
+  }
     }
     if ( !dclose->next && dclose != last_descriptor )
     {
-	DESCRIPTOR_DATA *dp, *dn;
-	bug( "Close_socket: %s desc:%p != last_desc:%p and desc->next = NULL!",
-		ch ? ch->name : d->host, dclose, last_descriptor );
-	dn = NULL;
-	for ( d = last_descriptor; d; d = dp )
-	{
-	   dp = d->prev;
-	   if ( d == dclose )
-	   {
-		bug( "Close_socket: %s desc:%p found, next should be:%p, fixing.",
-		    ch ? ch->name : d->host, dclose, dn );
-		dclose->next = dn;
-		break;
-	   }
-	   dn = d;
-	}
-	if ( !dclose->next )
-	{
-	    bug( "Close_socket: %s desc:%p could not be found!.",
-		    ch ? ch->name : dclose->host, dclose );
-	    DoNotUnlink = TRUE;
-	}
+  DESCRIPTOR_DATA *dp, *dn;
+  bug( "Close_socket: %s desc:%p != last_desc:%p and desc->next = NULL!",
+    ch ? ch->name : d->host, dclose, last_descriptor );
+  dn = NULL;
+  for ( d = last_descriptor; d; d = dp )
+  {
+     dp = d->prev;
+     if ( d == dclose )
+     {
+    bug( "Close_socket: %s desc:%p found, next should be:%p, fixing.",
+        ch ? ch->name : d->host, dclose, dn );
+    dclose->next = dn;
+    break;
+     }
+     dn = d;
+  }
+  if ( !dclose->next )
+  {
+      bug( "Close_socket: %s desc:%p could not be found!.",
+        ch ? ch->name : dclose->host, dclose );
+      DoNotUnlink = TRUE;
+  }
     }
 
     if ( dclose->character )
     {
-	sprintf( log_buf, "Closing link to %s.", ch->name );
-	log_string_plus( log_buf, LOG_COMM, UMAX( sysdata.log_level, ch->top_level ) );
-/*
-	if ( ch->top_level < LEVEL_DEMI )
-	  to_channel( log_buf, CHANNEL_MONITOR, "Monitor", ch->top_level );
-*/
-	if ( dclose->connected == CON_PLAYING
-	||   dclose->connected == CON_EDITING )
-	{
-	    act( AT_ACTION, "$n has lost $s link.", ch, NULL, NULL, TO_ROOM );
-	    ch->desc = NULL;
-	}
-	else
-	{
-	    /* clear descriptor pointer to get rid of bug message in log */
-	    dclose->character->desc = NULL;
-	    free_char( dclose->character );
-	}
+      snprintf( log_buf, sizeof(log_buf), "Closing link to %.50s.", ch->name ? ch->name : "(unknown)" );
+      log_string_plus( log_buf, LOG_COMM, UMAX( sysdata.log_level, ch->top_level ) );
+      if ( dclose->connected == CON_PLAYING
+      ||   dclose->connected == CON_EDITING )
+      {
+        act( AT_ACTION, "$n has lost $s link.", ch, NULL, NULL, TO_ROOM );
+        ch->desc = NULL;
+      }
+      else
+      {
+        /* clear descriptor pointer to get rid of bug message in log */
+        dclose->character->desc = NULL;
+        free_char( dclose->character );
+      }
     }
 
 
@@ -1069,16 +1037,17 @@ bool read_from_descriptor( DESCRIPTOR_DATA *d )
     if ( d->incomm[0] != '\0' )
 	return TRUE;
 
-    /* Check for overflow. */
-    iStart = strlen(d->inbuf);
-    if ( iStart >= sizeof(d->inbuf) - 10 )
-    {
-	sprintf( log_buf, "%s input overflow!", d->host );
-	log_string( log_buf );
-	write_to_descriptor( d->descriptor,
-	    "\n\r*** PUT A LID ON IT!!! ***\n\r", 0 );
-	return FALSE;
-    }
+  /* Check for overflow. */
+  iStart = strlen(d->inbuf);
+  if ( iStart >= sizeof(d->inbuf) - 10 )
+  {
+    char log_buf[256];
+    snprintf( log_buf, sizeof(log_buf), "%s input overflow!", d->host );
+    log_string( log_buf );
+    write_to_descriptor( d->descriptor,
+        "\n\r*** PUT A LID ON IT!!! ***\n\r", 0 );
+    return FALSE;
+  }
 
     for ( ; ; )
     {
@@ -1168,10 +1137,6 @@ void read_from_buffer( DESCRIPTOR_DATA *d )
         else if ( iac==2 )
         {
             iac = 0;
-//            char buf[MAX_STRING_LENGTH];
-            
-//            sprintf( buf, "C: %d, %c (%c %c) %d", d->compressing, d->inbuf[i-1], (signed char)DO, (signed char)DONT, d->inbuf[i] );
-//            bug( buf );
             if ( d->inbuf[i] == (signed char)TELOPT_COMPRESS )
             {
                 if ( d->inbuf[i-1] == (signed char)DO )
@@ -1223,9 +1188,6 @@ void read_from_buffer( DESCRIPTOR_DATA *d )
 	{
 	    if ( ++d->repeat >= 100 )
 	    {
-/*		sprintf( log_buf, "%s input spamming!", d->host );
-		log_string( log_buf );
-*/
 		write_to_descriptor( d->descriptor,
 		    "\n\r*** PUT A LID ON IT!!! ***\n\r", 0 );
 	    }
@@ -1273,22 +1235,22 @@ bool flush_buffer( DESCRIPTOR_DATA *d, bool fPrompt )
         memcpy( buf, d->outbuf, 512 );
         memmove( d->outbuf, d->outbuf + 512, d->outtop - 512 );
         d->outtop -= 512;
-	if ( d->snoop_by )
-	{
-	    char snoopbuf[MAX_INPUT_LENGTH];
+  if ( d->snoop_by )
+  {
+    char snoopbuf[MAX_INPUT_LENGTH];
 
-	    buf[512] = '\0';
-	    if ( d->character && d->character->name )
-	    {
-		if (d->original && d->original->name)
-		    sprintf( snoopbuf, "%s (%s)", d->character->name, d->original->name );
-		else          
-		    sprintf( snoopbuf, "%s", d->character->name);
-		write_to_buffer( d->snoop_by, snoopbuf, 0);
-	    }
-	    write_to_buffer( d->snoop_by, "% ", 2 );
-	    write_to_buffer( d->snoop_by, buf, 0 );
-	}
+    buf[512] = '\0';
+    if ( d->character && d->character->name )
+    {
+    if (d->original && d->original->name)
+      snprintf( snoopbuf, sizeof(snoopbuf), "%s (%s)", d->character->name, d->original->name );
+    else          
+      snprintf( snoopbuf, sizeof(snoopbuf), "%s", d->character->name);
+    write_to_buffer( d->snoop_by, snoopbuf, 0);
+    }
+    write_to_buffer( d->snoop_by, "% ", 2 );
+    write_to_buffer( d->snoop_by, buf, 0 );
+  }
         if ( !write_to_descriptor( d->descriptor, buf, 512 ) )
         {
 	    d->outtop = 0;
@@ -1325,18 +1287,18 @@ bool flush_buffer( DESCRIPTOR_DATA *d, bool fPrompt )
     if ( d->snoop_by )
     {
         /* without check, 'force mortal quit' while snooped caused crash, -h */
-	if ( d->character && d->character->name )
-	{
-	    /* Show original snooped names. -- Altrag */
-	    if ( d->original && d->original->name )
-		sprintf( buf, "%s (%s)", d->character->name, d->original->name );
-	    else
-		sprintf( buf, "%s", d->character->name);
-	    write_to_buffer( d->snoop_by, buf, 0);
-	}
-	write_to_buffer( d->snoop_by, "% ", 2 );
-	write_to_buffer( d->snoop_by, d->outbuf, d->outtop );
-    }
+  if ( d->character && d->character->name )
+  {
+    /* Show original snooped names. -- Altrag */
+    if ( d->original && d->original->name )
+    snprintf( buf, sizeof(buf), "%s (%s)", d->character->name, d->original->name );
+    else
+    snprintf( buf, sizeof(buf), "%s", d->character->name);
+    write_to_buffer( d->snoop_by, buf, 0);
+  }
+  write_to_buffer( d->snoop_by, "% ", 2 );
+  write_to_buffer( d->snoop_by, d->outbuf, d->outtop );
+  }
 
     /*
      * OS-dependent output.
@@ -1559,10 +1521,11 @@ void show_title( DESCRIPTOR_DATA *d )
 void nanny( DESCRIPTOR_DATA *d, char *argument )
 {
 /*	extern int lang_array[];
-	extern char *lang_names[];*/
+  extern char *lang_names[];*/
     char buf[MAX_STRING_LENGTH];
     char buf2[MAX_STRING_LENGTH];
     char arg[MAX_STRING_LENGTH];
+    char log_buf[256];
     CHAR_DATA *ch;
     char *pwdnew;
     char *p;
@@ -1596,40 +1559,40 @@ void nanny( DESCRIPTOR_DATA *d, char *argument )
 	{
 	    write_to_buffer( d, "Illegal name, try another.\n\rName: ", 0 );
 	    return;
-	}
+  }
 
-        if ( !str_cmp( argument, "New" ) )
-	{
-	    if (d->newstate == 0)
-	    {
-              /* New player */
-              /* Don't allow new players if DENY_NEW_PLAYERS is true */
-      	      if (sysdata.DENY_NEW_PLAYERS == TRUE)
-      	      {
-       		sprintf( buf, "The mud is currently preparing for a reboot.\n\r" );
-      		write_to_buffer( d, buf, 0 );
-		sprintf( buf, "New players are not accepted during this time.\n\r" );
-		write_to_buffer( d, buf, 0 );
-      		sprintf( buf, "Please try again in a few minutes.\n\r" );
-      		write_to_buffer( d, buf, 0 );
-		close_socket( d, FALSE );
-              }
-              sprintf( buf, "\n\rChoosing a name is one of the most important parts of this game...\n\r"
-              			"Make sure to pick a name appropriate to the character you are going\n\r"
-               			"to role play, and be sure that it suits our Star Wars theme.\n\r"
-               			"If the name you select is not acceptable, you will be asked to choose\n\r"
-               			"another one.\n\r\n\rPlease choose a name for your character: ");
-              write_to_buffer( d, buf, 0 );
-	      d->newstate++;
-	      d->connected = CON_GET_NAME;
-	      return;
-	    }
-	    else
-   	    {
-	      write_to_buffer(d, "Illegal name, try another.\n\rName: ", 0);
-	      return;
-	    }
-	}
+    if ( !str_cmp( argument, "New" ) )
+  {
+    if (d->newstate == 0)
+    {
+        /* New player */
+        /* Don't allow new players if DENY_NEW_PLAYERS is true */
+        if (sysdata.DENY_NEW_PLAYERS == TRUE)
+        {
+      strcpy( buf, "The mud is currently preparing for a reboot.\n\r" );
+      write_to_buffer( d, buf, 0 );
+    strcpy( buf, "New players are not accepted during this time.\n\r" );
+    write_to_buffer( d, buf, 0 );
+      strcpy( buf, "Please try again in a few minutes.\n\r" );
+      write_to_buffer( d, buf, 0 );
+    close_socket( d, FALSE );
+        }
+        strcpy( buf, "\n\rChoosing a name is one of the most important parts of this game...\n\r"
+            "Make sure to pick a name appropriate to the character you are going\n\r"
+            "to role play, and be sure that it suits our Star Wars theme.\n\r"
+            "If the name you select is not acceptable, you will be asked to choose\n\r"
+            "another one.\n\r\n\rPlease choose a name for your character: ");
+        write_to_buffer( d, buf, 0 );
+      d->newstate++;
+      d->connected = CON_GET_NAME;
+      return;
+    }
+    else
+    {
+      write_to_buffer(d, "Illegal name, try another.\n\rName: ", 0);
+      return;
+    }
+  }
 
 	if ( check_playing( d, argument, FALSE ) == BERR )
 	{
@@ -1637,16 +1600,17 @@ void nanny( DESCRIPTOR_DATA *d, char *argument )
 	    return;
 	}
 
-	fOld = load_char_obj( d, argument, TRUE );
-	if ( !d->character )
-	{
-	    sprintf( log_buf, "Bad player file %s@%s.", argument, d->host );
-	    log_string( log_buf );
-	    write_to_buffer( d, "Your playerfile is corrupt...Please notify swrip@bb9t.betterbox.net.\n\r", 0 );
-	    close_socket( d, FALSE );
-	    return;
-	}
-	ch   = d->character;
+  fOld = load_char_obj( d, argument, TRUE );
+  if ( !d->character )
+  {
+    char log_buf[256];
+    snprintf( log_buf, sizeof(log_buf), "Bad player file %s@%s.", argument, d->host );
+    log_string( log_buf );
+    write_to_buffer( d, "Your playerfile is corrupt...Please notify swrip@bb9t.betterbox.net.\n\r", 0 );
+    close_socket( d, FALSE );
+    return;
+  }
+  ch   = d->character;
 
         for ( pban = first_ban; pban; pban = pban->next )
         {
@@ -1661,20 +1625,20 @@ void nanny( DESCRIPTOR_DATA *d, char *argument )
 	    return;
 	  }
         }
-	if ( IS_SET(ch->act, PLR_DENY) )
-	{
-	    sprintf( log_buf, "Denying access to %s@%s.", argument, d->host );
-	    log_string_plus( log_buf, LOG_COMM, sysdata.log_level );
-	    if (d->newstate != 0)
-	    {
-              write_to_buffer( d, "That name is already taken.  Please choose another: ", 0 );
-	      d->connected = CON_GET_NAME;
-	      return;
-	    }
-	    write_to_buffer( d, "You are denied access.\n\r", 0 );
-	    close_socket( d, FALSE );
-	    return;
-	}
+  if ( IS_SET(ch->act, PLR_DENY) )
+  {
+    snprintf( log_buf, sizeof(log_buf), "Denying access to %s@%s.", argument, d->host );
+    log_string_plus( log_buf, LOG_COMM, sysdata.log_level );
+    if (d->newstate != 0)
+    {
+        write_to_buffer( d, "That name is already taken.  Please choose another: ", 0 );
+      d->connected = CON_GET_NAME;
+      return;
+    }
+    write_to_buffer( d, "You are denied access.\n\r", 0 );
+    close_socket( d, FALSE );
+    return;
+  }
 
 	chk = check_reconnect( d, argument, FALSE );
 	if ( chk == BERR )
@@ -1718,12 +1682,12 @@ void nanny( DESCRIPTOR_DATA *d, char *argument )
        return;
      }
             write_to_buffer( d, "\n\rI don't recognize your name, you must be new here.\n\r\n\r", 0 );
-            sprintf( buf, "Did I get that right, %s (Y/N)? ", argument );
+            snprintf( buf, sizeof(buf), "Did I get that right, %s (Y/N)? ", argument );
             write_to_buffer( d, buf, 0 );
             d->connected = CON_CONFIRM_NEW_NAME;
-	    return;
-	}
-	break;
+      return;
+  }
+  break;
 
     case CON_GET_OLD_PASSWORD:
 	write_to_buffer( d, "\n\r", 2 );
@@ -1759,23 +1723,24 @@ void nanny( DESCRIPTOR_DATA *d, char *argument )
             return;
         }
         
-	sprintf( buf, ch->name );
-	d->character->desc = NULL;
-	free_char( d->character );
-	fOld = load_char_obj( d, buf, FALSE );
-	ch = d->character;
-	sprintf( log_buf, "%s@%s(%s) has connected.", ch->name, d->host,
+  strncpy(buf, ch->name, sizeof(buf) - 1);
+  buf[sizeof(buf) - 1] = '\0';
+  d->character->desc = NULL;
+  free_char( d->character );
+  fOld = load_char_obj( d, buf, FALSE );
+  ch = d->character;
+  snprintf( log_buf, sizeof(log_buf), "%s@%s(%s) has connected.", ch->name, d->host,
                  d->user );
-	if ( ch->top_level < LEVEL_DEMI )
-	{
-	  /*to_channel( log_buf, CHANNEL_MONITOR, "Monitor", ch->top_level );*/
-	  log_string_plus( log_buf, LOG_COMM, sysdata.log_level );
-	}
-	else
-	  log_string_plus( log_buf, LOG_COMM, ch->top_level );
-	show_title(d);
-	if ( ch->pcdata->area )
-		do_loadarea (ch , "" );
+  if ( ch->top_level < LEVEL_DEMI )
+  {
+    /*to_channel( log_buf, CHANNEL_MONITOR, "Monitor", ch->top_level );*/
+    log_string_plus( log_buf, LOG_COMM, sysdata.log_level );
+  }
+  else
+    log_string_plus( log_buf, LOG_COMM, ch->top_level );
+  show_title(d);
+  if ( ch->pcdata->area )
+    do_loadarea (ch , "" );
 	
 	
 	break;
@@ -1783,13 +1748,13 @@ void nanny( DESCRIPTOR_DATA *d, char *argument )
     case CON_CONFIRM_NEW_NAME:
 	switch ( *argument )
 	{
-	case 'y': case 'Y':
-	    sprintf( buf, "\n\rMake sure to use a password that won't be easily guessed by someone else."
-	    		  "\n\rPick a good password for %s: %s",
-		ch->name, echo_off_str );
-	    write_to_buffer( d, buf, 0 );
-	    d->connected = CON_GET_NEW_PASSWORD;
-	    break;
+  case 'y': case 'Y':
+      snprintf( buf, sizeof(buf), "\n\rMake sure to use a password that won't be easily guessed by someone else."
+            "\n\rPick a good password for %s: ", ch->name );
+      write_to_buffer( d, buf, 0 );
+      write_to_buffer( d, echo_off_str, 0 );
+      d->connected = CON_GET_NEW_PASSWORD;
+      break;
 
 	case 'n': case 'N':
 	    write_to_buffer( d, "Ok, what IS it, then? ", 0 );
@@ -1804,18 +1769,19 @@ void nanny( DESCRIPTOR_DATA *d, char *argument )
 	    write_to_buffer( d, "Please type Yes or No. ", 0 );
 	    break;
 	}
-	break;
+  break;
 
-    case CON_GET_NEW_PASSWORD:
-	write_to_buffer( d, "\n\r", 2 );
+  case CON_GET_NEW_PASSWORD:
+  write_to_buffer( d, "\n\r", 2 );
 
-	if ( strlen(argument) < 5 )
-	{
-	    write_to_buffer( d,
-		"Password must be at least five characters long.\n\rPassword: ",
-		0 );
-	    return;
-	}
+  /* Check for NULL argument and minimum length */
+  if ( !argument || strlen(argument) < 8 )
+  {
+    write_to_buffer( d,
+    "Password must be at least eight characters long.\n\rPassword: ",
+    0 );
+    return;
+  }
 
 	pwdnew = crypt( argument, ch->name );
 	for ( p = pwdnew; *p != '\0'; p++ )
@@ -1863,31 +1829,31 @@ void nanny( DESCRIPTOR_DATA *d, char *argument )
 	}
 
 
-	write_to_buffer( d, "\n\rYou may choose from the following races, or type showstat [race] to learn more:\n\r", 0 );
-	buf[0] = '\0';
-	buf2[0] = '\0';
-	halfmax = (MAX_RACE/3) + 1;
-	for ( iRace = 0; iRace < halfmax; iRace++ )
-	{
-	 if ( iRace == RACE_GOD )
-	   continue;
-         if (race_table[iRace].race_name && race_table[iRace].race_name[0] != '\0')
-         {
-          sprintf( buf2, "%-20s", race_table[iRace].race_name );
-          strcat( buf, buf2 );
-          sprintf( buf2, "%-20s", race_table[iRace+halfmax].race_name );
-          strcat( buf, buf2 );
-          if( iRace + (halfmax*2) < MAX_RACE )
-          {
-            sprintf( buf2, "%s", race_table[iRace+(halfmax*2)].race_name );
-            strcat( buf, buf2 );
-	  }
-          strcat( buf, "\n\r" );
-          write_to_buffer( d, buf, 0 );
-          buf[0] = '\0';
-         }
-        }
-	strcat( buf, ": " );
+  write_to_buffer( d, "\n\rYou may choose from the following races, or type showstat [race] to learn more:\n\r", 0 );
+  buf[0] = '\0';
+  buf2[0] = '\0';
+  halfmax = (MAX_RACE/3) + 1;
+  for ( iRace = 0; iRace < halfmax; iRace++ )
+  {
+   if ( iRace == RACE_GOD )
+     continue;
+     if (race_table[iRace].race_name && race_table[iRace].race_name[0] != '\0')
+     {
+      snprintf( buf2, sizeof(buf2), "%-20s", race_table[iRace].race_name );
+      strcat( buf, buf2 );
+      snprintf( buf2, sizeof(buf2), "%-20s", race_table[iRace+halfmax].race_name );
+      strcat( buf, buf2 );
+      if( iRace + (halfmax*2) < MAX_RACE )
+      {
+      snprintf( buf2, sizeof(buf2), "%s", race_table[iRace+(halfmax*2)].race_name );
+      strcat( buf, buf2 );
+    }
+      strcat( buf, "\n\r" );
+      write_to_buffer( d, buf, 0 );
+      buf[0] = '\0';
+     }
+    }
+  strcat( buf, ": " );
 	write_to_buffer( d, buf, 0 );
 	d->connected = CON_GET_NEW_RACE;
 	break;
@@ -1940,21 +1906,21 @@ void nanny( DESCRIPTOR_DATA *d, char *argument )
 	{
 	 if (ability_name[iClass] && ability_name[iClass][0] != '\0')
 	 {
-          sprintf( buf2, "%-20s", ability_name[iClass] );
-          strcat( buf, buf2 );
+          snprintf( buf2, sizeof(buf2), "%-20s", ability_name[iClass] );
+          strncat( buf, buf2, sizeof(buf) - strlen(buf) - 1 );
           if( iClass + halfmax < MAX_ABILITY )
           {
-            sprintf( buf2, "%s", ability_name[iClass+halfmax] );
-            strcat( buf, buf2 );
-	  }
-          strcat( buf, "\n\r" );
+            snprintf( buf2, sizeof(buf2), "%-20s", ability_name[iClass+halfmax] );
+            strncat( buf, buf2, sizeof(buf) - strlen(buf) - 1 );
+    }
+          strncat( buf, "\n\r", sizeof(buf) - strlen(buf) - 1 );
           write_to_buffer( d, buf, 0 );
           buf[0] = '\0';
          }
         }
-	strcat( buf, ": " );
-	write_to_buffer( d, buf, 0 );
-	d->connected = CON_GET_NEW_CLASS;
+  strncat( buf, ": ", sizeof(buf) - strlen(buf) - 1 );
+  write_to_buffer( d, buf, 0 );
+  d->connected = CON_GET_NEW_CLASS;
 	break;
 
     case CON_GET_NEW_CLASS:
@@ -2003,9 +1969,9 @@ void nanny( DESCRIPTOR_DATA *d, char *argument )
 	    ch->perm_con	 += race_table[ch->race].con_plus;
 	    ch->perm_cha	 += race_table[ch->race].cha_plus;
 	
-	sprintf( buf, "\n\rSTR: %d  INT: %d  WIS: %d  DEX: %d  CON: %d  CHA: %d\n\r" ,
-	    ch->perm_str, ch->perm_int, ch->perm_wis, 
-	    ch->perm_dex, ch->perm_con, ch->perm_cha) ;
+  snprintf( buf, sizeof(buf), "\n\rSTR: %d  INT: %d  WIS: %d  DEX: %d  CON: %d  CHA: %d\n\r",
+    ch->perm_str, ch->perm_int, ch->perm_wis,
+    ch->perm_dex, ch->perm_con, ch->perm_cha );
          
         write_to_buffer( d, buf, 0 );
         write_to_buffer( d, "\n\rAre these stats OK?. ", 0 );
@@ -2032,9 +1998,9 @@ void nanny( DESCRIPTOR_DATA *d, char *argument )
 	    ch->perm_con	 += race_table[ch->race].con_plus;
 	    ch->perm_cha	 += race_table[ch->race].cha_plus;
 	
-	    sprintf( buf, "\n\rSTR: %d  INT: %d  WIS: %d  DEX: %d  CON: %d  CHA: %d\n\r" ,
-	    ch->perm_str, ch->perm_int, ch->perm_wis, 
-	    ch->perm_dex, ch->perm_con, ch->perm_cha) ;
+      snprintf( buf, sizeof(buf), "\n\rSTR: %d  INT: %d  WIS: %d  DEX: %d  CON: %d  CHA: %d\n\r",
+        ch->perm_str, ch->perm_int, ch->perm_wis,
+        ch->perm_dex, ch->perm_con, ch->perm_cha );
          
             write_to_buffer( d, buf, 0 );
             write_to_buffer( d, "\n\rOK?. ", 0 );
@@ -2071,17 +2037,14 @@ case CON_GET_MSP:
 	    write_to_buffer( d, "Invalid selection.\n\rYES or NO? ", 0 );
 	    return;
 	}
-/*
-	if ( !sysdata.WAIT_FOR_AUTH )
-	{
-*/	    sprintf( log_buf, "%s@%s new %s.", ch->name, d->host,
-				race_table[ch->race].race_name);
-	    log_string_plus( log_buf, LOG_COMM, sysdata.log_level);
-	    to_channel( log_buf, CHANNEL_MONITOR, "Monitor", LEVEL_IMMORTAL );
-	    write_to_buffer( d, "Press [ENTER] ", 0 );
-	    show_title(d);
-	    {
-	       int ability;
+      snprintf( log_buf, sizeof(log_buf), "%s@%s new %s.", ch->name, d->host,
+        race_table[ch->race].race_name);
+      log_string_plus( log_buf, LOG_COMM, sysdata.log_level);
+      to_channel( log_buf, CHANNEL_MONITOR, "Monitor", LEVEL_IMMORTAL );
+      write_to_buffer( d, "Press [ENTER] ", 0 );
+      show_title(d);
+      {
+         int ability;
 	       
 	       for ( ability =0 ; ability < MAX_ABILITY ; ability++ )
 	          ch->skill_level[ability] = 0;
@@ -2091,62 +2054,6 @@ case CON_GET_MSP:
 	    d->connected = CON_PRESS_ENTER;
 	    return;
 	    break;
-/*	}
-
-	write_to_buffer( d, "\n\rYou now have to wait for a god to authorize you... please be patient...\n\r", 0 );
-	sprintf( log_buf, "(1) %s@%s new %s applying for authorization...",
-				ch->name, d->host,
-				race_table[ch->race].race_name);
-	log_string( log_buf );
-	to_channel( log_buf, CHANNEL_MONITOR, "Monitor", LEVEL_IMMORTAL );
-	d->connected = CON_WAIT_1;
-	break;
-
-     case CON_WAIT_1:
-	write_to_buffer( d, "\n\rTwo more tries... please be patient...\n\r", 0 );
-	sprintf( log_buf, "(2) %s@%s new %s applying for authorization...",
-				ch->name, d->host,
-				race_table[ch->race].race_name);
-	log_string( log_buf );
-	to_channel( log_buf, CHANNEL_MONITOR, "Monitor", LEVEL_IMMORTAL );
-	d->connected = CON_WAIT_2;
-	break;
-
-     case CON_WAIT_2:
-	write_to_buffer( d, "\n\rThis is your last try...\n\r", 0 );
-	sprintf( log_buf, "(3) %s@%s new %s applying for authorization...",
-				ch->name, d->host,
-				race_table[ch->race].race_name);
-	log_string( log_buf );
-	to_channel( log_buf, CHANNEL_MONITOR, "Monitor", LEVEL_IMMORTAL );
-	d->connected = CON_WAIT_3;
-	break;
-
-    case CON_WAIT_3:
-	write_to_buffer( d, "Sorry... try again later.\n\r", 0 );
-	close_socket( d, FALSE );
-	return;
-	break;
-
-    case CON_ACCEPTED:
-
-	sprintf( log_buf, "%s@%s new %s.", ch->name, d->host,
-				race_table[ch->race].race_name);
-	log_string_plus( log_buf, LOG_COMM, sysdata.log_level );
-	to_channel( log_buf, CHANNEL_MONITOR, "Monitor", LEVEL_IMMORTAL );
-	write_to_buffer( d, "\n\r", 2 );
-	show_title(d);
-	    {
-	       int ability;
-	       
-	       for ( ability =0 ; ability < MAX_ABILITY ; ability++ )
-	          ch->skill_level[ability] = 0;
-	    }
-	ch->top_level = 0;
-	ch->position = POS_STANDING;
-	d->connected = CON_PRESS_ENTER;
-	break;
-*/
     case CON_PRESS_ENTER:
 	if ( IS_SET(ch->act, PLR_ANSI) )
 	  send_to_pager( "\033[2J", ch );
@@ -2279,7 +2186,7 @@ case CON_GET_MSP:
 	         ch->max_mana = 0;
             ch->max_mana += race_table[ch->race].mana;
 	    ch->mana	= ch->max_mana;
-	    sprintf( buf, "%s the %s",ch->name,
+      snprintf( buf, sizeof(buf), "%s the %s", ch->name,
 		race_table[ch->race].race_name );
 	    set_title( ch, buf );
 
@@ -2391,12 +2298,12 @@ case CON_GET_MSP:
 	    extract_obj( obj );
 	 }
 
-	 sprintf( filename, "%s%c/%s.home", PLAYER_DIR, tolower(ch->name[0]),
-				 capitalize( ch->name ) );
-	 if ( ( fph = fopen( filename, "r" ) ) != NULL )
-	 {
-	    bool found;
-	    OBJ_DATA *tobj, *tobj_next;
+   snprintf( filename, sizeof(filename), "%s%c/%s.home", PLAYER_DIR, tolower(ch->name[0]),
+         capitalize( ch->name ) );
+   if ( ( fph = fopen( filename, "r" ) ) != NULL )
+   {
+      bool found;
+      OBJ_DATA *tobj, *tobj_next;
 
 	    rset_supermob(storeroom);
 
@@ -2581,18 +2488,16 @@ bool check_reconnect( DESCRIPTOR_DATA *d, char *name, bool fConn )
 		d->character = ch;
 		ch->desc	 = d;
 		ch->timer	 = 0;
-		send_to_char( "Reconnecting.\n\r", ch );
-		act( AT_ACTION, "$n has reconnected.", ch, NULL, NULL, TO_ROOM );
-		sprintf( log_buf, "%s@%s(%s) reconnected.", ch->name, d->host, d->user );
-		log_string_plus( log_buf, LOG_COMM, UMAX( sysdata.log_level, ch->top_level ) );
-/*
-		if ( ch->top_level < LEVEL_SAVIOR )
-		  to_channel( log_buf, CHANNEL_MONITOR, "Monitor", ch->top_level );
-*/
-		d->connected = CON_PLAYING;
-	    }
-	    return TRUE;
-	}
+    send_to_char( "Reconnecting.\n\r", ch );
+    act( AT_ACTION, "$n has reconnected.", ch, NULL, NULL, TO_ROOM );
+    char log_buf[256];
+    snprintf( log_buf, sizeof(log_buf), "%s@%s(%s) reconnected.", ch->name, d->host, d->user );
+    log_string_plus( log_buf, LOG_COMM, UMAX( sysdata.log_level, ch->top_level ) );
+
+    d->connected = CON_PLAYING;
+      }
+      return TRUE;
+  }
     }
 
     return FALSE;
@@ -2615,37 +2520,20 @@ bool check_multi( DESCRIPTOR_DATA *d , char *name )
 	&&   str_cmp( name, dold->original
 		 ? dold->original->name : dold->character->name ) 
         && !str_cmp(dold->host , d->host ) )
-	{
-/*	        const char *ok = "";
-	        const char *ok2 = "";
-	        int iloop;
-*/
-	        
-	        if ( d->character->top_level >= LEVEL_LESSER 
-		|| ( dold->original ? dold->original : dold->character )->top_level >= LEVEL_LESSER )
-		    return FALSE;
-/*		for ( iloop = 0 ; iloop < 11 ; iloop++ )
-	        {
-	            if ( ok[iloop] != d->host[iloop] )
-	              break;
-	        }
-	        if ( iloop >= 10 )
-	           return FALSE; 
-		for ( iloop = 0 ; iloop < 11 ; iloop++ )
-	        {
-	            if ( ok2[iloop] != d->host[iloop] )
-	              break;
-	        }
-	        if ( iloop >= 10 )
-	           return FALSE;
-*/
-		write_to_buffer( d, "Sorry multi-playing is not allowed ... have you other character quit first.\n\r", 0 );
-		sprintf( log_buf, "%s attempting to multiplay with %s.", dold->original ? dold->original->name : dold->character->name , d->character->name );
-		log_string_plus( log_buf, LOG_COMM, sysdata.log_level );	
-	        d->character = NULL;
-	        free_char( d->character );
-	        return TRUE;
-	}
+  {
+
+      if ( d->character->top_level >= LEVEL_LESSER 
+    || ( dold->original ? dold->original : dold->character )->top_level >= LEVEL_LESSER )
+      return FALSE;
+    write_to_buffer( d, "Sorry multi-playing is not allowed ... have you other character quit first.\n\r", 0 );
+    char log_buf[256];
+    snprintf( log_buf, sizeof(log_buf), "%s attempting to multiplay with %s.", 
+          dold->original ? dold->original->name : dold->character->name, d->character->name );
+    log_string_plus( log_buf, LOG_COMM, sysdata.log_level );	
+      d->character = NULL;
+      free_char( d->character );
+      return TRUE;
+  }
     }
 
     return FALSE;
@@ -2654,55 +2542,51 @@ bool check_multi( DESCRIPTOR_DATA *d , char *name )
 
 bool check_playing( DESCRIPTOR_DATA *d, char *name, bool kick )
 {
-    CHAR_DATA *ch;
+  CHAR_DATA *ch;
 
-    DESCRIPTOR_DATA *dold;
-    int	cstate;
+  DESCRIPTOR_DATA *dold;
+  int	cstate;
+  char log_buf[256];
 
-    for ( dold = first_descriptor; dold; dold = dold->next )
-    {
-	if ( dold != d
-	&& (  dold->character || dold->original )
-	&&   !str_cmp( name, dold->original
-		 ? dold->original->name : dold->character->name ) )
-	{
-	    cstate = dold->connected;
-	    ch = dold->original ? dold->original : dold->character;
-	    if ( !ch->name
-	    || ( cstate != CON_PLAYING && cstate != CON_EDITING ) )
-	    {
-		write_to_buffer( d, "Already connected - try again.\n\r", 0 );
-		sprintf( log_buf, "%s already connected.", ch->name );
-		log_string_plus( log_buf, LOG_COMM, sysdata.log_level );
-		return BERR;
-	    }
-	    if ( !kick )
-	      return TRUE;
-	    write_to_buffer( d, "Already playing... Kicking off old connection.\n\r", 0 );
-	    write_to_buffer( dold, "Kicking off old connection... bye!\n\r", 0 );
-	    close_socket( dold, FALSE );
-	    /* clear descriptor pointer to get rid of bug message in log */
-	    d->character->desc = NULL;
-	    free_char( d->character );
-	    d->character = ch;
-	    ch->desc	 = d;
-	    ch->timer	 = 0;
-	    if ( ch->switched )
-	      do_return( ch->switched, "" );
-	    ch->switched = NULL;
-	    send_to_char( "Reconnecting.\n\r", ch );
-	    act( AT_ACTION, "$n has reconnected, kicking off old link.",
-	         ch, NULL, NULL, TO_ROOM );
-	    sprintf( log_buf, "%s@%s reconnected, kicking off old link.",
-	             ch->name, d->host );
-	    log_string_plus( log_buf, LOG_COMM, UMAX( sysdata.log_level, ch->top_level ) );
-/*
-	    if ( ch->top_level < LEVEL_SAVIOR )
-	      to_channel( log_buf, CHANNEL_MONITOR, "Monitor", ch->top_level );
-*/
-	    d->connected = cstate;
-	    return TRUE;
-	}
+  for ( dold = first_descriptor; dold; dold = dold->next )
+  {
+  if ( dold != d
+  && (  dold->character || dold->original )
+  && ( (dold->original ? dold->original->name : dold->character->name ) ) )
+  {
+      cstate = dold->connected;
+      ch = dold->original ? dold->original : dold->character;
+      if ( !ch->name
+      || ( cstate != CON_PLAYING && cstate != CON_EDITING ) )
+      {
+    write_to_buffer( d, "Already connected - try again.\n\r", 0 );
+  snprintf( log_buf, sizeof(log_buf), "%s already connected.", ch->name );
+  log_string_plus( log_buf, LOG_COMM, sysdata.log_level );
+    return BERR;
+      }
+      if ( !kick )
+        return TRUE;
+      write_to_buffer( d, "Already playing... Kicking off old connection.\n\r", 0 );
+      write_to_buffer( dold, "Kicking off old connection... bye!\n\r", 0 );
+      close_socket( dold, FALSE );
+      /* clear descriptor pointer to get rid of bug message in log */
+      d->character->desc = NULL;
+      free_char( d->character );
+      d->character = ch;
+      ch->desc	 = d;
+      ch->timer	 = 0;
+      if ( ch->switched )
+        do_return( ch->switched, "" );
+      ch->switched = NULL;
+      send_to_char( "Reconnecting.\n\r", ch );
+      act( AT_ACTION, "$n has reconnected, kicking off old link.",
+           ch, NULL, NULL, TO_ROOM );
+    snprintf( log_buf, sizeof(log_buf), "%s@%s reconnected, kicking off old link.", ch->name, d->host );
+    log_string_plus( log_buf, LOG_COMM, UMAX( sysdata.log_level, ch->top_level ) );
+
+      d->connected = cstate;
+      return TRUE;
+  }
     }
 
     return FALSE;
@@ -2900,85 +2784,83 @@ void send_to_pager_color( const char *txt, CHAR_DATA *ch )
 
 void set_char_color( sh_int AType, CHAR_DATA *ch )
 {
-    char buf[16];
-    CHAR_DATA *och;
-    
-    if ( !ch || !ch->desc )
-      return;
-    
-    och = (ch->desc->original ? ch->desc->original : ch);
-    if ( !IS_NPC(och) && IS_SET(och->act, PLR_ANSI) )
-    {
-	if ( AType == 7 )
-	  strcpy( buf, "\033[m" );
-	else
-	  sprintf(buf, "\033[0;%d;%s%dm", (AType & 8) == 8,
-	        (AType > 15 ? "5;" : ""), (AType & 7)+30);
-	write_to_buffer( ch->desc, buf, strlen(buf) );
-    }
+  char buf[16];
+  CHAR_DATA *och;
+  
+  if ( !ch || !ch->desc )
     return;
+  
+  och = (ch->desc->original ? ch->desc->original : ch);
+  if ( !IS_NPC(och) && IS_SET(och->act, PLR_ANSI) )
+  {
+  if ( AType == 7 )
+    strcpy( buf, "\033[m" );
+  else
+    snprintf(buf, sizeof(buf), "\033[0;%d;%s%dm", (AType & 8) == 8,
+      (AType > 15 ? "5;" : ""), (AType & 7)+30);
+  write_to_buffer( ch->desc, buf, strlen(buf) );
+  }
+  return;
 }
 
 void set_pager_color( sh_int AType, CHAR_DATA *ch )
 {
-    char buf[16];
-    CHAR_DATA *och;
-    
-    if ( !ch || !ch->desc )
-      return;
-    
-    och = (ch->desc->original ? ch->desc->original : ch);
-    if ( !IS_NPC(och) && IS_SET(och->act, PLR_ANSI) )
-    {
-	if ( AType == 7 )
-	  strcpy( buf, "\033[m" );
-	else
-	  sprintf(buf, "\033[0;%d;%s%dm", (AType & 8) == 8,
-	        (AType > 15 ? "5;" : ""), (AType & 7)+30);
-	send_to_pager( buf, ch );
-	ch->desc->pagecolor = AType;
-    }
+  char buf[16];
+  CHAR_DATA *och;
+
+  if ( !ch || !ch->desc )
     return;
+
+  och = (ch->desc->original ? ch->desc->original : ch);
+  if ( !IS_NPC(och) && IS_SET(och->act, PLR_ANSI) )
+  {
+    if ( AType == 7 )
+      strcpy( buf, "\033[m" );
+    else
+      snprintf(buf, sizeof(buf), "\033[0;%d;%s%dm", (AType & 8) == 8,
+        (AType > 15 ? "5;" : ""), (AType & 7)+30);
+    send_to_pager( buf, ch );
+    ch->desc->pagecolor = AType;
+  }
+  return;
 }
 
 
 /* source: EOD, by John Booth <???> */
 void ch_printf(CHAR_DATA *ch, char *fmt, ...)
 {
-    char buf[MAX_STRING_LENGTH*2];	/* better safe than sorry */
-    va_list args;
+  char buf[MAX_STRING_LENGTH*2];	/* better safe than sorry */
+  va_list args;
 
-    va_start(args, fmt);
-    vsprintf(buf, fmt, args);
-    va_end(args);
-	
-    send_to_char(buf, ch);
+  va_start(args, fmt);
+  vsnprintf(buf, sizeof(buf), fmt, args);
+  va_end(args);
+  
+  send_to_char(buf, ch);
 }
 
 void pager_printf(CHAR_DATA *ch, char *fmt, ...)
 {
-    char buf[MAX_STRING_LENGTH*2];
-    va_list args;
+  char buf[MAX_STRING_LENGTH*2];
+  va_list args;
 
-    va_start(args, fmt);
-    vsprintf(buf, fmt, args);
-    va_end(args);
-	
-    send_to_pager(buf, ch);
+  va_start(args, fmt);
+  vsnprintf(buf, sizeof(buf), fmt, args);
+  va_end(args);
+
+  send_to_pager(buf, ch);
 }
-
-
 
 char *obj_short( OBJ_DATA *obj )
 {
-    static char buf[MAX_STRING_LENGTH];
+  static char buf[MAX_STRING_LENGTH];
 
-    if ( obj->count > 1 )
-    {
-	sprintf( buf, "%s (%d)", obj->short_descr, obj->count );
-	return buf;
-    }
-    return obj->short_descr;
+  if ( obj->count > 1 )
+  {
+    snprintf( buf, sizeof(buf), "%s (%d)", obj->short_descr, obj->count );
+    return buf;
+  }
+  return obj->short_descr;
 }
 
 /*
@@ -3252,7 +3134,8 @@ void do_name( CHAR_DATA *ch, char *argument )
     return;
   }
 
-  sprintf( fname, "%s%c/%s", PLAYER_DIR, tolower(argument[0]),
+  /* Use snprintf to avoid buffer overflow */
+  snprintf( fname, sizeof(fname), "%s%c/%s", PLAYER_DIR, tolower(argument[0]),
                         capitalize( argument ) );
   if ( stat( fname, &fst ) != -1 )
   {
@@ -3262,7 +3145,7 @@ void do_name( CHAR_DATA *ch, char *argument )
 
   STRFREE( ch->name );
   ch->name = STRALLOC( argument );
-  sprintf( buf, "%s the %s",ch->name,
+  snprintf( buf, sizeof(buf), "%s the %s",ch->name,
     race_table[ch->race].race_name );
   set_title( ch, buf );
   
@@ -3425,25 +3308,38 @@ void display_prompt( DESCRIPTOR_DATA *d )
 	  stat = ch->in_room->vnum;
 	break;
       case 'R':
-	if ( IS_SET(och->act, PLR_ROOMVNUM) )
-	  sprintf(pbuf, "<#%d> ", ch->in_room->vnum);
-	break;
-      case 'i':
-	if ( (!IS_NPC(ch) && IS_SET(ch->act, PLR_WIZINVIS)) ||
-	      (IS_NPC(ch) && IS_SET(ch->act, ACT_MOBINVIS)) )
-	  sprintf(pbuf, "(Invis %d) ", (IS_NPC(ch) ? ch->mobinvis : ch->pcdata->wizinvis));
-	else
-	if ( IS_AFFECTED(ch, AFF_INVISIBLE) )
-	  sprintf(pbuf, "(Invis) " );
-	break;
-      case 'I':
-	stat = (IS_NPC(ch) ? (IS_SET(ch->act, ACT_MOBINVIS) ? ch->mobinvis : 0)
-	     : (IS_SET(ch->act, PLR_WIZINVIS) ? ch->pcdata->wizinvis : 0));
-	break;
+  if ( IS_SET(och->act, PLR_ROOMVNUM) )
+  {
+    snprintf(pbuf, buf + sizeof(buf) - pbuf, "<#%d> ", ch->in_room->vnum);
+    pbuf += strlen(pbuf);
+  }
+  break;
+    case 'i':
+  if ( (!IS_NPC(ch) && IS_SET(ch->act, PLR_WIZINVIS)) ||
+      (IS_NPC(ch) && IS_SET(ch->act, ACT_MOBINVIS)) )
+  {
+    snprintf(pbuf, buf + sizeof(buf) - pbuf, "(Invis %d) ", (IS_NPC(ch) ? ch->mobinvis : ch->pcdata->wizinvis));
+    pbuf += strlen(pbuf);
+  }
+  else if ( IS_AFFECTED(ch, AFF_INVISIBLE) )
+  {
+    snprintf(pbuf, buf + sizeof(buf) - pbuf, "(Invis) " );
+    pbuf += strlen(pbuf);
+  }
+  break;
+    case 'I':
+  stat = (IS_NPC(ch) ? (IS_SET(ch->act, ACT_MOBINVIS) ? ch->mobinvis : 0)
+       : (IS_SET(ch->act, PLR_WIZINVIS) ? ch->pcdata->wizinvis : 0));
+  break;
       }
       if ( stat != (int) 0x80000000 )
-	sprintf(pbuf, "%d", stat);
-      pbuf += strlen(pbuf);
+      {
+        // Prevent buffer overflow by limiting the number of bytes written
+        int n = snprintf(pbuf, buf + sizeof(buf) - pbuf, "%d", stat);
+        if (n < 0)
+          n = 0;
+        pbuf += n;
+      }
       break;
     }
   }
@@ -3529,13 +3425,13 @@ int make_color_sequence(const char *col, char *buf, DESCRIPTOR_DATA *d)
         ln = 2;
       if ( (cl & 0x07) != (d->prevcolor & 0x07) )
       {
-        sprintf(buf+ln, "3%d;", cl & 0x07);
-        ln += 3;
+        int n = snprintf(buf+ln, sizeof(buf)-ln, "3%d;", cl & 0x07);
+        if (n > 0) ln += n;
       }
       if ( (cl & 0x70) != (d->prevcolor & 0x70) )
       {
-        sprintf(buf+ln, "4%d;", (cl & 0x70) >> 4);
-        ln += 3;
+        int n = snprintf(buf+ln, sizeof(buf)-ln, "4%d;", (cl & 0x70) >> 4);
+        if (n > 0) ln += n;
       }
       if ( buf[ln-1] == ';' )
         buf[ln-1] = 'm';
@@ -3635,12 +3531,12 @@ bool pager_output( DESCRIPTOR_DATA *d )
       char buf[32];
 
       if ( d->pagecolor == 7 )
-	strcpy( buf, "\033[m" );
+        strcpy( buf, "\033[m" );
       else
-	sprintf(buf, "\033[0;%d;%s%dm", (d->pagecolor & 8) == 8,
-		(d->pagecolor > 15 ? "5;" : ""), (d->pagecolor & 7)+30);
+        snprintf(buf, sizeof(buf), "\033[0;%d;%s%dm", (d->pagecolor & 8) == 8,
+        (d->pagecolor > 15 ? "5;" : ""), (d->pagecolor & 7)+30);
       ret = write_to_descriptor( d->descriptor, buf, 0 );
-  }
+      }
   return ret;
 }
 
@@ -3656,9 +3552,9 @@ void whocount(struct tm tmdata)
   DESCRIPTOR_DATA *d;
 
   count = 0;
-  sprintf(datebuf,"%d/%d/%d",
-	      tmdata.tm_mon+1, tmdata.tm_mday, 1900+tmdata.tm_year);
-  sprintf(timebuf,"%d:%d",tmdata.tm_hour, tmdata.tm_min);
+  snprintf(datebuf, sizeof(datebuf), "%d/%d/%d",
+        tmdata.tm_mon+1, tmdata.tm_mday, 1900+tmdata.tm_year);
+  snprintf(timebuf, sizeof(timebuf), "%d:%d", tmdata.tm_hour, tmdata.tm_min);
   for ( d = last_descriptor; d; d = d->prev ) {
     count++;
     if (d->character) {
@@ -3668,7 +3564,7 @@ void whocount(struct tm tmdata)
         player_count++;
     }
   }
-  sprintf(countbuf,"%d %d %d",player_count,imm_count,count);
+  snprintf(countbuf, sizeof(countbuf), "%d %d %d", player_count, imm_count, count);
   if (fork() == 0) { 
     x = execl("../bin/scripts/whocount.pl","../bin/scripts/whocount.pl",datebuf,timebuf,countbuf,NULL);
     exit(0);
@@ -3866,8 +3762,7 @@ bool compressEnd(DESCRIPTOR_DATA *d)
     d->out_compress->next_in = dummy;
 
     if (deflate(d->out_compress, Z_FINISH) != Z_STREAM_END)
-        return FALSE;
-
+      return FALSE;
     if (!process_compressed(d)) /* try to send any residual data */
         return FALSE;
 
