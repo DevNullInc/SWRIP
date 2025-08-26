@@ -1502,6 +1502,7 @@ void do_mpapply( CHAR_DATA *ch, char *argument )
   if( victim->pcdata->auth_state >= 1 )
     return;
 
+    char log_buf[MAX_STRING_LENGTH];
     snprintf( log_buf, sizeof(log_buf), "%s@%s new %s applying for authorization...",
                      victim->name, victim->desc->host,
                      race_table[victim->race].race_name);
@@ -1550,15 +1551,18 @@ void do_mpapplyb( CHAR_DATA *ch, char *argument )
   case 0:
   case 1:   
   default:
-  send_to_char( "You attempt to regain the gods' attention.\n\r", victim);
+  {
+    char log_buf[MAX_STRING_LENGTH];
+    send_to_char( "You attempt to regain the gods' attention.\n\r", victim);
     snprintf( log_buf, sizeof(log_buf), "%s@%s new %s applying for authorization...",
                                         victim->name, victim->desc->host,
                                         race_table[victim->race].race_name);
-  log_string( log_buf );
-  to_channel( log_buf, CHANNEL_MONITOR, "Monitor", LEVEL_IMMORTAL );
-  add_timer(victim, TIMER_APPLIED, 10, NULL, 0);
-  victim->pcdata->auth_state = 1;
-  break; 
+    log_string( log_buf );
+    to_channel( log_buf, CHANNEL_MONITOR, "Monitor", LEVEL_IMMORTAL );
+    add_timer(victim, TIMER_APPLIED, 10, NULL, 0);
+    victim->pcdata->auth_state = 1;
+    break; 
+  }
 
   case 2:
   send_to_char("Your name has been deemed unsuitable by the gods.  Please choose a more apropriate name with the 'name' command.\n\r", victim);
@@ -1814,22 +1818,23 @@ ch_ret simple_damage( CHAR_DATA *ch, CHAR_DATA *victim, int dam, int dt )
      */
     if ( victim->position == POS_DEAD )
     {
-	if ( !npcvict )
-	{
+    if ( !npcvict )
+    {
+            char log_buf[MAX_STRING_LENGTH];
             snprintf( log_buf, sizeof(log_buf), "%s killed by %s at %d",
         victim->name,
         (IS_NPC(ch) ? ch->short_descr : ch->name),
         victim->in_room->vnum );
-	    log_string( log_buf );
-	    to_channel( log_buf, CHANNEL_MONITOR, "Monitor", LEVEL_IMMORTAL );
+        log_string( log_buf );
+        to_channel( log_buf, CHANNEL_MONITOR, "Monitor", LEVEL_IMMORTAL );
 
 
-	}
-	set_cur_char(victim);
-	raw_kill( ch, victim );
-	victim = NULL;
+    }
+    set_cur_char(victim);
+    raw_kill( ch, victim );
+    victim = NULL;
 
-	return rVICT_DIED;
+    return rVICT_DIED;
     }
 
     if ( victim == ch )

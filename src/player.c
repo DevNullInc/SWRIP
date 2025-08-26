@@ -1045,14 +1045,11 @@ void do_prompt( CHAR_DATA *ch, char *argument )
 
 void set_target( CHAR_DATA *ch, char *target )
 {
-    char buf[MAX_STRING_LENGTH];
+	if (ch->pcdata->target && ch->pcdata->target[0] != '\0')
+		STRFREE(ch->pcdata->target);
 
-    strcpy( buf, target );
-
-    if (ch->pcdata->target && ch->pcdata->target[0] != '\0')
-     	STRFREE( ch->pcdata->target ); 
-	    	snprintf( buf, sizeof(buf),
-    return;
+	ch->pcdata->target = STRALLOC(target);
+	return;
 }
 
 
