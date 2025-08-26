@@ -1079,7 +1079,7 @@ void load_mobiles( AREA_DATA *tarea, FILE *fp )
 	    else
 	    {
 		pMobIndex = get_mob_index( vnum );
-		sprintf( buf, "Cleaning mobile: %d", vnum );
+	snprintf(buf, sizeof(buf), "Cleaning mobile: %d", vnum);
 		log_string_plus( buf, LOG_BUILD, sysdata.log_level );
 		clean_mob( pMobIndex );
 		oldmob = TRUE;
@@ -1296,7 +1296,7 @@ void load_objects( AREA_DATA *tarea, FILE *fp )
 	    else
 	    {
 		pObjIndex = get_obj_index( vnum );
-		sprintf( buf, "Cleaning object: %d", vnum );
+	snprintf(buf, sizeof(buf), "Cleaning object: %d", vnum);
 		log_string_plus( buf, LOG_BUILD, sysdata.log_level );
 		clean_obj( pObjIndex );
 		oldobj = TRUE;
@@ -1472,7 +1472,7 @@ void load_resets( AREA_DATA *tarea, FILE *fp )
 	 /*
 	  * Clean out the old resets
 	  */
-	  sprintf( buf, "Cleaning resets: %s", tarea->name );
+	snprintf(buf, sizeof(buf), "Cleaning resets: %s", tarea->name);
 	  log_string_plus( buf, LOG_BUILD, sysdata.log_level );
 	  clean_resets( tarea );
 	}	
@@ -1685,7 +1685,7 @@ void load_rooms( AREA_DATA *tarea, FILE *fp )
 	    else
 	    {
 	      pRoomIndex = get_room_index( vnum );
-	      sprintf( buf, "Cleaning room: %d", vnum );
+		snprintf(buf, sizeof(buf), "Cleaning room: %d", vnum);
 	      log_string_plus( buf, LOG_BUILD, sysdata.log_level );
 	      clean_room( pRoomIndex );
 	      oldroom = TRUE;
@@ -2345,7 +2345,7 @@ void area_update( void )
 
 	    /* Rennard */
 	    if ( pArea->resetmsg )
-		sprintf( buf, "%s\n\r", pArea->resetmsg );
+	snprintf(buf, sizeof(buf), "%s\n\r", pArea->resetmsg);
 	    else
 		strcpy( buf, "You hear some squeaking sounds...\n\r" );
 	    for ( pch = first_char; pch; pch = pch->next )
@@ -3644,7 +3644,7 @@ char *stripclr( char *text )
 
 		buf[j] = '\0';
 
-		sprintf(done, "%s", buf);
+	snprintf(done, sizeof(done), "%s", buf);
 		buf = (char* ) realloc(buf, j*sizeof(char));
 		free( buf);
 
@@ -3965,7 +3965,7 @@ void bug( const char *str, ... )
 	    fseek( fpArea, iChar, 0 );
 	}
 
-	sprintf( buf, "[*****] FILE: %s LINE: %d", strArea, iLine );
+	snprintf(buf, sizeof(buf), "[*****] FILE: %s LINE: %d", strArea, iLine);
 	log_string( buf );
 
 	if ( stat( SHUTDOWN_FILE, &fst ) != -1 )	/* file exists */
@@ -3978,15 +3978,14 @@ void bug( const char *str, ... )
 	}
     }
 
-    strcpy( buf, "[*****] BUG: " );
-    {
+	strcpy( buf, "[*****] BUG: " );
+	{
 	va_list param;
-    
 	va_start(param, str);
-	vsprintf( buf + strlen(buf), str, param );
+	vsnprintf( buf + strlen(buf), sizeof(buf) - strlen(buf), str, param );
 	va_end(param);
-    }
-    log_string( buf );
+	}
+	log_string( buf );
 
     fclose( fpLOG );
     if ( ( fp = fopen( BUG_FILE, "a" ) ) != NULL )
@@ -4008,11 +4007,11 @@ void boot_log( const char *str, ... )
     FILE *fp;
     va_list param;
 
-    strcpy( buf, "[*****] BOOT: " );
-    va_start(param, str);
-    vsprintf( buf+strlen(buf), str, param );
-    va_end(param);
-    log_string( buf );
+	strcpy( buf, "[*****] BOOT: " );
+	va_start(param, str);
+	vsnprintf( buf+strlen(buf), sizeof(buf)-strlen(buf), str, param );
+	va_end(param);
+	log_string( buf );
 
     fclose( fpLOG );
     if ( ( fp = fopen( BOOTLOG_FILE, "a" ) ) != NULL )
@@ -4224,7 +4223,7 @@ void make_wizlist( )
   {
       if ( dentry->d_name[0] != '.' )
       {
-	sprintf( buf, "%s%s", GOD_DIR, dentry->d_name );
+	snprintf(buf, sizeof(buf), "%s%s", GOD_DIR, dentry->d_name);
 	gfp = fopen( buf, "r" );
 	if ( gfp )
 	{
@@ -4372,7 +4371,7 @@ MPROG_DATA *mprog_file_read( char *f, MPROG_DATA *mprg,
   MPROG_DATA *mprg_next, *mprg2;
   bool        done = FALSE;
 
-  sprintf( MUDProgfile, "%s%s", PROG_DIR, f );
+snprintf( MUDProgfile, sizeof(MUDProgfile), "%s%s", PROG_DIR, f );
 
   progfile = fopen( MUDProgfile, "r" );
   if ( !progfile )
@@ -4587,7 +4586,7 @@ MPROG_DATA *oprog_file_read( char *f, MPROG_DATA *mprg,
   MPROG_DATA *mprg_next, *mprg2;
   bool        done = FALSE;
 
-  sprintf( MUDProgfile, "%s%s", PROG_DIR, f );
+snprintf( MUDProgfile, sizeof(MUDProgfile), "%s%s", PROG_DIR, f );
 
   progfile = fopen( MUDProgfile, "r" );
   if ( !progfile )
@@ -4799,7 +4798,7 @@ MPROG_DATA *rprog_file_read( char *f, MPROG_DATA *mprg,
   MPROG_DATA *mprg_next, *mprg2;
   bool        done = FALSE;
 
-  sprintf( MUDProgfile, "%s%s", PROG_DIR, f );
+snprintf( MUDProgfile, sizeof(MUDProgfile), "%s%s", PROG_DIR, f );
 
   progfile = fopen( MUDProgfile, "r" );
   if ( !progfile )
@@ -5106,9 +5105,9 @@ OBJ_INDEX_DATA *make_object( int vnum, int cvnum, char *name )
 	pObjIndex->last_extradesc	= NULL;
 	if ( !cObjIndex )
 	{
-	  sprintf( buf, "A %s", name );
-	  pObjIndex->short_descr	= STRALLOC( buf  );
-	  sprintf( buf, "A %s is here.", name );
+	  snprintf(buf, sizeof(buf), "A %s", name);
+	  pObjIndex->short_descr = STRALLOC(buf);
+	  snprintf(buf, sizeof(buf), "A %s is here.", name);
 	  pObjIndex->description	= STRALLOC( buf );
 	  pObjIndex->action_desc	= STRALLOC( "" );
 	  pObjIndex->short_descr[0]	= LOWER(pObjIndex->short_descr[0]);
@@ -5193,9 +5192,10 @@ MOB_INDEX_DATA *make_mobile( sh_int vnum, sh_int cvnum, char *name )
 	pMobIndex->player_name		= STRALLOC( name );
 	if ( !cMobIndex )
 	{
-	  sprintf( buf, "A newly created %s", name );
-	  pMobIndex->short_descr	= STRALLOC( buf  );
-	  sprintf( buf, "Some god abandoned a newly created %s here.\n\r", name );
+	  /* Use snprintf to avoid buffer overflow */
+	  snprintf( buf, sizeof(buf), "A newly created %s", name );
+	  pMobIndex->short_descr = STRALLOC( buf );
+	  snprintf( buf, sizeof(buf), "Some god abandoned a newly created %s here.\n\r", name );
 	  pMobIndex->long_descr		= STRALLOC( buf );
 	  pMobIndex->description	= STRALLOC( "" );
 	  pMobIndex->short_descr[0]	= LOWER(pMobIndex->short_descr[0]);
@@ -5527,7 +5527,11 @@ void load_buildlist( void )
 	{
 		if ( dentry->d_name[0] != '.' )
 		{
-			sprintf( buf, "%s%s", GOD_DIR, dentry->d_name );
+			if (snprintf(buf, sizeof(buf), "%s%s", GOD_DIR, dentry->d_name) >= (int)sizeof(buf)) {
+				bug("Load_buildlist: filename too long");
+				dentry = readdir(dp);
+				continue;
+			}
 			if ( !(fp = fopen( buf, "r" )) )
 			{
 				bug( "Load_buildlist: invalid file" );
@@ -5551,7 +5555,7 @@ void load_buildlist( void )
 				{
 					if ( low < LEVEL_AVATAR )
 					{
-						sprintf( buf, "%s: God file with level %d < %d",
+						snprintf( buf, sizeof(buf), "%s: God file with level %d < %d",
 							dentry->d_name, low, LEVEL_AVATAR );
 						badfile = TRUE;
 					}
@@ -5566,7 +5570,11 @@ void load_buildlist( void )
 			fclose( fp );
 			if ( rlow && rhi && !badfile )
 			{
-				sprintf( buf, "%s%s.are", BUILD_DIR, dentry->d_name );
+				if (snprintf(buf, sizeof(buf), "%s%s.are", BUILD_DIR, dentry->d_name) >= (int)sizeof(buf)) {
+					bug("Load_buildlist: area filename too long");
+					dentry = readdir(dp);
+					continue;
+				}
 				if ( !(fp = fopen( buf, "r" )) )
 				{
 					bug( "Load_buildlist: cannot open area file for read" );
@@ -5578,21 +5586,28 @@ void load_buildlist( void )
 				strcpy( word, fread_word( fp ) );
 				if ( word[0] != '#' || strcmp( &word[1], "AREA" ) )
 				{
-					sprintf( buf, "Make_buildlist: %s.are: no #AREA found.",
-						dentry->d_name );
+					if (snprintf(buf, sizeof(buf), "Make_buildlist: %s.are: no #AREA found.",
+						dentry->d_name) >= (int)sizeof(buf)) {
+						bug("Load_buildlist: error message too long");
+					}
 					fclose( fp );
 					dentry = readdir(dp);
 					continue;
 				}
 #endif
 				CREATE( pArea, AREA_DATA, 1 );
-				sprintf( buf, "%s.are", dentry->d_name );
+				if (snprintf(buf, sizeof(buf), "%s.are", dentry->d_name) >= (int)sizeof(buf)) {
+					bug("Load_buildlist: area filename too long");
+					fclose(fp);
+					dentry = readdir(dp);
+					continue;
+				}
 				pArea->author = STRALLOC( dentry->d_name );
 				pArea->filename = str_dup( buf );
 #if !defined(READ_AREA)
 				pArea->name = fread_string_nohash( fp );
 #else
-				sprintf( buf, "{PROTO} %s's area in progress", dentry->d_name );
+				snprintf( buf, sizeof(buf), "{PROTO} %s's area in progress", dentry->d_name );
 				pArea->name = str_dup( buf );
 #endif
 				fclose( fp );
@@ -5811,7 +5826,7 @@ void save_sysdata( SYSTEM_DATA sys )
     FILE *fp;
     char filename[MAX_INPUT_LENGTH];
 
-    sprintf( filename, "%ssysdata.dat", SYSTEM_DIR );
+	snprintf( filename, sizeof(filename), "%ssysdata.dat", SYSTEM_DIR );
     
     fclose( fpReserve );
     if ( ( fp = fopen( filename, "w" ) ) == NULL )
@@ -5822,7 +5837,7 @@ void save_sysdata( SYSTEM_DATA sys )
     {
 	fprintf( fp, "#SYSTEM\n" );
 	fprintf( fp, "Highplayers    %d\n", sys.alltimemax		);
-	fprintf( fp, "Highplayertime %s~\n", sys.time_of_max		);
+	fprintf( fp, "Highplayertime %s~\n", sys.time_of_max ? sys.time_of_max : "" );
 	fprintf( fp, "Nameresolving  %d\n", sys.NO_NAME_RESOLVING	);
 	fprintf( fp, "Waitforauth    %d\n", sys.WAIT_FOR_AUTH		);
 	fprintf( fp, "Readallmail    %d\n", sys.read_all_mail		);
@@ -5843,8 +5858,8 @@ void save_sysdata( SYSTEM_DATA sys )
 	fprintf( fp, "Dammobvsplr    %d\n", sys.dam_mob_vs_plr		);
 	fprintf( fp, "Dammobvsmob    %d\n", sys.dam_mob_vs_mob		);
 	fprintf( fp, "Forcepc        %d\n", sys.level_forcepc		);
-	fprintf( fp, "Guildoverseer  %s~\n", sys.guild_overseer		);
-	fprintf( fp, "Guildadvisor   %s~\n", sys.guild_advisor		);
+	fprintf( fp, "Guildoverseer  %s~\n", sys.guild_overseer ? sys.guild_overseer : "" );
+	fprintf( fp, "Guildadvisor   %s~\n", sys.guild_advisor ? sys.guild_advisor : "" );
 	fprintf( fp, "Saveflags      %d\n", sys.save_flags		);
 	fprintf( fp, "Savefreq       %d\n", sys.save_frequency		);
 	fprintf( fp, "ShipIDCurrent  %ld\n", sys.currentshipID		);
@@ -5976,7 +5991,7 @@ bool load_systemdata( SYSTEM_DATA *sys )
     bool found;
 
     found = FALSE;
-    sprintf( filename, "%ssysdata.dat", SYSTEM_DIR );
+	snprintf( filename, sizeof(filename), "%ssysdata.dat", SYSTEM_DIR );
 
     if ( ( fp = fopen( filename, "r" ) ) != NULL )
     {
@@ -6138,16 +6153,16 @@ void do_check_vnums( CHAR_DATA *ch, char *argument )
       return;
     }
     
-    if (all)
-    {
-      sprintf(buf, "room %d %d", low_range, high_range);
-      do_check_vnums(ch, buf);
-      sprintf(buf, "mob %d %d", low_range, high_range);
-      do_check_vnums(ch, buf);
-      sprintf(buf, "object %d %d", low_range, high_range);
-      do_check_vnums(ch, buf);
-      return;
-    }
+	if (all)
+	{
+	  snprintf(buf, sizeof(buf), "room %d %d", low_range, high_range);
+	  do_check_vnums(ch, buf);
+	  snprintf(buf, sizeof(buf), "mob %d %d", low_range, high_range);
+	  do_check_vnums(ch, buf);
+	  snprintf(buf, sizeof(buf), "object %d %d", low_range, high_range);
+	  do_check_vnums(ch, buf);
+	  return;
+	}
     set_char_color( AT_PLAIN, ch );
 
     for ( pArea = first_asort; pArea; pArea = pArea->next_sort )
@@ -6208,22 +6223,18 @@ void do_check_vnums( CHAR_DATA *ch, char *argument )
 
 	if (area_conflict)
 	{
-	sprintf(buf, "Conflict:%-15s| ",
-		(pArea->filename ? pArea->filename : "(invalid)"));
-        if(room)
-          sprintf( buf2, "Rooms: %5d - %-5d\n\r", pArea->low_r_vnum, 
-          pArea->hi_r_vnum);
-        if(mob)
-          sprintf( buf2, "Mobs: %5d - %-5d\n\r", pArea->low_m_vnum, 
-          pArea->hi_m_vnum);
-        if(obj)
-          sprintf( buf2, "Objects: %5d - %-5d\n\r", pArea->low_o_vnum, 
-          pArea->hi_o_vnum);
-        
-        strcat( buf, buf2 );
-	send_to_char(buf, ch);
-    	}
-    }    
+		snprintf(buf, sizeof(buf), "Conflict:%-15s| ",
+			(pArea->filename ? pArea->filename : "(invalid)"));
+		if(room)
+			snprintf(buf2, sizeof(buf2), "Rooms: %5d - %-5d\n\r", pArea->low_r_vnum, pArea->hi_r_vnum);
+		if(mob)
+			snprintf(buf2, sizeof(buf2), "Mobs: %5d - %-5d\n\r", pArea->low_m_vnum, pArea->hi_m_vnum);
+		if(obj)
+			snprintf(buf2, sizeof(buf2), "Objects: %5d - %-5d\n\r", pArea->low_o_vnum, pArea->hi_o_vnum);
+
+		strncat(buf, buf2, sizeof(buf) - strlen(buf) - 1);
+		send_to_char(buf, ch);
+	}
     for ( pArea = first_bsort; pArea; pArea = pArea->next_sort )
     {
         area_conflict = FALSE;
@@ -6282,84 +6293,19 @@ void do_check_vnums( CHAR_DATA *ch, char *argument )
 
 	if (area_conflict)
 	{
-	sprintf(buf, "Conflict:%-15s| ",
-		(pArea->filename ? pArea->filename : "(invalid)"));
-        if(room)
-          sprintf( buf2, "Rooms: %5d - %-5d\n\r", pArea->low_r_vnum, 
-          pArea->hi_r_vnum);
-        if(mob)
-          sprintf( buf2, "Mobs: %5d - %-5d\n\r", pArea->low_m_vnum, 
-          pArea->hi_m_vnum);
-        if(obj)
-          sprintf( buf2, "Objects: %5d - %-5d\n\r", pArea->low_o_vnum, 
-          pArea->hi_o_vnum);
-        
-        strcat( buf, buf2 );
-	send_to_char(buf, ch);
-    	}
-    }    
+		snprintf(buf, sizeof(buf), "Conflict:%-15s| ",
+			(pArea->filename ? pArea->filename : "(invalid)"));
+		if(room)
+			snprintf(buf2, sizeof(buf2), "Rooms: %5d - %-5d\n\r", pArea->low_r_vnum, pArea->hi_r_vnum);
+		if(mob)
+			snprintf(buf2, sizeof(buf2), "Mobs: %5d - %-5d\n\r", pArea->low_m_vnum, pArea->hi_m_vnum);
+		if(obj)
+			snprintf(buf2, sizeof(buf2), "Objects: %5d - %-5d\n\r", pArea->low_o_vnum, pArea->hi_o_vnum);
 
-/*
-    for ( pArea = first_asort; pArea; pArea = pArea->next_sort )
-    {
-        area_conflict = FALSE;
-	if ( IS_SET( pArea->status, AREA_DELETED ) )
-	   continue;
-	else
-	if (room)
-	  if((pArea->low_r_vnum >= low_range) 
-	  && (pArea->hi_r_vnum <= high_range))
-	    area_conflict = TRUE;
+		strncat(buf, buf2, sizeof(buf) - strlen(buf) - 1);
+		send_to_char(buf, ch);
+	}
 
-	if (mob)
-	  if((pArea->low_m_vnum >= low_range) 
-	  && (pArea->hi_m_vnum <= high_range))
-	    area_conflict = TRUE;
-
-	if (obj)
-	  if((pArea->low_o_vnum >= low_range) 
-	  && (pArea->hi_o_vnum <= high_range))
-	    area_conflict = TRUE;
-
-	if (area_conflict)
-	  ch_printf(ch, "Conflict:%-15s| Rooms: %5d - %-5d"
-		     " Objs: %5d - %-5d Mobs: %5d - %-5d\n\r",
-		(pArea->filename ? pArea->filename : "(invalid)"),
-		pArea->low_r_vnum, pArea->hi_r_vnum,
-		pArea->low_o_vnum, pArea->hi_o_vnum,
-		pArea->low_m_vnum, pArea->hi_m_vnum );
-    }
-
-    for ( pArea = first_bsort; pArea; pArea = pArea->next_sort )
-    {
-        area_conflict = FALSE;
-	if ( IS_SET( pArea->status, AREA_DELETED ) )
-	   continue;
-	else
-	if (room)
-	  if((pArea->low_r_vnum >= low_range) 
-	  && (pArea->hi_r_vnum <= high_range))
-	    area_conflict = TRUE;
-
-	if (mob)
-	  if((pArea->low_m_vnum >= low_range) 
-	  && (pArea->hi_m_vnum <= high_range))
-	    area_conflict = TRUE;
-
-	if (obj)
-	  if((pArea->low_o_vnum >= low_range) 
-	  && (pArea->hi_o_vnum <= high_range))
-	    area_conflict = TRUE;
-
-	if (area_conflict)
-	  sprintf(ch, "Conflict:%-15s| Rooms: %5d - %-5d"
-		     " Objs: %5d - %-5d Mobs: %5d - %-5d\n\r",
-		(pArea->filename ? pArea->filename : "(invalid)"),
-		pArea->low_r_vnum, pArea->hi_r_vnum,
-		pArea->low_o_vnum, pArea->hi_o_vnum,
-		pArea->low_m_vnum, pArea->hi_m_vnum );
-    }
-*/
     return;
 }
 
@@ -6377,7 +6323,7 @@ void do_check_vnums( CHAR_DATA *ch, char *argument )
  *
  * -- Furey
  */
-void tail_chain( void )
+void tail_chain( void );
 {
     return;
-}
+}}
