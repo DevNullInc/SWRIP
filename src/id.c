@@ -139,6 +139,7 @@ void  read_auth( struct descriptor_data *d )
     int      len;                    /* length read */
     char     ruser[20], system[8];   /* remote userid */
     unsigned short  remp = 0, locp = 0;     /* remote port, local port */
+    char log_buf[256];
    *system = *ruser = '\0';
   
    /*
@@ -148,33 +149,30 @@ void  read_auth( struct descriptor_data *d )
     */
    
     if ( ( len = readd( d->auth_fd, d->abuf + d->auth_inc,
-     			sizeof( d->abuf ) - 1 - d->auth_inc ) ) >= 0 )
+          sizeof( d->abuf ) - 1 - d->auth_inc ) ) >= 0 )
     {
-	d->auth_inc += len;
-	d->abuf[d->auth_inc] = '\0';
+  d->auth_inc += len;
+  d->abuf[d->auth_inc] = '\0';
     }
     
     if ( ( len > 0 ) && ( d->auth_inc != ( sizeof( d->abuf ) - 1 ) )
     &&   (sscanf( d->abuf, "%hd , %hd : USERID : %*[^:]: %10s",
           &remp, &locp, ruser ) == 3 ) )
     {
-	s = rindex( d->abuf, ':');
-	*s++ = '\0';
-	for ( t = ( rindex( d->abuf, ':' ) + 1 ); *t; t++ )
-	  if ( !isspace(*t) )
-	    break;
-	strncpy( system, t, sizeof( system ) );
+  s = rindex( d->abuf, ':');
+  *s++ = '\0';
+  for ( t = ( rindex( d->abuf, ':' ) + 1 ); *t; t++ )
+    if ( !isspace(*t) )
+      break;
+  strncpy( system, t, sizeof( system ) );
       
-	for ( t = ruser; *s && ( t < ruser + sizeof( ruser ) ); s++ )
-	  if ( !isspace( *s ) && *s != ':' )
-	    *t++ = *s;
-	*t = '\0';
+  for ( t = ruser; *s && ( t < ruser + sizeof( ruser ) ); s++ )
+    if ( !isspace( *s ) && *s != ':' )
+      *t++ = *s;
+  *t = '\0';
  
-  char log_buf[256];
   snprintf(log_buf, sizeof(log_buf), "auth reply ok, incoming user: [%s]", ruser);
   log_string_plus( log_buf, LOG_COMM, LEVEL_GOD );
-/*      STRFREE(d->user);
-      d->user = STRALLOC(ruser);*/
     }
     else if ( len != 0 )
     {

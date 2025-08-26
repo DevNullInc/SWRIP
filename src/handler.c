@@ -88,12 +88,12 @@ void  explode( OBJ_DATA *obj )
 
     	                      if( !held )
 			      {
-				  sprintf( buf, "%s EXPLODES!\n\r", objcont->short_descr );
+                  snprintf(buf, sizeof(buf), "%s EXPLODES!\n\r", objcont->short_descr);
 				  echo_to_room( AT_BLOOD, room, buf );
 			      }
 			      else
 			      {
-				  sprintf( buf, "%s EXLODES in %s'shands!\n\r", objcont->short_descr, xch->name );
+                  snprintf(buf, sizeof(buf), "%s EXLODES in %s'shands!\n\r", objcont->short_descr, xch->name);
 				  echo_to_room( AT_BLOOD, room, buf );
 			      }
 	                      room_explode( obj , xch, room );
@@ -1086,8 +1086,7 @@ void char_to_room( CHAR_DATA *ch, ROOM_INDEX_DATA *pRoomIndex )
     {
 	char buf[MAX_STRING_LENGTH];
 
-	sprintf( buf, "Char_to_room: %s -> NULL room!  Putting char in limbo (%d)",
-		ch->name, ROOM_VNUM_LIMBO );
+    snprintf(buf, sizeof(buf), "Char_to_room: %s -> NULL room!  Putting char in limbo (%d)", ch->name, ROOM_VNUM_LIMBO);
 	bug( buf, 0 );
         /* This used to just return, but there was a problem with crashing
            and I saw no reason not to just put the char in limbo. -Narn */
@@ -1666,7 +1665,7 @@ void extract_char( CHAR_DATA *ch, bool fPull )
 
     if ( char_died(ch) )
     {
-	sprintf( buf, "extract_char: %s already died!", ch->name );
+    snprintf(buf, sizeof(buf), "extract_char: %s already died!", ch->name);
 	bug( buf, 0 );
 	return;
     }
@@ -2774,9 +2773,9 @@ ch_ret spring_trap( CHAR_DATA *ch, OBJ_DATA *obj )
       }
 
       dam = number_range( obj->value[2], obj->value[2] * 2);
-      sprintf( buf, "You are %s!", txt );
+    snprintf(buf, sizeof(buf), "You are %s!", txt);
       act( AT_HITME, buf, ch, NULL, NULL, TO_CHAR );
-      sprintf( buf, "$n is %s.", txt );
+    snprintf(buf, sizeof(buf), "$n is %s.", txt);
       act( AT_ACTION, buf, ch, NULL, NULL, TO_ROOM );
       --obj->value[0];
       if ( obj->value[0] <= 0 )
@@ -3155,12 +3154,10 @@ void showaffect( CHAR_DATA *ch, AFFECT_DATA *paf )
 	    switch( paf->location )
 	    {
 	      default:
-		sprintf( buf, "Affects %s by %d.\n\r",
-		  affect_loc_name( paf->location ), paf->modifier );
+    snprintf(buf, sizeof(buf), "Affects %s by %d.\n\r", affect_loc_name( paf->location ), paf->modifier);
 		break;
 	      case APPLY_AFFECT:
-		sprintf( buf, "Affects %s by",
-		  affect_loc_name( paf->location ) );
+    snprintf(buf, sizeof(buf), "Affects %s by", affect_loc_name( paf->location ));
 		for ( x = 0; x < 32 ; x++ )
 		if ( IS_SET( paf->modifier, 1 << x ) )
 		{
@@ -3172,15 +3169,12 @@ void showaffect( CHAR_DATA *ch, AFFECT_DATA *paf )
 	      case APPLY_WEAPONSPELL:
 	      case APPLY_WEARSPELL:
 	      case APPLY_REMOVESPELL:
-		sprintf( buf, "Casts spell '%s'\n\r",
-			IS_VALID_SN(paf->modifier) ? skill_table[paf->modifier]->name
-						   : "unknown" );
+    snprintf(buf, sizeof(buf), "Casts spell '%s'\n\r", IS_VALID_SN(paf->modifier) ? skill_table[paf->modifier]->name : "unknown");
 		break;
 	      case APPLY_RESISTANT:
 	      case APPLY_IMMUNE:
 	      case APPLY_SUSCEPTIBLE:
-		sprintf( buf, "Affects %s by",
-		  affect_loc_name( paf->location ) );
+    snprintf(buf, sizeof(buf), "Affects %s by", affect_loc_name( paf->location ));
 		for ( x = 0; x < 32 ; x++ )
 		if ( IS_SET( paf->modifier, 1 << x ) )
 		{

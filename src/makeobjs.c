@@ -78,10 +78,12 @@ void make_scraps( OBJ_DATA *obj )
   }
   else
   {
-     sprintf( buf, scraps->short_descr, obj->short_descr );
+    snprintf( buf, sizeof(buf), "%s", scraps->short_descr );
+    snprintf( buf, sizeof(buf), buf, obj->short_descr );
      STRFREE( scraps->short_descr );
      scraps->short_descr = STRALLOC( buf );
-     sprintf( buf, scraps->description, obj->short_descr );
+    snprintf( buf, sizeof(buf), "%s", scraps->description );
+    snprintf( buf, sizeof(buf), buf, obj->short_descr );
      STRFREE( scraps->description );
      scraps->description = STRALLOC( buf );
   }
@@ -183,15 +185,17 @@ void make_corpse( CHAR_DATA *ch, CHAR_DATA *killer )
     }
 
     /* Added corpse name - make locate easier , other skills */
-    sprintf( buf, "corpse %s", name );
+    snprintf( buf, sizeof(buf), "corpse %s", name );
     STRFREE( corpse->name );
     corpse->name = STRALLOC( buf );
 
-    sprintf( buf, corpse->short_descr, name );
+    snprintf( buf, sizeof(buf), "%s", corpse->short_descr );
+    snprintf( buf, sizeof(buf), buf, name );
     STRFREE( corpse->short_descr );
     corpse->short_descr = STRALLOC( buf );
 
-    sprintf( buf, corpse->description, name );
+    snprintf( buf, sizeof(buf), "%s", corpse->description );
+    snprintf( buf, sizeof(buf), buf, name );
     STRFREE( corpse->description );
     corpse->description = STRALLOC( buf );
 
@@ -254,7 +258,8 @@ OBJ_DATA *create_money( int amount )
     else
     {
 	obj = create_object( get_obj_index( OBJ_VNUM_MONEY_SOME ), 0 );
-	sprintf( buf, obj->short_descr, amount );
+    snprintf( buf, sizeof(buf), "%s", obj->short_descr );
+    snprintf( buf, sizeof(buf), buf, amount );
 	STRFREE( obj->short_descr );
 	obj->short_descr = STRALLOC( buf );
 	obj->value[0]	 = amount;
