@@ -108,9 +108,7 @@ void  send_auth( struct descriptor_data *d )
     }
   
     /* compose request */
-    sprintf( authbuf, "%u , %u\r\n", 
-	(unsigned int)ntohs(them.sin_port),
-	(unsigned int)ntohs(us.sin_port));
+  snprintf(authbuf, sizeof(authbuf), "%u , %u\r\n", (unsigned int)ntohs(them.sin_port), (unsigned int)ntohs(us.sin_port));
 
 	z = write_to_descriptor( d->auth_fd, authbuf, strlen(authbuf) );
   
@@ -120,8 +118,6 @@ void  send_auth( struct descriptor_data *d )
     {
 	if (d->atimes >= 19)
 	{
-/*	  sprintf( log_buf, "auth request, broken pipe [%d/%d]", z, errno );
-	  log_string(log_buf); */
 	  perror("send_auth");
 	}
 	authsenderr:
@@ -142,7 +138,7 @@ void  read_auth( struct descriptor_data *d )
     char     *s, *t;
     int      len;                    /* length read */
     char     ruser[20], system[8];   /* remote userid */
-    u_short  remp = 0, locp = 0;     /* remote port, local port */
+    unsigned short  remp = 0, locp = 0;     /* remote port, local port */
    *system = *ruser = '\0';
   
    /*
@@ -174,17 +170,19 @@ void  read_auth( struct descriptor_data *d )
 	    *t++ = *s;
 	*t = '\0';
  
-	sprintf( log_buf, "auth reply ok, incoming user: [%s]", ruser );
-        log_string_plus( log_buf, LOG_COMM, LEVEL_GOD );
+  char log_buf[256];
+  snprintf(log_buf, sizeof(log_buf), "auth reply ok, incoming user: [%s]", ruser);
+  log_string_plus( log_buf, LOG_COMM, LEVEL_GOD );
 /*      STRFREE(d->user);
       d->user = STRALLOC(ruser);*/
     }
     else if ( len != 0 )
     {
-	if (!index( d->abuf, '\n' ) && !index( d->abuf, '\r' ) ) return;
-	sprintf( log_buf, "bad auth reply: %s", d->abuf );
-	log_string_plus( log_buf, LOG_COMM, LEVEL_GOD );
-	ruser[0] = '\0';
+  if (!index( d->abuf, '\n' ) && !index( d->abuf, '\r' ) ) return;
+
+  snprintf(log_buf, sizeof(log_buf), "bad auth reply: %s", d->abuf);
+  log_string_plus( log_buf, LOG_COMM, LEVEL_GOD );
+  ruser[0] = '\0';
     }
     closed( d->auth_fd );
     if ( d->auth_fd == maxdesc )
@@ -204,31 +202,9 @@ void  read_auth( struct descriptor_data *d )
 
 void nonblock( int s )
 {
-  if ( fcntl( s, F_SETFL, FNDELAY ) == -1 )
+  if ( fcntl( s, F_SETFL, O_NONBLOCK ) == -1 )
   {
     perror( "Noblock" );
     exit(2);
   }
 }
-
-/*
-int workaround( struct descriptor_data *d )
-{
-   BAN_DATA *tmp;
-   char *nicnamehost;
-   
-   sprintf( log_buf, "%s!%s@%s", d->name, d->user, d->host );
-   nicknamehost = str_dup( log_buf );
-   for ( tmp = ncsa_list; tmp; tmp = tmp->next )
-   {
-     if ( !match( tmp->user, nicknamehost ) )
-     {
-       FREE( nicknamehost );
-       write_to_descriptor( d->descriptor, "NCSA telnet patch loaded.\n" );
-       return 1;
-     }
-   }
-   FREE(nicknamehost);
-   return 0;
-}
-*/

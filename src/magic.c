@@ -1129,7 +1129,7 @@ void do_cast( CHAR_DATA *ch, char *argument )
 		do_cast, 1 );
 	act( AT_MAGIC, "You begin to feel the force in yourself and those around you...", ch, NULL, NULL, TO_CHAR );
 	act( AT_MAGIC, "$n reaches out with the force to those around...", ch, NULL, NULL, TO_ROOM );
-	sprintf( staticbuf, "%s %s", arg2, target_name );
+    snprintf( staticbuf, sizeof(staticbuf), "%s %s", arg2, target_name );
 	ch->dest_buf = str_dup( staticbuf );
 	ch->tempnum = sn;
 	return;	
@@ -1335,7 +1335,7 @@ void do_cast( CHAR_DATA *ch, char *argument )
         force_exp = skill->min_level*skill->min_level*10;
         force_exp = URANGE( 0 , force_exp, ( exp_level(ch->skill_level[FORCE_ABILITY]+1 )-exp_level(ch->skill_level[FORCE_ABILITY] ) )/35 );
 	if( !ch->fighting  )
-	  ch_printf( ch, "You gain %d force experience.\n\r" , force_exp );
+    ch_printf( ch, "You gain %d force experience.\n\r" , force_exp );
 	gain_exp(ch, force_exp, FORCE_ABILITY );
         learn_from_success( ch, sn );
     }
@@ -1834,7 +1834,7 @@ ch_ret spell_charm_person( int sn, int level, CHAR_DATA *ch, void *vo )
     if ( ch != victim )
 	send_to_char( "Ok.\n\r", ch );
 
-    sprintf( buf, "%s has charmed %s.", ch->name, victim->name);
+    snprintf( buf, sizeof(buf), "%s has charmed %s.", ch->name, victim->name);
     log_string_plus( buf, LOG_NORMAL, ch->top_level );
 /*
     to_channel( buf, CHANNEL_MONITOR, "Monitor", UMAX( LEVEL_IMMORTAL, ch->top_level ) );
@@ -1986,7 +1986,7 @@ ch_ret spell_create_water( int sn, int level, CHAR_DATA *ch, void *vo )
 	{
 	    char buf[MAX_STRING_LENGTH];
 
-	    sprintf( buf, "%s water", obj->name );
+           snprintf( buf, sizeof(buf), "%s water", obj->name );
 	    STRFREE( obj->name );
 	    obj->name = STRALLOC( buf );
 	}
@@ -2551,15 +2551,15 @@ ch_ret spell_identify( int sn, int level, CHAR_DATA *ch, void *vo )
     if ( ( obj = get_obj_carry( ch, target_name ) ) != NULL )
     {
 	set_char_color( AT_LBLUE, ch );
-	ch_printf( ch,
-	"Object '%s' is %s, special properties: %s %s.\n\rIts weight is %d, value is %d.\n\r",
-	obj->name,
-	aoran( item_type_name( obj ) ),
-	extra_bit_name( obj->extra_flags ),
-	magic_bit_name( obj->magic_flags ),
-	obj->weight,
-	obj->cost
-	);
+        ch_printf( ch,
+        "Object '%s' is %s, special properties: %s %s.\n\rIts weight is %d, value is %d.\n\r",
+        obj->name,
+        aoran( item_type_name( obj ) ),
+        extra_bit_name( obj->extra_flags ),
+        magic_bit_name( obj->magic_flags ),
+        obj->weight,
+        obj->cost
+        );
 	set_char_color( AT_MAGIC, ch );
 
     switch ( obj->item_type )
@@ -2567,7 +2567,7 @@ ch_ret spell_identify( int sn, int level, CHAR_DATA *ch, void *vo )
     case ITEM_PILL:
     case ITEM_SCROLL:
     case ITEM_POTION:
-	ch_printf( ch, "Level %d spells of:", obj->value[0] );
+        ch_printf( ch, "Level %d spells of:", obj->value[0] );
 
 	if ( obj->value[1] >= 0 && (sktmp=get_skilltype(obj->value[1])) != NULL )
 	{
@@ -2594,8 +2594,8 @@ ch_ret spell_identify( int sn, int level, CHAR_DATA *ch, void *vo )
 	break;
 
     case ITEM_DEVICE:
-	ch_printf( ch, "Has %d(%d) charges of level %d",
-	    obj->value[1], obj->value[2], obj->value[0] );
+       ch_printf( ch, "Has %d(%d) charges of level %d",
+           obj->value[1], obj->value[2], obj->value[0] );
 
 	if ( obj->value[3] >= 0 && (sktmp=get_skilltype(obj->value[3])) != NULL )
 	{
@@ -2608,59 +2608,59 @@ ch_ret spell_identify( int sn, int level, CHAR_DATA *ch, void *vo )
 	break;
 
     case ITEM_WEAPON:
-	ch_printf( ch, "Damage is %d to %d (average %d).\n\r",
-	    obj->value[1], obj->value[2],
-	    ( obj->value[1] + obj->value[2] ) / 2 );
+       ch_printf( ch, "Damage is %d to %d (average %d).\n\r",
+           obj->value[1], obj->value[2],
+           ( obj->value[1] + obj->value[2] ) / 2 );
 	if ( obj->value[3] == WEAPON_BLASTER )
 	{
 	  if (obj->blaster_setting == BLASTER_FULL)
-	    ch_printf( ch, "It is set on FULL power.\n\r");
+        ch_printf( ch, "It is set on FULL power.\n\r");
 	  else if (obj->blaster_setting == BLASTER_HIGH)
-	    ch_printf( ch, "It is set on HIGH power.\n\r");
+        ch_printf( ch, "It is set on HIGH power.\n\r");
 	  else if (obj->blaster_setting == BLASTER_NORMAL)
-	    ch_printf( ch, "It is set on NORMAL power.\n\r");
+        ch_printf( ch, "It is set on NORMAL power.\n\r");
 	  else if (obj->blaster_setting == BLASTER_HALF)
-	    ch_printf( ch, "It is set on HALF power.\n\r");
+        ch_printf( ch, "It is set on HALF power.\n\r");
 	  else if (obj->blaster_setting == BLASTER_LOW)
-	    ch_printf( ch, "It is set on LOW power.\n\r");
+        ch_printf( ch, "It is set on LOW power.\n\r");
 	  else if (obj->blaster_setting == BLASTER_STUN)
-	    ch_printf( ch, "It is set on STUN.\n\r");
-	  ch_printf( ch, "It has %d out of %d charges.\n\r",
-	    obj->value[4], obj->value[5] );
+        ch_printf( ch, "It is set on STUN.\n\r");
+            ch_printf( ch, "It has %d out of %d charges.\n\r",
+                obj->value[4], obj->value[5] );
 	}
 	else if ( obj->value[3] == WEAPON_LIGHTSABER ||
 	          obj->value[3] == WEAPON_VIBRO_BLADE ||
 	          obj->value[3] == WEAPON_FORCE_PIKE)
 	{
-	   ch_printf( ch, "It has %d out of %d units of charge remaining.\n\r",
-	     obj->value[4], obj->value[5] );
+         ch_printf( ch, "It has %d out of %d units of charge remaining.\n\r",
+             obj->value[4], obj->value[5] );
 	}
 	else if ( obj->value[3] == WEAPON_BOWCASTER )
 	{
-	   ch_printf( ch, "It has %d out of %d energy bolts remaining.\n\r",
-	     obj->value[4], obj->value[5] );
+         ch_printf( ch, "It has %d out of %d energy bolts remaining.\n\r",
+             obj->value[4], obj->value[5] );
 	}
 	break;
     
     case ITEM_AMMO:
-        ch_printf( ch, "It has %d charges.\n\r",
-	    obj->value[0] );
+    ch_printf( ch, "It has %d charges.\n\r",
+       obj->value[0] );
 	break;
     
     case ITEM_BOLT:
-        ch_printf( ch, "It has %d energy bolts.\n\r",
-	    obj->value[0] );
+    ch_printf( ch, "It has %d energy bolts.\n\r",
+       obj->value[0] );
 	break;
     
     case ITEM_BATTERY:
-        ch_printf( ch, "It has %d units of charge.\n\r",
-	    obj->value[0] );
+    ch_printf( ch, "It has %d units of charge.\n\r",
+       obj->value[0] );
 	break;
     
     case ITEM_ARMOR:
-	ch_printf( ch, "Current armor class is %d. ( based on current condition )\n\r", obj->value[0] );
-	ch_printf( ch, "Maximum armor class is %d. ( based on top condition )\n\r", obj->value[1] );
-	ch_printf( ch, "Applied armor class is %d. ( based condition and location worn )\n\r", apply_ac(obj, obj->wear_loc) );
+        ch_printf( ch, "Current armor class is %d. ( based on current condition )\n\r", obj->value[0] );
+        ch_printf( ch, "Maximum armor class is %d. ( based on top condition )\n\r", obj->value[1] );
+        ch_printf( ch, "Applied armor class is %d. ( based condition and location worn )\n\r", apply_ac(obj, obj->wear_loc) );
 	break;
     }
 
@@ -2684,18 +2684,18 @@ ch_ret spell_identify( int sn, int level, CHAR_DATA *ch, void *vo )
 
     if ( IS_NPC(victim) )
     {
-      ch_printf(ch, "%s appears to be between level %d and %d.\n\r",
+    ch_printf(ch, "%s appears to be between level %d and %d.\n\r",
  	victim->name,
-	victim->top_level - (victim->top_level % 5), 
-        victim->top_level - (victim->top_level % 5) + 5);
+ 	victim->top_level - (victim->top_level % 5), 
+      victim->top_level - (victim->top_level % 5) + 5);
     }
     else
     {
-      ch_printf(ch, "%s appears to be level %d.\n\r", victim->name, victim->top_level);
+    ch_printf(ch, "%s appears to be level %d.\n\r", victim->name, victim->top_level);
     }
 
     ch_printf(ch, "%s looks like %s.\n\r", 
-            victim->name, aoran(get_race(victim)));
+        victim->name, aoran(get_race(victim)));
 
     if ( (chance(ch, 50) && ch->top_level >= victim->top_level + 10 )
     ||    IS_IMMORTAL(ch) )
@@ -2899,8 +2899,8 @@ ch_ret spell_locate_object( int sn, int level, CHAR_DATA *ch, void *vo )
 	    ;
 	if ( cnt >= MAX_NEST )
 	{
-	    sprintf( buf, "spell_locate_obj: object [%d] %s is nested more than %d times!",
-		obj->pIndexData->vnum, obj->short_descr, MAX_NEST );
+           snprintf( buf, sizeof(buf), "spell_locate_obj: object [%d] %s is nested more than %d times!",
+               obj->pIndexData->vnum, obj->short_descr, MAX_NEST );
 	    bug( buf, 0 );
 	    continue;
 	}
@@ -2913,14 +2913,14 @@ ch_ret spell_locate_object( int sn, int level, CHAR_DATA *ch, void *vo )
 	      && IS_SET( in_obj->carried_by->act, PLR_WIZINVIS ) )
 	      continue;
 
-	    sprintf( buf, "%s carried by %s.\n\r",
-		   obj_short(obj), PERS(in_obj->carried_by, ch) );
+        snprintf( buf, sizeof(buf), "%s carried by %s.\n\r",
+            obj_short(obj), PERS(in_obj->carried_by, ch) );
 	}
 	else
 	{
-	    sprintf( buf, "%s in %s.\n\r",
-		obj_short(obj), in_obj->in_room == NULL
-		    ? "somewhere" : in_obj->in_room->name );
+           snprintf( buf, sizeof(buf), "%s in %s.\n\r",
+               obj_short(obj), in_obj->in_room == NULL
+                   ? "somewhere" : in_obj->in_room->name );
 	}
 
 	buf[0] = UPPER(buf[0]);
@@ -3200,7 +3200,8 @@ ch_ret spell_sleep( int sn, int level, CHAR_DATA *ch, void *vo )
     /* Added by Narn at the request of Dominus. */
     if ( !IS_NPC( victim ) )
     {
-	sprintf( log_buf, "%s has cast sleep on %s.", ch->name, victim->name );
+    char log_buf[256];
+    snprintf( log_buf, sizeof(log_buf), "%s has cast sleep on %s.", ch->name, victim->name );
 	log_string_plus( log_buf, LOG_NORMAL, ch->top_level );
 	to_channel( log_buf, CHANNEL_MONITOR, "Monitor", UMAX( LEVEL_IMMORTAL, ch->top_level ) );
     }
@@ -3248,8 +3249,8 @@ ch_ret spell_ventriloquate( int sn, int level, CHAR_DATA *ch, void *vo )
 
     target_name = one_argument( target_name, speaker );
 
-    sprintf( buf1, "%s says '%s'.\n\r",              speaker, target_name );
-    sprintf( buf2, "Someone makes %s say '%s'.\n\r", speaker, target_name );
+    snprintf( buf1, sizeof(buf1), "%s says '%s'.\n\r",              speaker, target_name );
+    snprintf( buf2, sizeof(buf2), "Someone makes %s say '%s'.\n\r", speaker, target_name );
     buf1[0] = UPPER(buf1[0]);
 
     for ( vch = ch->in_room->first_person; vch; vch = vch->next_in_room )
@@ -3909,17 +3910,17 @@ ch_ret spell_animate_dead( int sn, int level, CHAR_DATA *ch, void *vo )
 	act(AT_MAGIC, "$n makes $T rise from the grave!", ch, NULL, pMobIndex->short_descr, TO_ROOM);
 	act(AT_MAGIC, "You make $T rise from the grave!", ch, NULL, pMobIndex->short_descr, TO_CHAR);
 
-	sprintf(buf, "animated corpse %s", pMobIndex->player_name);
-	STRFREE(mob->name);
-	mob->name = STRALLOC(buf);
+        snprintf(buf, sizeof(buf), "animated corpse %s", pMobIndex->player_name);
+        STRFREE(mob->name);
+        mob->name = STRALLOC(buf);
 
-	sprintf(buf, "The animated corpse of %s", pMobIndex->short_descr);
-	STRFREE(mob->short_descr);
-	mob->short_descr = STRALLOC(buf);
+        snprintf(buf, sizeof(buf), "The animated corpse of %s", pMobIndex->short_descr);
+        STRFREE(mob->short_descr);
+        mob->short_descr = STRALLOC(buf);
 
-	sprintf(buf, "An animated corpse of %s struggles with the horror of its undeath.\n\r", pMobIndex->short_descr);
-	STRFREE(mob->long_descr);
-	mob->long_descr = STRALLOC(buf);
+        snprintf(buf, sizeof(buf), "An animated corpse of %s struggles with the horror of its undeath.\n\r", pMobIndex->short_descr);
+        STRFREE(mob->long_descr);
+        mob->long_descr = STRALLOC(buf);
 	add_follower( mob, ch );
 	af.type      = sn;
 	af.duration  = (sh_int) ( (number_fuzzy( (level + 1) / 4 ) + 1) * DUR_CONV );
@@ -4020,7 +4021,7 @@ ch_ret spell_possess( int sn, int level, CHAR_DATA *ch, void *vo )
     af.bitvector = AFF_POSSESS;
     affect_to_char( victim, &af );
 
-    sprintf(buf, "You have possessed %s!\n\r", victim->short_descr);
+    snprintf(buf, sizeof(buf), "You have possessed %s!\n\r", victim->short_descr);
 
     ch->desc->character = victim;
     ch->desc->original  = ch;
@@ -4804,7 +4805,7 @@ ch_ret spell_obj_inv( int sn, int level, CHAR_DATA *ch, void *vo )
 		{
 		    char buf[MAX_STRING_LENGTH];
 
-		    sprintf( buf, "%s water", obj->name );
+               snprintf( buf, sizeof(buf), "%s water", obj->name );
 		    STRFREE( obj->name );
 		    obj->name = STRALLOC( buf );
 		}
