@@ -883,7 +883,7 @@ void do_mptransfer( CHAR_DATA *ch, char *argument )
 	    &&   !NOT_AUTHED(victim)
 	    &&   can_see( ch, victim ) )
 	    {
-		sprintf( buf, "%s %s", victim->name, arg2 );
+    snprintf( buf, sizeof(buf), "%s %s", victim->name, arg2 );
 		do_mptransfer( ch, buf );
 	    }
 	}
@@ -1502,9 +1502,9 @@ void do_mpapply( CHAR_DATA *ch, char *argument )
   if( victim->pcdata->auth_state >= 1 )
     return;
 
-  sprintf( log_buf, "%s@%s new %s applying for authorization...", 
-           victim->name, victim->desc->host, 
-           race_table[victim->race].race_name);
+    snprintf( log_buf, sizeof(log_buf), "%s@%s new %s applying for authorization...",
+                     victim->name, victim->desc->host,
+                     race_table[victim->race].race_name);
   log_string( log_buf );
   to_channel( log_buf, CHANNEL_MONITOR, "Monitor", LEVEL_IMMORTAL );
   victim->pcdata->auth_state = 1;
@@ -1551,9 +1551,9 @@ void do_mpapplyb( CHAR_DATA *ch, char *argument )
   case 1:   
   default:
   send_to_char( "You attempt to regain the gods' attention.\n\r", victim);
-  sprintf( log_buf, "%s@%s new %s applying for authorization...",                      
-                    victim->name, victim->desc->host,
-                    race_table[victim->race].race_name);
+    snprintf( log_buf, sizeof(log_buf), "%s@%s new %s applying for authorization...",
+                                        victim->name, victim->desc->host,
+                                        race_table[victim->race].race_name);
   log_string( log_buf );
   to_channel( log_buf, CHANNEL_MONITOR, "Monitor", LEVEL_IMMORTAL );
   add_timer(victim, TIMER_APPLIED, 10, NULL, 0);
@@ -1816,10 +1816,10 @@ ch_ret simple_damage( CHAR_DATA *ch, CHAR_DATA *victim, int dam, int dt )
     {
 	if ( !npcvict )
 	{
-	    sprintf( log_buf, "%s killed by %s at %d",
-		victim->name,
-		(IS_NPC(ch) ? ch->short_descr : ch->name),
-		victim->in_room->vnum );
+            snprintf( log_buf, sizeof(log_buf), "%s killed by %s at %d",
+        victim->name,
+        (IS_NPC(ch) ? ch->short_descr : ch->name),
+        victim->in_room->vnum );
 	    log_string( log_buf );
 	    to_channel( log_buf, CHANNEL_MONITOR, "Monitor", LEVEL_IMMORTAL );
 
