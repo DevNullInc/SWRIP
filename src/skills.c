@@ -493,7 +493,7 @@ void do_slookup( CHAR_DATA *ch, char *argument )
 	{
 	    if ( aff == skill->affects )
 	      send_to_char( "\n\r", ch );
-	    sprintf( buf, "Affect %d", ++cnt );
+		snprintf( buf, sizeof(buf), "Affect %d", ++cnt );
 	    if ( aff->location )
 	    {
 		strcat( buf, " modifies " );
@@ -556,9 +556,9 @@ void do_slookup( CHAR_DATA *ch, char *argument )
 	    ch_printf( ch, "Immroom   : %s\n\r", skill->imm_room );
 	if ( skill->type != SKILL_HERB && skill->guild >= 0 && skill->guild < MAX_ABILITY)
 	{
-		sprintf(buf, "guild: %s   Align: %4d   lvl: %3d\n\r",
-				ability_name[skill->guild], skill->alignment,    skill->min_level );
-            send_to_char( buf, ch );
+	snprintf(buf, sizeof(buf), "guild: %s   Align: %4d   lvl: %3d\n\r",
+		ability_name[skill->guild], skill->alignment,    skill->min_level );
+	    send_to_char( buf, ch );
 	}
 	send_to_char( "\n\r", ch );
     }
@@ -1150,7 +1150,7 @@ void do_sset( CHAR_DATA *ch, char *argument )
     {
 	if ( (sn = skill_lookup(arg1)) >= 0 )
 	{
-	    sprintf(arg1, "%d %s %s", sn, arg2, argument);
+		snprintf(arg1, sizeof(arg1), "%d %s %s", sn, arg2, argument);
 	    do_sset(ch, arg1);
 	}
 	else
@@ -1838,7 +1838,7 @@ void do_steal( CHAR_DATA *ch, char *argument )
 
 	if (IS_NPC(victim))
 	{
-	  sprintf( buf, "%s is a bloody thief!", ch->name );
+	snprintf( buf, sizeof(buf), "%s is a bloody thief!", ch->name );
 	  do_yell( victim, buf );
 	}
 
@@ -2165,8 +2165,8 @@ void do_kick( CHAR_DATA *ch, char *argument )
     
     if ( IS_SET(victim->act, PLR_AFK))
     {
-      sprintf( logbuf , "%s just attacked %s with an afk flag on!." , ch->name, victim->name );
-      log_string( logbuf );
+	snprintf( logbuf , sizeof(logbuf), "%s just attacked %s with an afk flag on!." , ch->name, victim->name );
+	log_string( logbuf );
     }
     
 
@@ -2281,8 +2281,8 @@ void do_bite( CHAR_DATA *ch, char *argument )
     
     if ( IS_SET(victim->act, PLR_AFK))
     {
-      sprintf( logbuf , "%s just attacked %s with an afk flag on!." , ch->name, victim->name );
-      log_string( logbuf );
+	snprintf( logbuf , sizeof(logbuf), "%s just attacked %s with an afk flag on!." , ch->name, victim->name );
+	log_string( logbuf );
     }
     
 
@@ -2325,8 +2325,8 @@ void do_claw( CHAR_DATA *ch, char *argument )
     
     if ( IS_SET(victim->act, PLR_AFK))
     {
-      sprintf( logbuf , "%s just attacked %s with an afk flag on!." , ch->name, victim->name );
-      log_string( logbuf );
+	snprintf( logbuf , sizeof(logbuf), "%s just attacked %s with an afk flag on!." , ch->name, victim->name );
+	log_string( logbuf );
     }
     
 
@@ -2364,11 +2364,11 @@ void do_sting( CHAR_DATA *ch, char *argument )
 	return;
     }
     
-    if ( IS_SET(victim->act, PLR_AFK))
-    {
-      sprintf( logbuf , "%s just attacked %s with an afk flag on!." , ch->name, victim->name );
-      log_string( logbuf );
-    }
+		if ( IS_SET(victim->act, PLR_AFK))
+		{
+			snprintf( logbuf , sizeof(logbuf), "%s just attacked %s with an afk flag on!." , ch->name, victim->name );
+			log_string( logbuf );
+		}
     
 
     WAIT_STATE( ch, skill_table[gsn_sting]->beats );
@@ -2406,11 +2406,11 @@ void do_tail( CHAR_DATA *ch, char *argument )
 	return;
     }
     
-    if ( IS_SET(victim->act, PLR_AFK))
-    {
-      sprintf( logbuf , "%s just attacked %s with an afk flag on!." , ch->name, victim->name );
-      log_string( logbuf );
-    }
+		if ( IS_SET(victim->act, PLR_AFK))
+		{
+			snprintf( logbuf , sizeof(logbuf), "%s just attacked %s with an afk flag on!." , ch->name, victim->name );
+			log_string( logbuf );
+		}
     
 
     WAIT_STATE( ch, skill_table[gsn_tail]->beats );
@@ -3748,19 +3748,19 @@ void do_scribe( CHAR_DATA *ch, char *argument )
 
      scroll->value[0] = ch->top_level;
 
-     sprintf(buf1, "scribed book" );
+	snprintf(buf1, sizeof(buf1), "scribed book" );
 
      STRFREE(scroll->short_descr);
 
      scroll->short_descr = STRALLOC( aoran(buf1) );
 
-     sprintf(buf2, "A scribed book lies in the dust." );
+	snprintf(buf2, sizeof(buf2), "A scribed book lies in the dust." );
 
      STRFREE(scroll->description);
 
      scroll->description = STRALLOC(buf2);
 
-     sprintf(buf3, "scroll scribing scribed book %s", skill_table[sn]->name);
+	snprintf(buf3, sizeof(buf3), "scroll scribing scribed book %s", skill_table[sn]->name);
 
      STRFREE(scroll->name);
 
@@ -4076,7 +4076,7 @@ void do_hitall( CHAR_DATA *ch, char *argument )
       
     if ( IS_SET(vch->act, PLR_AFK))
     {
-      sprintf( logbuf , "%s just attacked %s with HITALL with an afk flag on!." , ch->name, vch->name );
+	snprintf( logbuf , sizeof(logbuf), "%s just attacked %s with HITALL with an afk flag on!." , ch->name, vch->name );
       log_string( logbuf );
     }
 
@@ -4296,20 +4296,20 @@ void do_scan( CHAR_DATA *ch, char *argument )
  //  korps               = create_object( get_obj_index(OBJ_VNUM_CORPSE_PC), 0 );
      skin                = create_object( get_obj_index(OBJ_VNUM_SKIN), 0 );
      name                = IS_NPC(ch) ? korps->short_descr : corpse->short_descr;
-     sprintf( buf, skin->short_descr, name );
+	snprintf( buf, sizeof(buf), skin->short_descr, name );
      STRFREE( skin->short_descr );
      skin->short_descr = STRALLOC( buf );
-     sprintf( buf, skin->description, name );
+	snprintf( buf, sizeof(buf), skin->description, name );
      STRFREE( skin->description );
      skin->description = STRALLOC( buf );
  
-     sprintf( buf, "The skinned bones of %s", name );
+	snprintf( buf, sizeof(buf), "The skinned bones of %s", name );
      STRFREE( corpse->name );
      corpse->name = STRALLOC( buf );
-     sprintf( buf, "The skinned bones of %s", name );
+	snprintf( buf, sizeof(buf), "The skinned bones of %s", name );
      STRFREE( corpse->description );
      corpse->description = STRALLOC( buf );
-     sprintf( buf, "The skinned bones of %s", name );
+	snprintf( buf, sizeof(buf), "The skinned bones of %s", name );
      STRFREE( corpse->short_descr );
      corpse->short_descr = STRALLOC( buf );
      corpse->value[1] = 1;
