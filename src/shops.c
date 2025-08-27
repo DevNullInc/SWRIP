@@ -453,13 +453,13 @@ void do_buy( CHAR_DATA *ch, char *argument )
 	argument = one_argument( argument, arg );
 	if ( arg[0] != '\0' )
 	{
-	    sprintf( buf, "%s %s", pet->name, arg );
+		snprintf( buf, sizeof(buf), "%s %s", pet->name, arg );
 	    STRFREE( pet->name );
 	    pet->name = STRALLOC( buf );
 	}
 
-	sprintf( buf, "%sA neck tag says 'I belong to %s'.\n\r",
-	    pet->description, ch->name );
+	snprintf( buf, sizeof(buf), "%sA neck tag says 'I belong to %s'.\n\r",
+		pet->description, ch->name );
 	STRFREE( pet->description );
 	pet->description = STRALLOC( buf );
 
@@ -628,13 +628,13 @@ void do_buy( CHAR_DATA *ch, char *argument )
 	}
         else
 	{
-	    sprintf( arg, "$n buys %d $p%s.", noi,
-		( obj->short_descr[strlen(obj->short_descr)-1] == 's'
-		? "" : "s" ) );
+		snprintf( arg, sizeof(arg), "$n buys %d $p%s.", noi,
+			( obj->short_descr[strlen(obj->short_descr)-1] == 's'
+			? "" : "s" ) );
 	    act( AT_ACTION, arg, ch, obj, NULL, TO_ROOM );
-	    sprintf( arg, "You buy %d $p%s.", noi,
-		( obj->short_descr[strlen(obj->short_descr)-1] == 's'
-		? "" : "s" ) );
+		snprintf( arg, sizeof(arg), "You buy %d $p%s.", noi,
+			( obj->short_descr[strlen(obj->short_descr)-1] == 's'
+			? "" : "s" ) );
 	    act( AT_ACTION, arg, ch, obj, NULL, TO_CHAR );
 	    act( AT_ACTION, "$N puts them into a bag and hands it to you.",
 		ch, NULL, keeper, TO_CHAR );
@@ -896,7 +896,7 @@ void do_sell( CHAR_DATA *ch, char *argument )
    
     separate_obj( obj );
     act( AT_ACTION, "$n sells $p.", ch, obj, NULL, TO_ROOM );
-    sprintf( buf, "You sell $p for %d credit%s.",
+	snprintf( buf, sizeof(buf), "You sell $p for %d credit%s.",
 	cost, cost == 1 ? "" : "s" );
     act( AT_ACTION, buf, ch, obj, NULL, TO_CHAR );
     ch->gold     += cost;
@@ -981,7 +981,7 @@ void do_value( CHAR_DATA *ch, char *argument )
 	return;
     }
 
-    sprintf( buf, "$n tells you 'I'll give you %d credits for $p.'", cost );
+	snprintf( buf, sizeof(buf), "$n tells you 'I'll give you %d credits for $p.'", cost );
     act( AT_TELL, buf, keeper, obj, ch, TO_VICT );
     ch->reply = keeper;
 
@@ -1011,19 +1011,19 @@ void repair_one_obj( CHAR_DATA *ch, CHAR_DATA *keeper, OBJ_DATA *obj,
 
    else if ( (cost = strcmp("all",arg) ? cost : 11*cost/10) > ch->gold )
    {
-      sprintf( buf,
-       "$N tells you, 'It will cost %d credit%s to %s %s...'", cost,
-        cost == 1 ? "" : "s", fixstr, obj->name );
+	snprintf( buf, sizeof(buf),
+	 "$N tells you, 'It will cost %d credit%s to %s %s...'", cost,
+	  cost == 1 ? "" : "s", fixstr, obj->name );
       act( AT_TELL, buf, ch, NULL, keeper, TO_CHAR );
       act( AT_TELL, "$N tells you, 'Which I see you can't afford.'", ch,
               NULL, keeper, TO_CHAR );
    }
    else
    {
-      sprintf( buf, "$n gives $p to $N, who quickly %s it.", fixstr2 );
+	snprintf( buf, sizeof(buf), "$n gives $p to $N, who quickly %s it.", fixstr2 );
       act( AT_ACTION, buf, ch, obj, keeper, TO_ROOM );
-      sprintf( buf, "$N charges you %d credit%s to %s $p.",
-          cost, cost == 1 ? "" : "s", fixstr );
+	  snprintf( buf, sizeof(buf), "$N charges you %d credit%s to %s $p.",
+		  cost, cost == 1 ? "" : "s", fixstr );
       act( AT_ACTION, buf, ch, obj, keeper, TO_CHAR );
       ch->gold     -= cost;
       keeper->gold += cost;
@@ -1143,9 +1143,9 @@ void appraise_all( CHAR_DATA *ch, CHAR_DATA *keeper, char *fixstr )
             }
             else 
             {
-            sprintf( buf,
-            "$N tells you, 'It will cost %d credit%s to %s %s'",
-            cost, cost == 1 ? "" : "s", fixstr, obj->name );
+				snprintf( buf, sizeof(buf),
+				"$N tells you, 'It will cost %d credit%s to %s %s'",
+				cost, cost == 1 ? "" : "s", fixstr, obj->name );
             act( AT_TELL, buf, ch, NULL, keeper, TO_CHAR );
             total += cost;
             }
@@ -1154,9 +1154,9 @@ void appraise_all( CHAR_DATA *ch, CHAR_DATA *keeper, char *fixstr )
     if ( total > 0 )
     {
        send_to_char ("\n\r", ch);
-       sprintf( buf,
-          "$N tells you, 'It will cost %d credit%s in total.'",
-          total, cost == 1 ? "" : "s" );
+		 snprintf( buf, sizeof(buf),
+			 "$N tells you, 'It will cost %d credit%s in total.'",
+			 total, cost == 1 ? "" : "s" );
        act( AT_TELL, buf, ch, NULL, keeper, TO_CHAR );
        strcpy( pbuf,
        "$N tells you, 'Remember there is a 10% surcharge for repair all.'");
@@ -1225,9 +1225,9 @@ void do_appraise( CHAR_DATA *ch, char *argument )
       return;
     }
 
-    sprintf( buf,
-       "$N tells you, 'It will cost %d credit%s to %s that...'", cost,
-       cost == 1 ? "" : "s", fixstr );
+	snprintf( buf, sizeof(buf),
+	   "$N tells you, 'It will cost %d credit%s to %s that...'", cost,
+	   cost == 1 ? "" : "s", fixstr );
     act( AT_TELL, buf, ch, NULL, keeper, TO_CHAR );
     if ( cost > ch->gold )
       act( AT_TELL, "$N tells you, 'Which I see you can't afford.'", ch,
@@ -1810,11 +1810,11 @@ void do_buyvendor (CHAR_DATA *ch, char *argument)
 
   if ( !str_cmp( argument, "yes" ) )
   {
-    sprintf( buf, "%s/%s", VENDOR_DIR, capitalize( ch->name ) );
-    remove( buf );
+	snprintf( buf, sizeof(buf), "%s/%s", VENDOR_DIR, capitalize( ch->name ) );
+	remove( buf );
   }
   
-    sprintf( strsave, "%s/%s", VENDOR_DIR, capitalize( ch->name ) );
+	snprintf( strsave, sizeof(strsave), "%s/%s", VENDOR_DIR, capitalize( ch->name ) );
 
     	if ( stat( strsave, &fst ) != -1 )
     	{
@@ -1833,14 +1833,14 @@ void do_buyvendor (CHAR_DATA *ch, char *argument)
 
   if ( ch->gold < COST_BUY_VENDOR )
      {
-         sprintf(buf1, "%s says, You are too poor!\n\r", keeper->name);
-         send_to_char (buf1, ch);
+		 snprintf(buf1, sizeof(buf1), "%s says, You are too poor!\n\r", keeper->name);
+		 send_to_char (buf1, ch);
          return;
      }
 
 if ( (ch->top_level) < LEVEL_BUY_VENDOR )
 	{
-		sprintf (buf1, "you must be at least %d level.\n\r", LEVEL_BUY_VENDOR);
+		_snprintf (buf1, sizeof(buf1), "you must be at least %d level.\n\r", LEVEL_BUY_VENDOR);
 		send_to_char (buf1, ch);
 		return;
 	}
@@ -1900,7 +1900,7 @@ if ( IS_NPC(ch) )
 		return;
 	}
 
-        sprintf( strsave, "%s/%s", VENDOR_DIR, capitalize( ch->name ) );
+	snprintf( strsave, sizeof(strsave), "%s/%s", VENDOR_DIR, capitalize( ch->name ) );
 
     	if ( stat( strsave, &fst ) != -1 )
     	{
@@ -1919,12 +1919,12 @@ if ( (temp = get_mob_index (MOB_VNUM_VENDOR) ) == NULL )
 char_to_room( create_mobile( temp ), ch->in_room );
 vendor = get_char_room(ch, temp->player_name);
 
-sprintf (buf, vendor->long_descr, ch->name);
-vendor->long_descr =  STRALLOC( buf );
+	snprintf (buf, sizeof(buf), vendor->long_descr, ch->name);
+	vendor->long_descr =  STRALLOC( buf );
 
-sprintf (buf, "%s", ch->name);
+	snprintf (buf, sizeof(buf), "%s", ch->name);
 
-vendor->owner = STRALLOC(buf);
+	vendor->owner = STRALLOC(buf);
 vendor->home = ch->in_room;
 
 save_vendor (vendor);
@@ -1934,7 +1934,7 @@ extract_obj( obj );
 
 act( AT_ACTION, "$n appears in a swirl of smoke.\n", vendor, NULL, NULL, TO_ROOM );
 
-sprintf(vnum1,"%d", vendor->pIndexData->vnum);
+	snprintf(vnum1, sizeof(vnum1), "%d", vendor->pIndexData->vnum);
 do_makeshop (vendor, vnum1 ); /*makes the vendor a shop.. there has to be a
 better way to do it but hell if i know what it is!*/
 
@@ -1996,8 +1996,8 @@ if ( str_cmp( ch1->name, vendor->owner ) )
 	  ch_printf(ch, "The immortals are not pleased with your actions.\n\r"
             "You shall remain in hell for 24 Hours.\n\r");
 	  save_char_obj(ch);	/* used to save ch, fixed by Thoric 09/17/96 */
-          sprintf( logbuf , "%s just tried to abuse the vendor bug!" , ch->name);
-          log_string( logbuf );
+		  snprintf( logbuf , sizeof(logbuf), "%s just tried to abuse the vendor bug!" , ch->name);
+		  log_string( logbuf );
 	  return;
 	}
 
@@ -2044,7 +2044,7 @@ if (vendor->owner == NULL)
 		return;
     }
 
-sprintf(name, "%s", vendor->owner);
+	snprintf(name, sizeof(name), "%s", vendor->owner);
 
 if ( (ch1 = get_char_room(ch, vendor->owner)) == NULL )
 	{
@@ -2066,16 +2066,16 @@ if ( str_cmp( ch1->name, vendor->owner ) )
 	  ch_printf(ch, "The immortals are not pleased with your actions.\n\r"
             "You shall remain in hell for 24 Hours.\n\r");
 	  save_char_obj(ch);	/* used to save ch, fixed by Thoric 09/17/96 */
-          sprintf( logbuf , "%s just tried to abuse the vendor bug!" , ch->name);
-          log_string( logbuf );
+		  snprintf( logbuf , sizeof(logbuf), "%s just tried to abuse the vendor bug!" , ch->name);
+		  log_string( logbuf );
 	  return;
 	}
 
 
 if ( !(ch == ch1) )
 {
-sprintf (buf, "collectgold: %s and ch1 = %s\n\r", name, ch1->name);
-log_string (buf);
+	snprintf (buf, sizeof(buf), "collectgold: %s and ch1 = %s\n\r", name, ch1->name);
+	log_string (buf);
 
 send_to_char ("This isnt your vendor!\n\r",ch);
 return;
@@ -2213,10 +2213,10 @@ char vnum1 [MAX_INPUT_LENGTH];
            }
 
 		char_to_room(mob, pRoomIndex);
-		sprintf(vnum1,"%d", mob->pIndexData->vnum);
-         do_makeshop (mob, vnum1 );
-		sprintf (buf, mob->long_descr, mob->owner);
-         mob->long_descr =  STRALLOC( buf );
+	snprintf(vnum1, sizeof(vnum1), "%d", mob->pIndexData->vnum);
+	do_makeshop (mob, vnum1 );
+	snprintf (buf, sizeof(buf), mob->long_descr, mob->owner);
+	 mob->long_descr =  STRALLOC( buf );
 		 mob->hit = 10000;
 		 mob->max_hit = 10000;
 		return mob;
@@ -2271,7 +2271,7 @@ void save_vendor( CHAR_DATA *ch )
     de_equip_char( ch );
 
 
-    sprintf( strsave, "%s%s",VENDOR_DIR, capitalize( ch->owner ) );
+	snprintf( strsave, sizeof(strsave), "%s%s",VENDOR_DIR, capitalize( ch->owner ) );
 
     if ( ( fp = fopen( strsave, "w" ) ) == NULL )
     {
