@@ -1795,7 +1795,7 @@ SKILLTYPE *fread_skill( FILE *fp )
 		   skill->skill_fun = dofun;
 		else
 		{
-		   sprintf( buf, "fread_skill: unknown skill/spell %s", w );
+		   snprintf( buf, sizeof(buf), "fread_skill: unknown skill/spell %s", w );
 		   bug( buf, 0 );
 		   skill->spell_fun = spell_null;
 		}
@@ -1882,7 +1882,7 @@ SKILLTYPE *fread_skill( FILE *fp )
 	
 	if ( !fMatch )
 	{
-            sprintf( buf, "Fread_skill: no match: %s", word );
+            snprintf( buf, sizeof(buf), "Fread_skill: no match: %s", word );
 	    bug( buf, 0 );
 	}
     }
@@ -2064,7 +2064,7 @@ void fread_social( FILE *fp )
 	
 	if ( !fMatch )
 	{
-            sprintf( buf, "Fread_social: no match: %s", word );
+            snprintf( buf, sizeof(buf), "Fread_social: no match: %s", word );
 	    bug( buf, 0 );
 	}
     }
@@ -2181,7 +2181,7 @@ void fread_command( FILE *fp )
 	
 	if ( !fMatch )
 	{
-            sprintf( buf, "Fread_command: no match: %s", word );
+            snprintf( buf, sizeof(buf), "Fread_command: no match: %s", word );
 	    bug( buf, 0 );
 	}
     }

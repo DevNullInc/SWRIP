@@ -214,7 +214,7 @@ bool spec_newbie_pilot( CHAR_DATA *ch )
                  break;
 */
            default:
-                 sprintf ( buf , "Hmm, a %s." , race_table[victim->race].race_name );
+                 snprintf ( buf , sizeof(buf), "Hmm, a %s." , race_table[victim->race].race_name );
                  do_look ( ch, victim->name );
                  do_say ( ch, buf );
                  do_say ( ch, "You're home planet is a little hard to get to right now." );
@@ -228,7 +228,7 @@ bool spec_newbie_pilot( CHAR_DATA *ch )
         
         do_look ( victim , "" );
         
-        sprintf ( buf , "%s steps out and the shuttle quickly returns to the academy.\n\r" , victim->name );
+        snprintf ( buf , sizeof(buf), "%s steps out and the shuttle quickly returns to the academy.\n\r" , victim->name );
         echo_to_room( AT_ACTION , ch->in_room, buf );
     }
 
@@ -363,7 +363,7 @@ bool spec_customs_smut( CHAR_DATA *ch )
 	    {
 	       if ( victim != ch && can_see( ch, victim ) && can_see_obj( ch,obj ) )
 	       {
-	          sprintf( buf , "%s is illegal contraband. I'm going to have to confiscate that.", obj->short_descr );
+	          snprintf( buf , sizeof(buf), "%s is illegal contraband. I'm going to have to confiscate that.", obj->short_descr );
                   do_say( ch , buf );
                   if ( obj->wear_loc != WEAR_NONE )
                      remove_obj( victim, obj->wear_loc, TRUE );
@@ -450,7 +450,7 @@ bool spec_customs_weapons( CHAR_DATA *ch )
 	    {
 	       if ( victim != ch && can_see( ch, victim ) && can_see_obj( ch,obj ) )
 	       {
-	          sprintf( buf , "Weapons are banned from non-military usage. I'm going to have to confiscate %s.", obj->short_descr );
+	          snprintf( buf , sizeof(buf), "Weapons are banned from non-military usage. I'm going to have to confiscate %s.", obj->short_descr );
                   do_say( ch , buf );
                   if ( obj->wear_loc != WEAR_NONE )
                     remove_obj( victim, obj->wear_loc, TRUE );
@@ -539,7 +539,7 @@ bool spec_customs_alcohol( CHAR_DATA *ch )
 	     {
 	       if ( victim != ch && can_see( ch, victim ) && can_see_obj( ch,obj ) )
 	       {
-	          sprintf( buf , "%s is illegal contraband. I'm going to have to confiscate that.", obj->short_descr );
+	          snprintf( buf , sizeof(buf), "%s is illegal contraband. I'm going to have to confiscate that.", obj->short_descr );
                   do_say( ch , buf );
                   if ( obj->wear_loc != WEAR_NONE )
                     remove_obj( victim, obj->wear_loc, TRUE );
@@ -627,7 +627,7 @@ bool spec_customs_spice( CHAR_DATA *ch )
 	    {
 	       if ( victim != ch && can_see( ch, victim ) && can_see_obj( ch,obj ) )
 	       {
-	          sprintf( buf , "%s is illegal contraband. I'm going to have to confiscate that.", obj->short_descr );
+	          snprintf( buf , sizeof(buf), "%s is illegal contraband. I'm going to have to confiscate that.", obj->short_descr );
                   do_say( ch , buf );
                   if ( obj->wear_loc != WEAR_NONE )
                     remove_obj( victim, obj->wear_loc, TRUE );
@@ -710,7 +710,7 @@ bool spec_police( CHAR_DATA *ch )
           {
               ROOM_INDEX_DATA *jail = NULL;
               
-              sprintf( buf , "Hey you're wanted on %s!", planet_flags[vip] );
+              snprintf( buf , sizeof(buf), "Hey you're wanted on %s!", planet_flags[vip] );
                   do_say( ch , buf );                 
               REMOVE_BIT( victim->pcdata->wanted_flags , 1 << vip ); 	                   
               if ( ch->top_level >= victim->top_level ) 
@@ -781,9 +781,9 @@ bool spec_police_attack( CHAR_DATA *ch )
 	for ( vip = 0 ; vip < 32 ; vip++ )
           if ( IS_SET ( ch->vip_flags , 1 << vip ) &&  IS_SET( victim->pcdata->wanted_flags , 1 << vip) ) 
           {
-              sprintf( buf , "Hey you're wanted on %s!", planet_flags[vip] );
-                  do_say( ch , buf );                 
-              REMOVE_BIT( victim->pcdata->wanted_flags , 1 << vip ); 	                   
+              snprintf( buf , sizeof(buf), "Hey you're wanted on %s!", planet_flags[vip] );
+                  do_say( ch , buf );
+              REMOVE_BIT( victim->pcdata->wanted_flags , 1 << vip );
               multi_hit( ch, victim, TYPE_UNDEFINED );
               return TRUE;         
           }
@@ -816,7 +816,7 @@ bool spec_police_undercover( CHAR_DATA *ch )
 	for ( vip = 0 ; vip < 32 ; vip++ )
           if ( IS_SET ( ch->vip_flags , 1 << vip ) &&  IS_SET( victim->pcdata->wanted_flags , 1 << vip) ) 
           {
-              sprintf( buf , "Got you!" );
+              snprintf( buf , sizeof(buf), "Got you!" );
                   do_say( ch , buf );                 
               REMOVE_BIT( victim->pcdata->wanted_flags , 1 << vip ); 	                   
               multi_hit( ch, victim, TYPE_UNDEFINED );
@@ -851,7 +851,7 @@ bool spec_police_fine( CHAR_DATA *ch )
 	for ( vip = 0 ; vip <= 31 ; vip++ )
           if ( IS_SET ( ch->vip_flags , 1 << vip ) &&  IS_SET( victim->pcdata->wanted_flags , 1 << vip) ) 
           {
-              sprintf( buf , "Hey you're wanted on %s!", planet_flags[vip] );
+              snprintf( buf , sizeof(buf), "Hey you're wanted on %s!", planet_flags[vip] );
                   do_say( ch , buf );
               act( AT_ACTION, "$n fines $N an enormous amount of money.", ch, NULL, victim, TO_NOTVICT );
     	      act( AT_ACTION, "$n fines you an enourmous amount of money.",   ch, NULL, victim, TO_VICT    );
@@ -892,8 +892,8 @@ bool spec_police_jail( CHAR_DATA *ch )
 	for ( vip = 0 ; vip <= 31 ; vip++ )
           if ( IS_SET ( ch->vip_flags , 1 << vip ) &&  IS_SET( victim->pcdata->wanted_flags , 1 << vip) ) 
           {
-              sprintf( buf , "Hey you're wanted on %s!", planet_flags[vip] );
-                  do_say( ch , buf );                 
+              snprintf( buf , sizeof(buf), "Hey you're wanted on %s!", planet_flags[vip] );
+                  do_say( ch , buf );
               
               if( 1 << vip == VIP_ADARI )
                      jail = get_room_index( ROOM_JAIL_ADARI );
@@ -1187,7 +1187,7 @@ bool spec_guardian( CHAR_DATA *ch )
 
     if ( victim && IS_SET( ch->in_room->room_flags, ROOM_SAFE ) )
     {
-	sprintf( buf, "%s is a %s!  As well as a COWARD!",
+	snprintf( buf, sizeof(buf), "%s is a %s!  As well as a COWARD!",
 		victim->name, crime );
 	do_yell( ch, buf );
 	return TRUE;
@@ -1195,7 +1195,7 @@ bool spec_guardian( CHAR_DATA *ch )
 
     if ( victim )
     {
-	sprintf( buf, "%s is a %s!  PROTECT THE INNOCENT!!",
+	snprintf( buf, sizeof(buf), "%s is a %s!  PROTECT THE INNOCENT!!",
 		victim->name, crime );
 	do_shout( ch, buf );
 	multi_hit( ch, victim, TYPE_UNDEFINED );
@@ -1348,7 +1348,7 @@ bool spec_auth( CHAR_DATA *ch )
             if ( victim->pcdata->authed_by )
                      STRFREE( victim->pcdata->authed_by );
             victim->pcdata->authed_by = QUICKLINK( ch->name );
-            sprintf( buf, "%s authorized %s", ch->name,
+            snprintf( buf, sizeof(buf), "%s authorized %s", ch->name,
                          victim->name );
             to_channel( buf, CHANNEL_MONITOR, "Monitor", ch->top_level );
                                                                                                         

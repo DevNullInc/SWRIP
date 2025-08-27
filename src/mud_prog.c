@@ -332,7 +332,7 @@ int mprog_do_ifcheck( char *ifcheck, CHAR_DATA *mob, CHAR_DATA *actor,
 	case 'o':	chkobj = obj;			break;
 	case 'p':	chkobj = (OBJ_DATA *)vo;	break;
 	default:
-	  sprintf(rval, "Bad argument '%c' to '%s'", cvar[0], chck);
+	  snprintf(rval, sizeof(rval), "Bad argument '%c' to '%s'", cvar[0], chck);
 	  progbug(rval, mob);
 	  return BERR;
     }
@@ -1988,7 +1988,7 @@ void mprog_bribe_trigger( CHAR_DATA *mob, CHAR_DATA *ch, int amount )
         return;
 
       obj = create_object( get_obj_index( OBJ_VNUM_MONEY_SOME ), 0 );
-      sprintf( buf, obj->short_descr, amount );
+      snprintf( buf, sizeof(buf), obj->short_descr, amount );
       STRFREE( obj->short_descr );
       obj->short_descr = STRALLOC( buf );
       obj->value[0]    = amount;
@@ -2078,7 +2078,7 @@ void mprog_greet_trigger( CHAR_DATA *ch )
 
 #ifdef DEBUG
  char buf[MAX_STRING_LENGTH];
- sprintf( buf, "mprog_greet_trigger -> %s", ch->name );
+ snprintf( buf, sizeof(buf), "mprog_greet_trigger -> %s", ch->name );
  log_string( buf );
 #endif
 
@@ -2264,7 +2264,7 @@ void set_supermob( OBJ_DATA *obj)
 
   /* Added by Jenny to allow bug messages to show the vnum
      of the object, and not just supermob's vnum */
-  sprintf( buf, "Object #%d", obj->pIndexData->vnum );
+  snprintf( buf, sizeof(buf), "Object #%d", obj->pIndexData->vnum );
   STRFREE( supermob->description );
   supermob->description = STRALLOC( buf );
 
@@ -2675,7 +2675,7 @@ void rset_supermob( ROOM_INDEX_DATA *room)
 
     /* Added by Jenny to allow bug messages to show the vnum
        of the room, and not just supermob's vnum */
-    sprintf( buf, "Room #%d", room->vnum );
+    snprintf( buf, sizeof(buf), "Room #%d", room->vnum );
     STRFREE( supermob->description );
     supermob->description = STRALLOC( buf );
 
@@ -2963,12 +2963,12 @@ void progbug( char *str, CHAR_DATA *mob )
     /* It's supermob.  In set_supermob and rset_supermob, the description
        was set to indicate the object or room, so we just need to show
        the description in the bug message. */
-    sprintf( buf, "%s, %s.", str, 
+    snprintf( buf, sizeof(buf), "%s, %s.", str, 
              mob->description == NULL ? "(unknown)" : mob->description );
   }
   else
   {
-    sprintf( buf, "%s, Mob #%d.", str, mob->pIndexData->vnum );
+    snprintf( buf, sizeof(buf), "%s, Mob #%d.", str, mob->pIndexData->vnum );
   }
 
   bug( buf, 0 );
