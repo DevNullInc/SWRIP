@@ -1,8 +1,8 @@
 /***************************************************************************
-*                           STAR WARS: RISE IN POWER                       *
+*                           STAR WARS: THE FINAL EPISODE                   *
 *--------------------------------------------------------------------------*
-* Star Wars: Rise in Power Code Additions to Star Wars Reality 1.0         *
-* copyright (c) 1999 by the Coding Team at Star Wars: Rise in Power        *
+* Star Wars: The Final Episode Code Additions to Star Wars Reality 2.0     *
+* copyright (c) 2024 by RenegadeInc                                        *
 *--------------------------------------------------------------------------*
 * Star Wars Reality Code Additions and changes from the Smaug Code         *
 * copyright (c) 1997 by Sean Cooper                                        *
@@ -4196,39 +4196,28 @@ void do_unloadcargo( CHAR_DATA *ch, char *argument )
   
   return;
 }
+
 void do_restoreship( CHAR_DATA *ch, char *argument )
 {
-    char buf[MAX_STRING_LENGTH];
-    char buf2[MAX_STRING_LENGTH];
-    
-    // Ensure argument is not empty
-    if (!argument || !*argument) {
-        send_to_char("No ship name provided.\n\r", ch);
-        return;
-    }
-    // Sanitize input: block slashes, traversal, etc.
-    if (strchr(argument, '/') || strchr(argument, '\\') || strstr(argument, "..")) {
-        send_to_char("Invalid ship name.\n\r", ch);
-        return;
-    }
+//SHIP_DATA *ship;
+  char buf[MAX_STRING_LENGTH];
+  char buf2[MAX_STRING_LENGTH];
+//struct stat fst;
+  
+  snprintf( buf, sizeof(buf), "%s%s", BACKUPSHIP_DIR, argument );
+  snprintf( buf2, sizeof(buf2), "%s%s", SHIP_DIR, argument );
+  
+  rename( buf, buf2 );
 
-    snprintf(buf, sizeof(buf), "%s%s", BACKUPSHIP_DIR, argument);
-    snprintf(buf2, sizeof(buf2), "%s%s", SHIP_DIR, argument);
+  if (!load_ship_file( argument ) )
+  {
+    send_to_char( "Error loading file.\n\r", ch );
+    return;
+  }
 
-    // Rename with error checking
-    if (rename(buf, buf2) != 0) {
-        perror("rename failed");
-        send_to_char("Error restoring backup file (rename failed).\n\r", ch);
-        return;
-    }
-
-    if (!load_ship_file(argument)) {
-        send_to_char("Error loading ship file after restore.\n\r", ch);
-        return;
-    }
-
-    write_ship_list();
-    send_to_char("Ship restored successfully.\n\r", ch);
+  write_ship_list( );
+	
+  return;
 }
 
 sh_int get_acceleration( SHIP_DATA *ship )
