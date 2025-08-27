@@ -111,7 +111,7 @@ void do_jumpvector( CHAR_DATA *ch, char *argument )
       tz = (target->vz - target->oz)*randnum;
       
       send_to_char("After some deliberation, you figure out its projected course.\n\r", ch);
-      sprintf(buf, "%s Heading: %.0f, %.0f, %.0f", target->name, tx, ty, tz );
+  snprintf(buf, sizeof(buf), "%s Heading: %.0f, %.0f, %.0f", target->name, tx, ty, tz );
       echo_to_cockpit( AT_BLOOD, ship , buf );
       learn_from_success( ch, gsn_jumpvector );
       return;
@@ -122,7 +122,7 @@ void do_jumpvector( CHAR_DATA *ch, char *argument )
       tz = (target->cz - target->oz)*randnum;
 
       send_to_char("After some deliberation, you figure out its projected course.\n\r", ch);
-      sprintf(buf, "%s Heading: %.0f, %.0f, %.0f", target->name, tx, ty, tz  );
+  snprintf(buf, sizeof(buf), "%s Heading: %.0f, %.0f, %.0f", target->name, tx, ty, tz  );
       echo_to_cockpit( AT_BLOOD, ship , buf );
       learn_from_success( ch, gsn_jumpvector );
       return;
@@ -234,7 +234,7 @@ void do_openbay( CHAR_DATA *ch, char *argument )
 
       echo_to_cockpit( AT_YELLOW , ship, "Bay Doors Open");
       send_to_char("You open the bay doors", ch);
-      sprintf( buf ,"%s's bay doors open." , ship->name );
+  snprintf( buf, sizeof(buf), "%s's bay doors open.", ship->name );
       echo_to_system( AT_YELLOW, ship, buf , NULL );
 
    }
@@ -273,7 +273,7 @@ void do_closebay( CHAR_DATA *ch, char *argument )
 
       echo_to_cockpit( AT_YELLOW , ship, "Bay Doors close");
       send_to_char("You close the bay doors.", ch);
-      sprintf( buf ,"%s's bay doors close." , ship->name );
+  snprintf( buf, sizeof(buf), "%s's bay doors close.", ship->name );
       echo_to_system( AT_YELLOW, ship, buf , NULL );
 
    }
@@ -433,7 +433,7 @@ void do_tractorbeam( CHAR_DATA *ch, char *argument )
 			NULL, argument , TO_ROOM );
 		echo_to_ship( AT_YELLOW , ship , "ALERT: Ship is being captured, all hands to docking bay." );
     	echo_to_ship( AT_YELLOW , target , "The ship shudders as a tractorbeam locks on." );
-		sprintf( buf , "You are being captured by %s." , ship->name);
+    snprintf( buf, sizeof(buf), "You are being captured by %s.", ship->name);
 		echo_to_cockpit( AT_BLOOD , target , buf );
 
 		if ( (target->autopilot || target->type == MOB_SHIP) && !target->target0)
@@ -451,7 +451,7 @@ void do_tractorbeam( CHAR_DATA *ch, char *argument )
 	}
 	send_to_char("You fail to work the controls properly.\n\r",ch);
    	echo_to_ship( AT_YELLOW , target , "The ship shudders and then stops as a tractorbeam attemps to lock on and fails." );
-	sprintf( buf , "The %s attempted to capture your ship!" , ship->name);
+  snprintf( buf, sizeof(buf), "The %s attempted to capture your ship!", ship->name);
 	echo_to_cockpit( AT_BLOOD , target , buf );
 	if ( (target->autopilot || target->type == MOB_SHIP) && !target->target0)
 		target->target0 = ship;
@@ -685,7 +685,7 @@ void do_tractorbeam(CHAR_DATA *ch, char *argument )
      }
           
     send_to_char( "&GTarget Locked.\n\r", ch);
-    sprintf( buf , "You have been locked in a tractor beam by %s." , ship->name);  
+  snprintf( buf, sizeof(buf), "You have been locked in a tractor beam by %s.", ship->name);  
     echo_to_cockpit( AT_BLOOD , target , buf );
 
     sound_to_room( ch->in_room , "!!SOUND(targetlock)" );
@@ -693,7 +693,7 @@ void do_tractorbeam(CHAR_DATA *ch, char *argument )
     	
     if ( autofly(target) && !target->target0 && str_cmp( target->owner, ship->owner ) )
     {
-       sprintf( buf , "You are being targetted by %s." , target->name);  
+  snprintf( buf, sizeof(buf), "You are being targetted by %s.", target->name);  
        echo_to_cockpit( AT_BLOOD , ship , buf );
        target->target0 = ship;
     }
@@ -725,7 +725,7 @@ void do_adjusttractorbeam(CHAR_DATA *ch, char *argument )
 
   if (arg[0] == '\0')
   {
-    sprintf( buf, "&RCurrent tractor beam settings: ");
+  snprintf( buf, sizeof(buf), "&RCurrent tractor beam settings: ");
     if( ship->statettractor == SHIP_DISABLED )
       strcat( buf, "Disabled.\n\r" );
     if( ship->tractored == NULL )
@@ -1382,7 +1382,7 @@ void do_request(CHAR_DATA *ch, char *argument)
     send_to_char("&RYou open the bay doors of the remote ship.",ch);
     act(AT_PLAIN,"$n flips a switch on the control panel.",ch,NULL,argument,TO_ROOM);
     eShip->bayopen = TRUE;
-    sprintf( buf ,"%s's bay doors open." , eShip->name );
+  snprintf( buf, sizeof(buf), "%s's bay doors open.", eShip->name );
     echo_to_system( AT_YELLOW, ship, buf , NULL );
 }
 
@@ -1451,7 +1451,7 @@ void do_shiptrack( CHAR_DATA *ch, char *argument)
        hy = 1;
       if( !hz )
        hz = 1;
-      sprintf( buf, "%.0f %.0f %.0f", ship->vx + hx, ship->vy + hy, ship->vz + hz );
+  snprintf( buf, sizeof(buf), "%.0f %.0f %.0f", ship->vx + hx, ship->vy + hy, ship->vz + hz );
       if( hx < 1000 ) hx *= 10000;
       if( hy < 1000 ) hy *= 10000;
       if( hz < 1000 ) hz *= 10000;
@@ -1696,7 +1696,7 @@ void do_override(CHAR_DATA *ch, char *argument)
         eShip->bayopen=FALSE;
         send_to_char( "&GBays Close. Confirmed.\n\r", ch);
         echo_to_cockpit( AT_YELLOW , eShip , "Bays Open");
-        sprintf( buf ,"%s's bay doors close." , eShip->name );
+  snprintf( buf, sizeof(buf), "%s's bay doors close.", eShip->name );
         echo_to_system( AT_YELLOW, eShip, buf , NULL );
         return;
     }
@@ -1707,7 +1707,7 @@ void do_override(CHAR_DATA *ch, char *argument)
     	eShip->accel = get_acceleration(eShip);
         send_to_char( "&GBraking Thrusters. Confirmed.\n\r", ch);
         echo_to_cockpit( AT_GREY , eShip , "Braking thrusters fire and the ship stops");
-        sprintf( buf ,"%s decelerates." , eShip->name );
+  snprintf( buf, sizeof(buf), "%s decelerates.", eShip->name );
         echo_to_system( AT_GREY, eShip, buf , NULL );
         return;
     }
@@ -1735,7 +1735,7 @@ void do_override(CHAR_DATA *ch, char *argument)
     send_to_char("&RYou open the bay doors of the remote ship.",ch);
     act(AT_PLAIN,"$n flips a switch on the control panel.",ch,NULL,argument,TO_ROOM);
     eShip->bayopen = TRUE;
-    sprintf( buf ,"%s's bay doors open." , eShip->name );
+  snprintf( buf, sizeof(buf), "%s's bay doors open.", eShip->name );
     echo_to_system( AT_YELLOW, ship, buf , NULL );
     return;
    }
@@ -1930,7 +1930,7 @@ void do_sabotage(CHAR_DATA *ch, char *argument )
     act( AT_PLAIN, "$n finishes the work.", ch,
          NULL, argument , TO_ROOM );
 
-     sprintf(buf, "%s has sabotaged %s!", ch->name, ship->name );
+  snprintf(buf, sizeof(buf), "%s has sabotaged %s!", ch->name, ship->name );
      bug(buf, 0);
 
     learn_from_success( ch, gsn_sabotage );
@@ -2015,10 +2015,10 @@ void do_fuel(CHAR_DATA *ch, char *argument )
 
     eShip->energy += amount;
     
-    sprintf( buf, "&YFuel order filled: &O%s: %d\n\r", eShip->name, amount );
+  snprintf( buf, sizeof(buf), "&YFuel order filled: &O%s: %d\n\r", eShip->name, amount );
     echo_to_cockpit( AT_YELLOW, ship, buf );
     send_to_char( buf, ch );
-    sprintf( buf, "&YFuel remaining: %d\n\r", ship->energy );
+  snprintf( buf, sizeof(buf), "&YFuel remaining: %d\n\r", ship->energy );
     echo_to_cockpit( AT_YELLOW, ship, buf );
     send_to_char( buf, ch );      
     
@@ -2085,9 +2085,9 @@ void target_ship( SHIP_DATA *ship, SHIP_DATA *target )
   char buf[MAX_STRING_LENGTH];
 
         ship->target0 = target;
-        sprintf( buf , "You are being targetted by %s." , ship->name);
+  snprintf( buf, sizeof(buf), "You are being targetted by %s.", ship->name);
         echo_to_cockpit( AT_BLOOD , target , buf );
-        sprintf( buf , "The ship targets %s." , target->name);
+  snprintf( buf, sizeof(buf), "The ship targets %s.", target->name);
         echo_to_cockpit( AT_BLOOD , ship , buf );
 }
 
@@ -2164,7 +2164,7 @@ bool check_hostile( SHIP_DATA *ship )
 	if( distance == -1 || distance > tempdistance )
 	{
 	  distance = tempdistance;
-	  sprintf( buf, "%ld %ld %s %s", distance, tempdistance, ship->name, target->name );
+    snprintf( buf, sizeof(buf), "%ld %ld %s %s", distance, tempdistance, ship->name, target->name );
 	  bug( buf );
 	  enemy = target;
 	}
@@ -2463,7 +2463,7 @@ void do_install_module( CHAR_DATA *ch, char *argument )
       if ( obj->value[3] >= MAXMODFLAG )
       {
 	send_to_char( "That module can not be installed!  Contact an administrator.\n\r", ch );
-	sprintf( arg1, "Module's flag is set beyond the array limits! Char: %s Module vnum: %d\n\r",
+	snprintf( arg1, sizeof(arg1), "Module's flag is set beyond the array limits! Char: %s Module vnum: %d\n\r",
 			ch->name, obj->pIndexData->vnum);
 	bug( arg1, 0 );
 	return;
@@ -2491,9 +2491,6 @@ void do_install_module( CHAR_DATA *ch, char *argument )
 		act( AT_PLAIN, "I see no $T here.", ch, NULL, argument, TO_CHAR );        
 		return;       
     }
-
-//	sprintf( buf, "Ship: %s\n\r", ship->personalname );
-//	send_to_char( buf, ch );
 
       if ( obj->value[1] != MOD_FLAG )
       {
@@ -2573,7 +2570,7 @@ void do_install_module( CHAR_DATA *ch, char *argument )
 	
 	CREATE( module, MODULE_DATA, 1 );
 	
-	sprintf( buf, "%s", obj->short_descr );
+	snprintf( buf, sizeof(buf), "%s", obj->short_descr );
 	module->name =  STRALLOC( buf );
 	module->type = obj->value[1];
 	module->condition = obj->value[0];
@@ -2767,10 +2764,7 @@ bool module_type_install(OBJ_DATA *obj, SHIP_DATA *ship)
 		
 		if( is_internal_mod( module->type ) )
 		  internal += module->size;
-		  
-//	sprintf( buf, "Ext: %d, Int: %d\n\r", external, internal );
-//	log_string(buf);
-	  
+		  	  
 	}
 	
 	if( is_ammo_mod( obj->value[1] ) )
@@ -2810,8 +2804,6 @@ bool module_type_install(OBJ_DATA *obj, SHIP_DATA *ship)
 	  }
 	}
 
-//	sprintf( buf, "Ext: %d, Int: %d\n\r", external, internal );
-//	log_string(buf);
 	  
 	if( is_external_mod( obj->value[1] ) && (external+obj->value[2]) > ship->maxextmodules)
 	  return TRUE;
@@ -2905,11 +2897,11 @@ void do_remove_module( CHAR_DATA *ch, char *argument )
 			obj->value[1] = module->type;
 			obj->value[2] = module->size;
 			obj->value[3] = module->modification;
-			sprintf (buf, obj->description, show_mod_type( module ) );
-			obj->description =  STRALLOC( buf );
-			sprintf (buf, "%s", module->name);
-			obj->short_descr =  STRALLOC( buf );
-			obj->name =  STRALLOC( buf );
+      snprintf(buf, sizeof(buf), "%s", show_mod_type( module ));
+      obj->description =  STRALLOC( buf );
+      snprintf(buf, sizeof(buf), "%s", module->name);
+      obj->short_descr =  STRALLOC( buf );
+      obj->name =  STRALLOC( buf );
 			
 			act( AT_ACTION, "$n removes $p.", ch, obj, NULL, TO_ROOM );	
 			act( AT_ACTION, "You remove $p.", ch, obj, NULL, TO_CHAR );
@@ -2981,14 +2973,14 @@ void do_show_modules( CHAR_DATA *ch, char *argument )
 	
     modtype = shipsearch ? (show_mod_type3( argument )) : (show_mod_type3( arg ) );
     
-    sprintf( buf, "Modules installed on %s:\n\r\n\r", ship->name );
+  snprintf( buf, sizeof(buf), "Modules installed on %s:\n\r\n\r", ship->name );
 	send_to_char(buf,ch);
 	for ( module = ship->first_module; module; modcounter++, module = module->next )
 	{
 		if ( modtype != -1 )
 		  if ( module->type != modtype )
 		    continue;
-		sprintf(buf,"%d) Name: %s\n\r\tType: %s Condition: %d Size: %d Mod: %d\n\r", 
+		snprintf(buf,sizeof(buf),"%d) Name: %s\n\r\tType: %s Condition: %d Size: %d Mod: %d\n\r", 
 		        modcounter, module->name, show_mod_type( module ), module->condition, module->size, module->modification );
 		send_to_char(buf,ch);
 	}
@@ -3248,7 +3240,7 @@ void do_gravityprojector(CHAR_DATA * ch, char *argument)
     return;
   }
 
-  sprintf(buf, "Your sensors ring an alarm as a %s brings up its gravity well.", ship->name );
+  snprintf(buf, sizeof(buf), "Your sensors ring an alarm as a %s brings up its gravity well.", ship->name );
 
   if (nifty_is_name_prefix (arg, "on"))
   {
@@ -3258,7 +3250,7 @@ void do_gravityprojector(CHAR_DATA * ch, char *argument)
     return;
   }    
 
-  sprintf(buf, "Your sensors ring an alarm as a %s disengages its gravity well.", ship->name );
+  snprintf(buf, sizeof(buf), "Your sensors ring an alarm as a %s disengages its gravity well.", ship->name );
 
   if (nifty_is_name_prefix (arg, "off"))
   {
@@ -3316,26 +3308,6 @@ char * get_template_string( int templatetype )
   
   if( i >= MAX_TEMPLATETYPE ) 
     templatestring = STRALLOC( "" );
-
-/*
-  switch(templatetype)
-  {
-  	case 1: 
-//  	  sprintf( buf, "2] 1; 2)20:1" );
-  	  sprintf( buf, "2] 1)22:2" );
-  	  templatestring = STRALLOC( buf ); 
-  	  break;
-  	case 2:
-  	  sprintf( buf, "1] 1; " );
-  	  templatestring = STRALLOC( buf );
-  	  break;
-  	case 3:
-  	  sprintf( buf, "1] 10;" );
-  	  templatestring = STRALLOC( buf );
-  	  break;
-  	default: send_to_char( "Template not found.\n\r", ch );return; break;
-  }
-*/
 
   return templatestring;
 }
@@ -3450,7 +3422,7 @@ void do_maketemplateship(CHAR_DATA * ch, char *argument)
   ship->name          = STRALLOC (templatetypes[templatetype].name);
   ship->owner         = STRALLOC ("");
   ship->filename         = STRALLOC (arg2);
-  sprintf( buf, "TemplateShip %ld %s", ship->shipID, argument );
+  snprintf( buf, sizeof(buf), "TemplateShip %ld %s", ship->shipID, argument );
   ship->personalname  = STRALLOC (buf);
 #if 0
   send_to_char( buf, ch );
@@ -3647,7 +3619,7 @@ void do_ordership( CHAR_DATA *ch, char *argument )
   save_sysdata(sysdata);
 
   ship->name          = STRALLOC (templatetypes[templatetype].name);
-  sprintf( buf, "template%ld.ship", ship->shipID );
+  snprintf( buf, sizeof(buf), "template%ld.ship", ship->shipID );
   ship->filename         = STRALLOC (buf);
   ship->personalname  = STRALLOC (argument);
   ship->owner         = STRALLOC (ch->name);
@@ -3742,7 +3714,7 @@ void do_transferownership( CHAR_DATA *ch, char *argument )
 
   ch_printf(ch, "&ROwnership transferred.\n\r");
   
-  sprintf( buf, "%s transferred ship ownership to %s./n/r", ch->name, arg );
+  snprintf( buf, sizeof(buf), "%s transferred ship ownership to %s.\n\r", ch->name, arg );
   log_string( buf );
   
   return;
@@ -3832,7 +3804,7 @@ void remove_cargo( SHIP_DATA *ship, int cargotype, int nummod )
 	
   if ( !check_cargo( ship, cargotype, nummod ) )
   {
-    sprintf( buf, "remove_cargo: Ship %s failed check_cargo check\n\r", ship->personalname );
+    snprintf( buf, sizeof(buf), "remove_cargo: Ship %s failed check_cargo check\n\r", ship->personalname );
     log_string( buf );
     return;
   }
@@ -4224,34 +4196,39 @@ void do_unloadcargo( CHAR_DATA *ch, char *argument )
   
   return;
 }
-
 void do_restoreship( CHAR_DATA *ch, char *argument )
 {
-//SHIP_DATA *ship;
-  char buf[MAX_STRING_LENGTH];
-  char buf2[MAX_STRING_LENGTH];
-//struct stat fst;
-  
-  sprintf( buf, "%s%s", BACKUPSHIP_DIR, argument );
-  sprintf( buf2, "%s%s", SHIP_DIR, argument );
-  
-/*if ( !stat( buf, &fst ) )
-  {
-    send_to_char( "File not found.\n\r", ch );
-    return;
-  }
-*/  
-  rename( buf, buf2 );
+    char buf[MAX_STRING_LENGTH];
+    char buf2[MAX_STRING_LENGTH];
+    
+    // Ensure argument is not empty
+    if (!argument || !*argument) {
+        send_to_char("No ship name provided.\n\r", ch);
+        return;
+    }
+    // Sanitize input: block slashes, traversal, etc.
+    if (strchr(argument, '/') || strchr(argument, '\\') || strstr(argument, "..")) {
+        send_to_char("Invalid ship name.\n\r", ch);
+        return;
+    }
 
-  if (!load_ship_file( argument ) )
-  {
-    send_to_char( "Error loading file.\n\r", ch );
-    return;
-  }
+    snprintf(buf, sizeof(buf), "%s%s", BACKUPSHIP_DIR, argument);
+    snprintf(buf2, sizeof(buf2), "%s%s", SHIP_DIR, argument);
 
-  write_ship_list( );
-	
-  return;
+    // Rename with error checking
+    if (rename(buf, buf2) != 0) {
+        perror("rename failed");
+        send_to_char("Error restoring backup file (rename failed).\n\r", ch);
+        return;
+    }
+
+    if (!load_ship_file(argument)) {
+        send_to_char("Error loading ship file after restore.\n\r", ch);
+        return;
+    }
+
+    write_ship_list();
+    send_to_char("Ship restored successfully.\n\r", ch);
 }
 
 sh_int get_acceleration( SHIP_DATA *ship )
