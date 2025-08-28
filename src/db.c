@@ -454,6 +454,7 @@ void boot_db( void )
     gsn_top_sn	     = top_sn;
 
     for ( x = 0; x < top_sn; x++ )
+    {
 	if ( !gsn_first_spell && skill_table[x]->type == SKILL_SPELL )
 	    gsn_first_spell = x;
 	else
@@ -465,6 +466,7 @@ void boot_db( void )
 	else
 	if ( !gsn_first_tongue && skill_table[x]->type == SKILL_TONGUE )
 	    gsn_first_tongue = x;
+    }
 
     log_string("Loading herb table");
     load_herb_table();
@@ -539,7 +541,7 @@ void boot_db( void )
 	time_info.month	= lmonth % 17;
 	time_info.year	= lmonth / 17;
 
-	     if ( time_info.hour <  5 ) weather_info.sunlight = SUN_DARK;
+	if ( time_info.hour <  5 ) weather_info.sunlight = SUN_DARK;
 	else if ( time_info.hour <  6 ) weather_info.sunlight = SUN_RISE;
 	else if ( time_info.hour < 19 ) weather_info.sunlight = SUN_LIGHT;
 	else if ( time_info.hour < 20 ) weather_info.sunlight = SUN_SET;
@@ -552,7 +554,7 @@ void boot_db( void )
 	else
 	    weather_info.mmhg += number_range( 1, 80 );
 
-	     if ( weather_info.mmhg <=  980 ) weather_info.sky = SKY_LIGHTNING;
+	if ( weather_info.mmhg <=  980 ) weather_info.sky = SKY_LIGHTNING;
 	else if ( weather_info.mmhg <= 1000 ) weather_info.sky = SKY_RAINING;
 	else if ( weather_info.mmhg <= 1020 ) weather_info.sky = SKY_CLOUDY;
 	else                                  weather_info.sky = SKY_CLOUDLESS;
@@ -4056,7 +4058,7 @@ void show_file( CHAR_DATA *ch, char *filename )
 /*
  * Show the boot log file					-Thoric
  */
-void do_dmesg( CHAR_DATA *ch, char *argument )
+void do_dmesg( CHAR_DATA *ch, char *argument __attribute__((unused)) )
 {
     set_pager_color( AT_LOG, ch );
     show_file( ch, BOOTLOG_FILE );
@@ -4307,7 +4309,7 @@ void make_wizlist( )
 }
 
 
-void do_makewizlist( CHAR_DATA *ch, char *argument )
+void do_makewizlist( CHAR_DATA *ch, char *argument __attribute__((unused)) )
 {
   make_wizlist();
 }
@@ -6085,7 +6087,7 @@ void do_check_vnums( CHAR_DATA *ch, char *argument )
     char buf2[MAX_STRING_LENGTH];
     AREA_DATA *pArea;
     char arg1[MAX_STRING_LENGTH];
-    char arg2[MAX_STRING_LENGTH];
+    char arg2[MAX_STRING_LENGTH] __attribute__((unused));
     bool room, mob, obj, all, area_conflict;
     int low_range, high_range;
 

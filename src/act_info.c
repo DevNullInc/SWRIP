@@ -889,11 +889,13 @@ void show_ships_to_char( SHIP_DATA *ship, CHAR_DATA *ch )
       {
         ch_printf( ch , "&C%-35s     ", rship->name );  
         for ( rship = rship->next; rship; rship = rship->next )
+        {
           if ( rship && (rship->location == ch->in_room->vnum) )
 	    break;
+        }
 
-          if ( rship )
-            ch_printf( ch , "%-35s", rship->name ); 
+        if ( rship )
+          ch_printf( ch , "%-35s", rship->name ); 
         ch_printf( ch, "\n\r&w");
       }
         if ( !rship )
@@ -1628,7 +1630,8 @@ void do_examine( CHAR_DATA *ch, char *argument )
        else if (dam ==  2) strcat( buf, "very badly worn.");
        else if (dam ==  1) strcat( buf, "practically worthless.");
        else if (dam <=  0) strcat( buf, "broken.");
-	    strcat( buf, "\n\r" );
+       
+       strcat( buf, "\n\r" );
 	    send_to_char( buf, ch );
 	    break;
 
@@ -1648,7 +1651,8 @@ void do_examine( CHAR_DATA *ch, char *argument )
        else if (dam == 10) strcat( buf, "practically worthless.");
        else if (dam == 11) strcat( buf, "almost broken.");
        else if (dam == 12) strcat( buf, "broken.");
-	    strcat( buf, "\n\r" );
+       
+       strcat( buf, "\n\r" );
 	    send_to_char( buf, ch );
 	    if (obj->value[3] == WEAPON_BLASTER )
 	    {
@@ -1691,7 +1695,8 @@ void do_examine( CHAR_DATA *ch, char *argument )
        else if (dam ==  2) strcat( buf, "smells quite rank.");
        else if (dam ==  1) strcat( buf, "smells revolting.");
        else if (dam <=  0) strcat( buf, "is crawling with maggots.");
-	    strcat( buf, "\n\r" );
+       
+       strcat( buf, "\n\r" );
 	    send_to_char( buf, ch );
 	    break;
 
@@ -2002,7 +2007,7 @@ sh_int str_similarity( const char *astr, const char *bstr )
         if ( LOWER(*astr) == LOWER(*bstr) )
            matches++;
         
-        if (++bstr == '\0')
+        if (*(++bstr) == '\0')
            return matches;                
     }
     
@@ -2025,7 +2030,7 @@ sh_int str_prefix_level( const char *astr, const char *bstr )
         else
            return matches;
 
-        if (++bstr == '\0')
+        if (*(++bstr) == '\0')
         return matches;
     }
 
@@ -2393,7 +2398,6 @@ void do_who( CHAR_DATA *ch, char *argument )
   bool rgfRace[MAX_RACE];
   bool fRaceRestrict;
   bool fImmortalOnly;
-  bool fCompressOnly;
   bool fShowHomepage;
   bool fClanMatch; /* SB who clan */
   bool NullCh = FALSE;

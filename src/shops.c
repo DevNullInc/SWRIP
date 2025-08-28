@@ -1840,7 +1840,7 @@ void do_buyvendor (CHAR_DATA *ch, char *argument)
 
 if ( (ch->top_level) < LEVEL_BUY_VENDOR )
 	{
-		_snprintf (buf1, sizeof(buf1), "you must be at least %d level.\n\r", LEVEL_BUY_VENDOR);
+		snprintf (buf1, sizeof(buf1), "you must be at least %d level.\n\r", LEVEL_BUY_VENDOR);
 		send_to_char (buf1, ch);
 		return;
 	}

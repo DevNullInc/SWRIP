@@ -230,7 +230,7 @@ int join_template_rooms(int room1, ROOM_INDEX_DATA *room2, int exitType)
 	default: return 1;
     }
     
-//sprintf( buf, "Room1: %d Room2: %d exitType: %d\n\r", room1, room2->vnum, exitType );
+//snprintf( buf, sizeof(buf), "Room1: %d Room2: %d exitType: %d\n\r", room1, room2->vnum, exitType );
 //bug ( buf, 0 );
     
     if( twoway )
@@ -275,7 +275,7 @@ int parse_ship_template(char *string, SHIP_DATA *ship)
     int room;
     int room2;
     
-//  sprintf( buf, "Parser activated: String: %s, Ship: %s", string, ship->personalname );
+//  snprintf( buf, sizeof(buf), "Parser activated: String: %s, Ship: %s", string, ship->personalname );
 //  bug( buf, 0 );
     
     masterIndex=0;
@@ -366,7 +366,7 @@ int parse_ship_template(char *string, SHIP_DATA *ship)
 
 /*  for( i = 0; i < roomCount; i++ )
     {
-    	sprintf(debug, "Rooms: Tmp#: %d Vnum: %d\n\r", roomArray[i], vnumArray[i]->vnum );
+    	snprintf(debug, sizeof(debug), "Rooms: Tmp#: %d Vnum: %d\n\r", roomArray[i], vnumArray[i]->vnum );
     	bug( debug, 0 );
     }
 */
@@ -384,7 +384,7 @@ int parse_ship_template(char *string, SHIP_DATA *ship)
 	    for(j = 0; j < roomCount; j++) {
 		if ( ( roomArray[j] == room ) && vnumArray[j] ) 
 		{
-//		    sprintf( debug, "Tmp#: %d Vnum: %d\n\r", room, vnumArray[j]->vnum );
+//		    snprintf( debug, sizeof(debug), "Tmp#: %d Vnum: %d\n\r", room, vnumArray[j]->vnum );
 //		    bug( debug, 0 );
 		    room = vnumArray[j]->vnum;
 		    bindex = 0;
@@ -425,7 +425,7 @@ int parse_ship_template(char *string, SHIP_DATA *ship)
 	    }
 	    buf[j] = '\0';
 	    room2 = atoi((char*)buf+j+1);
-//	    sprintf( debug, "Buf: %s Room2: %d\n\r", buf, room2 );
+//	    snprintf( debug, sizeof(debug), "Buf: %s Room2: %d\n\r", buf, room2 );
 //	    bug( debug, 0 );
 	    for(j = 0; j < roomCount; j++) {
 		if (roomArray[j] == room2) {

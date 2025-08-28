@@ -42,7 +42,7 @@
 
 /* Externals */
 extern	int	top_reset;
-extern	int	bootup;
+extern	bool	bootup;
 char *		sprint_reset	args( ( CHAR_DATA *ch, RESET_DATA *pReset,
           sh_int num, bool rlist ) );
 RESET_DATA *	parse_reset	args( ( AREA_DATA *tarea, char *argument,
@@ -1692,7 +1692,7 @@ void list_resets( CHAR_DATA *ch, AREA_DATA *pArea, ROOM_INDEX_DATA *pRoom,
   OBJ_INDEX_DATA *obj, *obj2;
   OBJ_INDEX_DATA *lastobj;
   RESET_DATA *lo_reset;
-  bool found;
+  bool found __attribute__((unused));
   int num = 0;
   const char *rname, *mname, *oname;
   char buf[256];

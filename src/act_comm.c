@@ -45,16 +45,23 @@ void	talk_channel	args( ( CHAR_DATA *ch, char *argument,
 char *  scramble        args( ( const char *argument, int modifier ) );			    
 char *  drunk_speech    args( ( const char *argument, CHAR_DATA *ch ) ); 
 
-void sound_to_room( ROOM_INDEX_DATA *room , char *argument )
+/**
+ * Sends a sound message to all players in a room who have the SOUND flag set.
+ * @param room The room to send the sound to
+ * @param argument The sound message to send
+ */
+void sound_to_room(ROOM_INDEX_DATA *room, const char *argument)
 {
    CHAR_DATA *vic;
 
-        if ( room == NULL ) return;
+   if (room == NULL)
+      return;
         
-        for ( vic = room->first_person; vic; vic = vic->next_in_room )
-	   if ( !IS_NPC(vic) && IS_SET( vic->act, PLR_SOUND ) )
-	     send_to_char( argument, vic );
-     
+   for (vic = room->first_person; vic; vic = vic->next_in_room)
+   {
+      if (!IS_NPC(vic) && IS_SET(vic->act, PLR_SOUND))
+         send_to_char(argument, vic);
+   }
 }
 
 char * lang_string( CHAR_DATA *ch, CHAR_DATA *vch )
@@ -328,8 +335,9 @@ char *drunk_speech( const char *argument, CHAR_DATA *ch )
 	*txt++ = *arg, currslur++;
     }
    else
+   {
     *txt++ = *arg;
-
+   }
     arg++;
   };
 
@@ -1151,7 +1159,6 @@ void do_tell( CHAR_DATA *ch, char *argument )
     bool ch_comlink;
     bool victim_comlink;
     OBJ_DATA *obj;
-    CHAR_DATA *vch;
     bool sameroom = FALSE;
     
     switched_victim = NULL;
@@ -1795,7 +1802,8 @@ void do_quit( CHAR_DATA *ch, char *argument )
     snprintf( log_buf, sizeof(log_buf), "%s has quit. (Room %d)", ch->name, ch->in_room->vnum );
   else
     snprintf( log_buf, sizeof(log_buf), "%s has quit.", ch->name );
-    quitting_char = ch;
+  
+  quitting_char = ch;
     save_char_obj( ch );
     save_home(ch);
 
@@ -1815,7 +1823,8 @@ void do_quit( CHAR_DATA *ch, char *argument )
      */
     extract_char( ch, TRUE );
   /* act( AT_TELL, "(&COutgoing Message&B) ($l) $N: '$t'", ch, sbuf, victim, TO_CHAR ); */
-	for ( y = 0; y < MAX_LAYERS; y++ )
+    for ( x = 0; x < MAX_WEAR; x++ )
+        for ( y = 0; y < MAX_LAYERS; y++ )
 	    save_equipment[x][y] = NULL;
 
     /* don't show who's logging off to leaving player */
@@ -2377,7 +2386,7 @@ void do_group( CHAR_DATA *ch, char *argument )
 	  send_to_char( "You have no eligible group members.\n\r", ch );
 	else
 	{
-     	   act( AT_ACTION, "$n groups $s followers.", ch, NULL, victim, TO_ROOM );
+     	   act( AT_ACTION, "$n groups $s followers.", ch, NULL, NULL, TO_ROOM );
 	   send_to_char( "You group your followers.\n\r", ch );
 	}
     return;

@@ -242,7 +242,6 @@ DO_FUN *skill_function( char *name )
         if ( !str_cmp( name, "do_chaos" ))              return do_chaos;
 	if ( !str_cmp( name, "do_chat" ))		return do_chat;
 	if ( !str_cmp( name, "do_checkareaships" ))	return do_checkareaships;
-	if ( !str_cmp( name, "do_check_vnums" ))	return do_check_vnums;
 	if ( !str_cmp( name, "do_checkcargo" ))		return do_checkcargo;
 	if ( !str_cmp( name, "do_circle" ))		return do_circle;
 	if ( !str_cmp( name, "do_clanfunds" ))		return do_clanfunds;
@@ -1069,7 +1068,6 @@ char *skill_name( DO_FUN *skill )
     if ( skill == do_chat )		return "do_chat";
     if ( skill == do_ooc )		return "do_ooc";
     if ( skill == do_checkareaships )	return "do_checkareaships";
-    if ( skill == do_check_vnums )	return "do_check_vnums";
     if ( skill == do_checkcargo )	return "do_checkcargo";
     if ( skill == do_circle )		return "do_circle";
     if ( skill == do_clanfunds )	return "do_clanfunds";

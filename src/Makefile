@@ -11,7 +11,8 @@ O_FILES = act_comm.o act_info.o act_move.o act_obj.o act_wiz.o boards.o \
           handler.o hashstr.o id.o interp.o magic.o makeobjs.o \
           misc.o mud_comm.o mud_prog.o krearena.o player.o requests.o \
           reset.o save.o shops.o skills.o special.o tables.o track.o update.o \
-          space.o space2.o bounty.o swskills.o alias.o grub.o mapper.o templateparse.o trivia.o
+          space.o space2.o bounty.o swskills.o alias.o grub.o mapper.o templateparse.o trivia.o \
+          secure_password.o
 
 H_FILES = mud.h bet.h
 

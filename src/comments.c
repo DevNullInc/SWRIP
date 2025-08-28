@@ -216,7 +216,7 @@ void do_comment( CHAR_DATA *ch, char *argument )
 
     if ( !str_cmp( arg, "read" ) )
     {
-	bool fAll;
+	bool fAll = FALSE;
 
         argument = one_argument( argument, arg1 );
         victim = get_char_world(ch, arg1);

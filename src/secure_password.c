@@ -37,7 +37,7 @@ char *generate_salt(void) {
     if (!salt_hex) return NULL;
 
     for (i = 0; i < SALT_LENGTH; i++) {
-        sprintf(salt_hex + (i * 2), "%02x", salt_bytes[i]);
+        snprintf( salt_hex + (i * 2), 3, "%02x", salt_bytes[i]);
     }
     salt_hex[SALT_LENGTH * 2] = '\0';
 
@@ -78,7 +78,7 @@ char *hash_password(const char *password, const char *salt) {
     strcat(result, "$");
 
     for (size_t i = 0; i < HASH_LENGTH; i++) {
-        sprintf(result + salt_len + 1 + (i * 2), "%02x", hash[i]);
+        snprintf(result + salt_len + 1 + (i * 2), 3, "%02x", hash[i]);
     }
 
     return result;

@@ -3606,7 +3606,7 @@ void do_aquest(CHAR_DATA *ch, char *argument)
     {
         act(AT_PLAIN,"$n asks $N for a list of quest items.",ch,NULL,questman,TO_ROOM); 
 	act(AT_PLAIN,"You ask $N for a list of quest items.",ch,NULL,questman,TO_CHAR);
-  _snprintf(buf, sizeof(buf), "Current Quest Items available for Purchase:\n\r\n\r\
+  snprintf(buf, sizeof(buf), "Current Quest Items available for Purchase:\n\r\n\r\
 [1] %dqp.......%s\n\r\
 [2] %dqp.......%s\n\r\
 [3] %dqp........%s\n\r\
