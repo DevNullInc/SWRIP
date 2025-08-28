@@ -4937,14 +4937,19 @@ void do_set_boot_time( CHAR_DATA *ch, char *argument)
  * password - can still only change the password if you have access to 
  * pfiles and the correct password
  */ 
-void do_form_password( CHAR_DATA *ch, char *argument) 
+void do_form_password( CHAR_DATA *ch, char *argument)
 {
    char arg[MAX_STRING_LENGTH];
-  
+
    argument = one_argument(argument, arg);
-   
-   ch_printf(ch, "Those two arguments encrypted would result in: %s", 
-   crypt(arg, argument)); 
+
+   /*
+    * [SECURITY] This command demonstrates legacy crypt() output
+    * Note: crypt() uses DES encryption which is cryptographically broken.
+    * For secure password hashing, use hash_password() instead.
+    */
+   ch_printf(ch, "Those two arguments encrypted would result in: %s",
+   crypt(arg, argument));
    return;
 }
 

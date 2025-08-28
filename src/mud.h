@@ -4595,6 +4595,19 @@ char *	crypt		args( ( const char *key, const char *salt ) );
 #define crypt(s1, s2)	(s1)
 #endif
 
+/*
+ * [SECURITY] Modern password handling functions
+ * These replace the insecure crypt() function with SHA-256 based hashing
+ */
+#include "secure_password.h"
+
+/*
+ * [SECURITY] Compatibility macros for legacy crypt() usage
+ * These allow existing code to work with new secure password functions
+ */
+#define secure_crypt(password, salt) hash_password(password, salt)
+#define secure_crypt_verify(password, hash) verify_password(password, hash)
+
 
 /*
  * Data files used by the server.

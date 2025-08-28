@@ -168,9 +168,10 @@ char  * parse_target( CHAR_DATA *ch, char *oldstring )
      counter++; 
      for (counter2 = 0; argument[counter] != '\0'; counter2++,counter++) 
        leftover[counter2] = argument[counter]; 
-     leftover[counter2] = '\0'; 
-     strcpy( d->incomm,leftover ); 
-     return (multicommand); 
+     leftover[counter2] = '\0';
+     strncpy( d->incomm, leftover, sizeof(d->incomm) - 1 );
+     d->incomm[sizeof(d->incomm) - 1] = '\0';
+     return (multicommand);
    } 
    else if (argument[counter] == '|' && argument[counter+1] == '|') 
      for (counter2 = counter; argument[counter2] != '\0'; counter2++) 
@@ -334,7 +335,8 @@ void interpret( CHAR_DATA *ch, char *argument )
 	snprintf( lastplayercmd, sizeof(lastplayercmd), "** %s: %s", ch->name, logline );
 
     if ( found && cmd->log == LOG_NEVER )
-	strcpy( logline, "XXXXXXXX XXXXXXXX XXXXXXXX" );
+	strncpy( logline, "XXXXXXXX XXXXXXXX XXXXXXXX", sizeof(logline) - 1 );
+	logline[sizeof(logline) - 1] = '\0';
 
     loglvl = found ? cmd->log : LOG_NORMAL;
 
@@ -659,7 +661,8 @@ int number_argument( char *argument, char *arg )
 	    *pdot = '\0';
 	    number = atoi( argument );
 	    *pdot = '.';
-	    strcpy( arg, pdot+1 );
+	    strncpy( arg, pdot+1, sizeof(arg) - 1 );
+	    arg[sizeof(arg) - 1] = '\0';
 	    return number;
 	}
     }

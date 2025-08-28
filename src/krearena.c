@@ -708,7 +708,7 @@ void load_hall_of_fame(void)
     perror("Unable to open hall of fame file");
     return;
   }
-  while (fscanf(fl, "%s %d %d", name, &date, &award) == 3)
+  while (fscanf(fl, "%1024s %d %d", name, &date, &award) == 3)
   {
     CREATE(next_node, struct hall_of_fame_element, 1);
     strncpy(next_node->name, name, MAX_INPUT_LENGTH);

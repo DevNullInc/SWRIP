@@ -3383,8 +3383,20 @@ void do_password( CHAR_DATA *ch, char *argument )
 	return;
     }
 
-    if ( strcmp( crypt( arg1, ch->pcdata->pwd ), ch->pcdata->pwd ) )
-    {
+    /*
+     * [SECURITY] Use secure password verification for password change
+     */
+    bool old_password_valid = false;
+
+    if (is_legacy_hash(ch->pcdata->pwd)) {
+        /* Legacy crypt() hash - use old method for backward compatibility */
+        old_password_valid = (strcmp(crypt(arg1, ch->pcdata->pwd), ch->pcdata->pwd) == 0);
+    } else {
+        /* New SHA-256 hash - use secure verification */
+        old_password_valid = verify_password(arg1, ch->pcdata->pwd);
+    }
+
+    if (!old_password_valid) {
 	WAIT_STATE( ch, 40 );
 	send_to_char( "Wrong password.  Wait 10 seconds.\n\r", ch );
 	return;
@@ -3398,21 +3410,37 @@ void do_password( CHAR_DATA *ch, char *argument )
     }
 
     /*
-     * No tilde allowed because of player file format.
+     * [SECURITY] Use secure password hashing instead of crypt()
      */
-    pwdnew = crypt( arg2, ch->name );
+    char *salt = generate_salt();
+    if (!salt) {
+	send_to_char("Password change failed, try again.\n\r", ch);
+	return;
+    }
+
+    pwdnew = hash_password(arg2, salt);
+    free(salt);
+
+    if (!pwdnew) {
+	send_to_char("Password change failed, try again.\n\r", ch);
+	return;
+    }
+
+    /* Check for problematic characters (legacy compatibility) */
     for ( p = pwdnew; *p != '\0'; p++ )
     {
 	if ( *p == '~' )
 	{
 	    send_to_char(
 		"New password not acceptable, try again.\n\r", ch );
+	    free(pwdnew);
 	    return;
 	}
     }
 
     DISPOSE( ch->pcdata->pwd );
     ch->pcdata->pwd = str_dup( pwdnew );
+    free(pwdnew);  /* [SECURITY] Free the allocated hash */
     if ( IS_SET(sysdata.save_flags, SV_PASSCHG) )
 	save_char_obj( ch );
     send_to_char( "Ok.\n\r", ch );

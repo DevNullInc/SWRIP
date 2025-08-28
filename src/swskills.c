@@ -2456,7 +2456,8 @@ void do_makeshield( CHAR_DATA *ch, char *argument )
      case 1: 
       if ( !ch->dest_buf )
            return;
-      strcpy(arg, (const char*) ch->dest_buf);
+      strncpy(arg, (const char*) ch->dest_buf, sizeof(arg) - 1);
+      arg[sizeof(arg) - 1] = '\0';
       DISPOSE( ch->dest_buf);
       break;
       
@@ -2834,7 +2835,8 @@ void do_reinforcements( CHAR_DATA *ch, char *argument )
      case 1:
       if ( !ch->dest_buf )
          return;
-      strcpy(arg, (const char*) ch->dest_buf);
+      strncpy(arg, (const char*) ch->dest_buf, sizeof(arg) - 1);
+      arg[sizeof(arg) - 1] = '\0';
       DISPOSE( ch->dest_buf);
       break;
       
@@ -2914,7 +2916,8 @@ void do_postguard( CHAR_DATA *ch, char *argument )
      case 1:
       if ( !ch->dest_buf )
          return;
-      strcpy(arg, (const char*) ch->dest_buf);
+      strncpy(arg, (const char*) ch->dest_buf, sizeof(arg) - 1);
+      arg[sizeof(arg) - 1] = '\0';
       DISPOSE( ch->dest_buf);
       break;
       
@@ -4224,7 +4227,8 @@ void do_add_patrol ( CHAR_DATA *ch , char *argument )
      case 1:
       if ( !ch->dest_buf )
          return;
-      strcpy(arg, (const char*) ch->dest_buf);
+      strncpy(arg, (const char*) ch->dest_buf, sizeof(arg) - 1);
+      arg[sizeof(arg) - 1] = '\0';
       DISPOSE( ch->dest_buf);
       break;
       
@@ -4306,7 +4310,8 @@ void do_special_forces ( CHAR_DATA *ch , char *argument )
      case 1:
       if ( !ch->dest_buf )
          return;
-      strcpy(arg, (const char*) ch->dest_buf);
+      strncpy(arg, (const char*) ch->dest_buf, sizeof(arg) - 1);
+      arg[sizeof(arg) - 1] = '\0';
       DISPOSE( ch->dest_buf);
       break;
 
@@ -4387,7 +4392,8 @@ void do_elite_guard ( CHAR_DATA *ch , char *argument )
      case 1:
       if ( !ch->dest_buf )
          return;
-      strcpy(arg, (const char*) ch->dest_buf);
+      strncpy(arg, (const char*) ch->dest_buf, sizeof(arg) - 1);
+      arg[sizeof(arg) - 1] = '\0';
       DISPOSE( ch->dest_buf);
       break;
 
@@ -5707,7 +5713,8 @@ void do_makebowcaster( CHAR_DATA *ch, char *argument )
      case 1: 
       if ( !ch->dest_buf )
            return;
-      strcpy(arg, (const char*) ch->dest_buf);
+      strncpy(arg, (const char*) ch->dest_buf, sizeof(arg) - 1);
+      arg[sizeof(arg) - 1] = '\0';
       DISPOSE( ch->dest_buf);
       break;
       
@@ -5812,10 +5819,12 @@ void do_makebowcaster( CHAR_DATA *ch, char *argument )
     obj->level = level;
     obj->weight = 2+level/7;
     STRFREE( obj->name );
-    strcpy( buf , arg );
+    strncpy( buf , arg, sizeof(buf) - 1 );
+    buf[sizeof(buf) - 1] = '\0';
     strcat( buf , " bowcaster");
     obj->name = STRALLOC( buf );
-    strcpy( buf, arg );
+    strncpy( buf, arg, sizeof(buf) - 1 );
+    buf[sizeof(buf) - 1] = '\0';
     STRFREE( obj->short_descr );
     obj->short_descr = STRALLOC( buf );        
     STRFREE( obj->description );
@@ -5962,9 +5971,11 @@ void do_makedisguise( CHAR_DATA *ch, char *argument )
      case 1: 
       if ( !ch->dest_buf )
            return;
-      strcpy(arg1, (const char*) ch->dest_buf);
+      strncpy(arg1, (const char*) ch->dest_buf, sizeof(arg1) - 1);
+      arg1[sizeof(arg1) - 1] = '\0';
       DISPOSE( ch->dest_buf);
-      strcpy(arg2, (const char*) ch->dest_buf_2);
+      strncpy(arg2, (const char*) ch->dest_buf_2, sizeof(arg2) - 1);
+      arg2[sizeof(arg2) - 1] = '\0';
       DISPOSE( ch->dest_buf_2);
       break;
       
@@ -6034,10 +6045,12 @@ void do_makedisguise( CHAR_DATA *ch, char *argument )
     SET_BIT( obj->wear_flags, ITEM_TAKE );
     obj->level = level;
     STRFREE( obj->name );
-    strcpy( buf , arg2 );
+    strncpy( buf , arg2, sizeof(buf) - 1 );
+    buf[sizeof(buf) - 1] = '\0';
     strcat( buf , " disguise");
     obj->name = STRALLOC( buf );
-    strcpy( buf, arg2 );
+    strncpy( buf, arg2, sizeof(buf) - 1 );
+    buf[sizeof(buf) - 1] = '\0';
     STRFREE( obj->short_descr );
     obj->short_descr = STRALLOC( buf );        
     STRFREE( obj->description );
@@ -6142,7 +6155,8 @@ void do_makemedpac( CHAR_DATA *ch, char *argument )
 
     case 1:
  if( !ch->dest_buf ) return;
- strcpy( arg, (const char*) ch->dest_buf );
+ strncpy( arg, (const char*) ch->dest_buf, sizeof(arg) - 1 );
+ arg[sizeof(arg) - 1] = '\0';
  DISPOSE( ch->dest_buf );
  break;
 
@@ -6423,8 +6437,10 @@ void do_makefurniture( CHAR_DATA *ch, char *argument )
 	case 1:
 		if( !ch->dest_buf || !ch->dest_buf_2 )
 			return;
-		strcpy( arg, (const char*) ch->dest_buf );
-		strcpy( arg2, (const char*) ch->dest_buf_2 );
+		strncpy( arg, (const char*) ch->dest_buf, sizeof(arg) - 1 );
+		arg[sizeof(arg) - 1] = '\0';
+		strncpy( arg2, (const char*) ch->dest_buf_2, sizeof(arg2) - 1 );
+		arg2[sizeof(arg2) - 1] = '\0';
 		DISPOSE( ch->dest_buf );
 		DISPOSE( ch->dest_buf_2 );
 		break;

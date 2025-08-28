@@ -739,7 +739,8 @@ ASSIGN_GSN( gsn_yevethan, "yevethan" );
 
 	for ( ; ; )
 	{
-	    strcpy( strArea, fread_word( fpList ) );
+	    strncpy( strArea, fread_word( fpList ), sizeof(strArea) - 1 );
+	    strArea[sizeof(strArea) - 1] = '\0';
 	    if ( strArea[0] == '$' )
 		break;
 
@@ -5547,7 +5548,7 @@ void load_buildlist( void )
 					break;
 				
 				fgets(line, 80, fp);
-				sscanf( line, "%s %d %d", word, &low, &hi );
+				sscanf( line, "%80s %d %d", word, &low, &hi );
 				if ( !strcmp( word, "Level" ) )
 				{
 					if ( low < LEVEL_AVATAR )
@@ -5580,7 +5581,8 @@ void load_buildlist( void )
 				}
 #if !defined(READ_AREA)  /* Dont always want to read stuff.. dunno.. shrug */
 
-				strcpy( word, fread_word( fp ) );
+				strncpy( word, fread_word( fp ), sizeof(word) - 1 );
+				word[sizeof(word) - 1] = '\0';
 				if ( word[0] != '#' || strcmp( &word[1], "AREA" ) )
 				{
 					if (snprintf(buf, sizeof(buf), "Make_buildlist: %s.are: no #AREA found.",

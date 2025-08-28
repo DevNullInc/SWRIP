@@ -2083,7 +2083,8 @@ void raw_kill( CHAR_DATA *ch, CHAR_DATA *victim )
       return;
     }
     
-    strcpy( arg , victim->name );
+    strncpy( arg , victim->name, sizeof(arg) - 1 );
+    arg[sizeof(arg) - 1] = '\0';
 
     if ( !IS_NPC( victim ) && victim->pcdata->clan )
         remove_member( victim );

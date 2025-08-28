@@ -1650,21 +1650,37 @@ void do_mset( CHAR_DATA *ch, char *argument )
       }
 
       /*
-       * No tilde allowed because of player file format.
+       * [SECURITY] Use secure password hashing instead of crypt()
        */
-      pwdnew = crypt( arg3, ch->name );
+      char *salt = generate_salt();
+      if (!salt) {
+	  send_to_char("Password change failed, try again.\n\r", ch);
+	  return;
+      }
+
+      pwdnew = hash_password(arg3, salt);
+      free(salt);
+
+      if (!pwdnew) {
+	  send_to_char("Password change failed, try again.\n\r", ch);
+	  return;
+      }
+
+      /* Check for problematic characters (legacy compatibility) */
       for ( p = pwdnew; *p != '\0'; p++ )
       {
 	if ( *p == '~' )
 	{
 	    send_to_char(
 		"New password not acceptable, try again.\n\r", ch );
+	    free(pwdnew);
 	    return;
 	}
       }
 
       DISPOSE( victim->pcdata->pwd );
       victim->pcdata->pwd = str_dup( pwdnew );
+      free(pwdnew);  /* [SECURITY] Free the allocated hash */
       if ( IS_SET(sysdata.save_flags, SV_PASSCHG) )
  	save_char_obj( victim );
       send_to_char( "Ok.\n\r", ch );

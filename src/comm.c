@@ -172,7 +172,8 @@ int main( int argc, char **argv )
     current_time = (time_t) now_time.tv_sec;
 /*  gettimeofday( &boot_time, NULL);   okay, so it's kludgy, sue me :) */
     boot_time = time(0);         /*  <-- I think this is what you wanted */
-    strcpy( str_boot_time, ctime( &current_time ) );
+    strncpy( str_boot_time, ctime( &current_time ), sizeof(str_boot_time) - 1 );
+    str_boot_time[sizeof(str_boot_time) - 1] = '\0';
 
     /*
      * Init boot time.
@@ -569,7 +570,8 @@ void game_loop( )
 			d->fcommand	= TRUE;
 			stop_idling( d->character );
 
-			strcpy( cmdline, d->incomm );
+			strncpy( cmdline, d->incomm, sizeof(cmdline) - 1 );
+			cmdline[sizeof(cmdline) - 1] = '\0';
 			d->incomm[0] = '\0';
 			
 			if ( d->character )
@@ -1198,9 +1200,9 @@ void read_from_buffer( DESCRIPTOR_DATA *d )
      * Do '!' substitution.
      */
     if ( d->incomm[0] == '!' )
-	strcpy( d->incomm, d->inlast );
+	strncpy( d->incomm, d->inlast, sizeof(d->incomm) - 1 );
     else
-	strcpy( d->inlast, d->incomm );
+	strncpy( d->inlast, d->incomm, sizeof(d->inlast) - 1 );
 
     /*
      * Shift the input buffer.
@@ -1692,8 +1694,21 @@ void nanny( DESCRIPTOR_DATA *d, char *argument )
     case CON_GET_OLD_PASSWORD:
 	write_to_buffer( d, "\n\r", 2 );
 
-	if ( strcmp( crypt( argument, ch->pcdata->pwd ), ch->pcdata->pwd ) )
-	{
+	/*
+	 * [SECURITY] Use secure password verification
+	 * Supports both legacy crypt() hashes and new SHA-256 hashes
+	 */
+	bool password_valid = false;
+
+	if (is_legacy_hash(ch->pcdata->pwd)) {
+	    /* Legacy crypt() hash - use old method for backward compatibility */
+	    password_valid = (strcmp(crypt(argument, ch->pcdata->pwd), ch->pcdata->pwd) == 0);
+	} else {
+	    /* New SHA-256 hash - use secure verification */
+	    password_valid = verify_password(argument, ch->pcdata->pwd);
+	}
+
+	if (!password_valid) {
 	    write_to_buffer( d, "Wrong password.\n\r", 0 );
 	    /* clear descriptor pointer to get rid of bug message in log */
 	    d->character->desc = NULL;
@@ -1783,7 +1798,25 @@ void nanny( DESCRIPTOR_DATA *d, char *argument )
     return;
   }
 
-	pwdnew = crypt( argument, ch->name );
+	/*
+	 * [SECURITY] Use secure password hashing instead of crypt()
+	 * Generate a secure salt and hash the password
+	 */
+	char *salt = generate_salt();
+	if (!salt) {
+	    write_to_buffer( d, "Password creation failed, try again.\n\rPassword: ", 0 );
+	    return;
+	}
+
+	pwdnew = hash_password(argument, salt);
+	free(salt);
+
+	if (!pwdnew) {
+	    write_to_buffer( d, "Password creation failed, try again.\n\rPassword: ", 0 );
+	    return;
+	}
+
+	/* Check for problematic characters (legacy compatibility) */
 	for ( p = pwdnew; *p != '\0'; p++ )
 	{
 	    if ( *p == '~' )
@@ -1791,12 +1824,14 @@ void nanny( DESCRIPTOR_DATA *d, char *argument )
 		write_to_buffer( d,
 		    "New password not acceptable, try again.\n\rPassword: ",
 		    0 );
+		free(pwdnew);
 		return;
 	    }
 	}
 
 	DISPOSE( ch->pcdata->pwd );
 	ch->pcdata->pwd	= str_dup( pwdnew );
+	free(pwdnew);  /* [SECURITY] Free the allocated hash */
 	write_to_buffer( d, "\n\rPlease retype the password to confirm: ", 0 );
 	d->connected = CON_CONFIRM_NEW_PASSWORD;
 	break;
@@ -1804,8 +1839,10 @@ void nanny( DESCRIPTOR_DATA *d, char *argument )
     case CON_CONFIRM_NEW_PASSWORD:
 	write_to_buffer( d, "\n\r", 2 );
 
-	if ( strcmp( crypt( argument, ch->pcdata->pwd ), ch->pcdata->pwd ) )
-	{
+	/*
+	 * [SECURITY] Verify confirmation password against stored hash
+	 */
+	if (!verify_password(argument, ch->pcdata->pwd)) {
 	    write_to_buffer( d, "Passwords don't match.\n\rRetype password: ",
 		0 );
 	    d->connected = CON_GET_NEW_PASSWORD;

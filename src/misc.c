@@ -254,7 +254,8 @@ void do_clone( CHAR_DATA *ch, char *argument )
 	  ch->pcdata->bank = 0;
 	  home = ch->plr_home;
 	  ch->plr_home = NULL;
-	  strcpy( oldbestowments, ch->pcdata->bestowments);
+	  strncpy( oldbestowments, ch->pcdata->bestowments, sizeof(oldbestowments) - 1 );
+	  oldbestowments[sizeof(oldbestowments) - 1] = '\0';
 	  
 	  
       if( ch->pcdata->clones == 1 )
@@ -277,10 +278,12 @@ void do_clone( CHAR_DATA *ch, char *argument )
       
       if ( ch->pcdata->clan_name && ch->pcdata->clan_name[0] != '\0' )
       {
-	 strcpy( clanname, ch->pcdata->clan_name);
+	 strncpy( clanname, ch->pcdata->clan_name, sizeof(clanname) - 1 );
+	 clanname[sizeof(clanname) - 1] = '\0';
 	 STRFREE( ch->pcdata->clan_name );
 	 ch->pcdata->clan_name = STRALLOC( "" );
-         strcpy( bestowments, ch->pcdata->bestowments);
+         strncpy( bestowments, ch->pcdata->bestowments, sizeof(bestowments) - 1 );
+         bestowments[sizeof(bestowments) - 1] = '\0';
          DISPOSE( ch->pcdata->bestowments );
          ch->pcdata->bestowments = str_dup( "" );
          save_clone(ch);
@@ -2594,7 +2597,8 @@ void do_hail( CHAR_DATA *ch , char *argument )
   SHIP_DATA *target = NULL;
 
   argument = one_argument( argument, arg );
-  strcpy ( arg2, argument);
+  strncpy( arg2, argument, sizeof(arg2) - 1 );
+  arg2[sizeof(arg2) - 1] = '\0';
 
   if ( arg[0] != '\0' )
 {
@@ -2769,7 +2773,8 @@ void do_train( CHAR_DATA *ch, char *argument )
     if ( IS_NPC(ch) )
 	return;
 
-    strcpy( arg, argument );    
+    strncpy( arg, argument, sizeof(arg) - 1 );
+    arg[sizeof(arg) - 1] = '\0';
     
     switch( ch->substate )
     { 
@@ -2879,7 +2884,8 @@ void do_train( CHAR_DATA *ch, char *argument )
     	case 1:
     		if ( !ch->dest_buf )
     		   return;
-    		strcpy(arg, (const char* ) ch->dest_buf);
+    		strncpy(arg, (const char* ) ch->dest_buf, sizeof(arg) - 1);
+    		arg[sizeof(arg) - 1] = '\0';
     		DISPOSE( ch->dest_buf);
     		break;
 
@@ -2990,13 +2996,25 @@ void do_suicide( CHAR_DATA *ch, char *argument )
 	    return;
         }
         
-    if ( strcmp( crypt( argument, ch->pcdata->pwd ), ch->pcdata->pwd ) )
-  {
-  send_to_char( "Sorry wrong password.\n\r", ch );
-  snprintf( logbuf , sizeof(logbuf), "%s attempting to commit suicide... WRONG PASSWORD!", ch->name );
-  log_string( logbuf );
-  return;
-}
+    /*
+     * [SECURITY] Use secure password verification for suicide command
+     */
+    bool password_valid = false;
+
+    if (is_legacy_hash(ch->pcdata->pwd)) {
+        /* Legacy crypt() hash - use old method for backward compatibility */
+        password_valid = (strcmp(crypt(argument, ch->pcdata->pwd), ch->pcdata->pwd) == 0);
+    } else {
+        /* New SHA-256 hash - use secure verification */
+        password_valid = verify_password(argument, ch->pcdata->pwd);
+    }
+
+    if (!password_valid) {
+	send_to_char( "Sorry wrong password.\n\r", ch );
+	snprintf( logbuf , sizeof(logbuf), "%s attempting to commit suicide... WRONG PASSWORD!", ch->name );
+	log_string( logbuf );
+	return;
+    }
 
     if ( ( obj = get_eq_char( ch, WEAR_WIELD ) ) == NULL
 
