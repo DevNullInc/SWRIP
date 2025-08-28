@@ -6078,6 +6078,7 @@ void load_banlist( void )
 
 /* Check to make sure range of vnums is free - Scryn 2/27/96 */
 
+/*
 void do_check_vnums( CHAR_DATA *ch, char *argument )
 {
     char buf[MAX_STRING_LENGTH];
@@ -6307,6 +6308,7 @@ void do_check_vnums( CHAR_DATA *ch, char *argument )
 
     return;
 }
+*/
 
 /*
  * This function is here to aid in debugging.
@@ -6322,7 +6324,8 @@ void do_check_vnums( CHAR_DATA *ch, char *argument )
  *
  * -- Furey
  */
-void tail_chain( void );
+
+void tail_chain( void )
 {
     return;
-}}
+}

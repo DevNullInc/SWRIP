@@ -23,6 +23,8 @@
 #include <sys/time.h>
 #include <math.h>
 #include <stdio.h>
+#include <stdbool.h>
+#include <stdint.h>
 #ifdef MCCP
 #include <zlib.h>
 #endif
@@ -170,7 +172,7 @@ typedef struct  tracker_data    TRACKER_DATA;
 
 
 #ifndef __cplusplus
-typedef enum { false, true } bool;
+/* typedef enum { false, true } bool; */  /* Removed - using standard bool from <stdbool.h> */
 #endif
 
 /*
@@ -3342,7 +3344,7 @@ do								\
 #ifdef HASHSTR
 #define STRALLOC(point)		str_alloc((point))
 #define QUICKLINK(point)	quick_link((point))
-#define QUICKMATCH(p1, p2)	(int) (p1) == (int) (p2)
+#define QUICKMATCH(p1, p2)	(uintptr_t) (p1) == (uintptr_t) (p2)
 #define STRFREE(point)						\
 do								\
 {								\
@@ -3721,8 +3723,6 @@ extern	char *	const	lang_names      [];
  * Global variables.
  */
 
-extern bool bootup;
- 
 extern	int	numobjsloaded;
 extern	int	nummobsloaded;
 extern	int	physicalobjects;

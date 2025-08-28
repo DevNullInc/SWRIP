@@ -4,7 +4,7 @@ NOCRYPT =
 # Uncomment for MCCP support
 # DBUGFLG = -DMCCP
 C_FLAGS = -g3 -Wall $(PROF) $(NOCRYPT) $(DBUGFLG)
-L_FLAGS = $(PROF) -lcrypt -lz
+L_FLAGS = $(PROF) -lcrypt -lz -lssl -lcrypto
 
 O_FILES = act_comm.o act_info.o act_move.o act_obj.o act_wiz.o boards.o \
           build.o clans.o comm.o comments.o const.o db.o fight.o \

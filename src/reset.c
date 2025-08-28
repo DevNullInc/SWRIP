@@ -42,10 +42,11 @@
 
 /* Externals */
 extern	int	top_reset;
+extern	int	bootup;
 char *		sprint_reset	args( ( CHAR_DATA *ch, RESET_DATA *pReset,
-					sh_int num, bool rlist ) );
+          sh_int num, bool rlist ) );
 RESET_DATA *	parse_reset	args( ( AREA_DATA *tarea, char *argument,
-					CHAR_DATA *ch ) );
+          CHAR_DATA *ch ) );
 int		get_wearloc	args( ( char *type ) );
 int		get_trapflag	args( ( char *flag ) );
 int		get_exflag	args( ( char *flag ) );
