@@ -290,14 +290,12 @@ void show_map( CHAR_DATA *ch, char *text )
     /* Place Marker 2 - referred to later */
 
     /* Top of map frame */
-    snprintf( buf, sizeof(buf), "+-----------+ " );
-    /* First line of text */
-    strcat( buf, "\n\r" );
-
+    snprintf( buf, sizeof(buf), "+-----------+ \n\r" );
+    
     /* Write out the main map area with text */
     for( y = 0; y <= MAPY; y++ )
     {
-        strcat( buf, "|" );
+        strncat( buf, "|", sizeof(buf) - strlen(buf) - 1 );
 
         for( x = 0; x <= MAPX; x++ )
         {
@@ -307,12 +305,12 @@ void show_map( CHAR_DATA *ch, char *text )
             snprintf( buf + strlen( buf ), sizeof(buf) - strlen(buf), "%c", map[x][y].mapch );
         }
 
-        strcat( buf, "| \n\r" );
+        strncat( buf, "| \n\r", sizeof(buf) - strlen(buf) - 1 );
         /* Add the text, if necessary */
     }
 
     /* Finish off map area */
-    strcat( buf, "+-----------+ " );
+    strncat( buf, "+-----------+ ", sizeof(buf) - strlen(buf) - 1 );
 
     /* Deal with any leftover text */
 

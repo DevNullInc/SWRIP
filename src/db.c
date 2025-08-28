@@ -3613,7 +3613,7 @@ char *stripclr( char *text )
 
 		done[0] = '\0';
 
-		if ( (buf = (char *)malloc( strlen(text) * sizeof(text) )) == NULL)
+		if ( (buf = (char *)malloc( strlen(text) + 1 )) == NULL)
 			return text;      
 
 		/* Loop through until you've hit your terminating 0 */
@@ -3644,11 +3644,8 @@ char *stripclr( char *text )
 
 		buf[j] = '\0';
 
-	snprintf(done, sizeof(done), "%s", buf);
-		buf = (char* ) realloc(buf, j*sizeof(char));
-		free( buf);
-
-		return done;
+		snprintf(done, sizeof(done), "%s", buf);
+		free(buf);		return done;
 	}
 }
 

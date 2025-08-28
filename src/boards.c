@@ -298,7 +298,8 @@ void do_noteroom( CHAR_DATA *ch, char *argument )
     char arg[MAX_STRING_LENGTH];
     char arg_passed[MAX_STRING_LENGTH];
 
-    strcpy(arg_passed, argument);
+    strncpy(arg_passed, argument, sizeof(arg_passed) - 1);
+    arg_passed[sizeof(arg_passed) - 1] = '\0';
 
     switch( ch->substate )
     {
@@ -343,7 +344,8 @@ void do_mailroom(CHAR_DATA *ch, char *argument)
     char arg[MAX_STRING_LENGTH];
     char arg_passed[MAX_STRING_LENGTH];
 
-    strcpy(arg_passed, argument);
+    strncpy(arg_passed, argument, sizeof(arg_passed) - 1);
+    arg_passed[sizeof(arg_passed) - 1] = '\0';
 
     switch( ch->substate )
     {

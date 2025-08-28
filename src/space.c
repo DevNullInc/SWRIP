@@ -6871,7 +6871,8 @@ void do_land( CHAR_DATA *ch, char *argument )
     SPACE_DATA *spaceobj;
     bool found = FALSE;
     
-    strcpy( arg, argument );
+    strncpy( arg, argument, sizeof(arg) - 1 );
+    arg[sizeof(arg) - 1] = '\0';
 
     	        if ( (ship = ship_from_cockpit(ch->in_room->vnum)) == NULL )
     	        {
@@ -8724,7 +8725,8 @@ void do_target(CHAR_DATA *ch, char *argument )
     bool isturret = FALSE;
     TURRET_DATA *turret;
 
-    strcpy( arg, argument );
+    strncpy( arg, argument, sizeof(arg) - 1 );
+    arg[sizeof(arg) - 1] = '\0';
 
     switch( ch->substate )
     {
@@ -10101,7 +10103,8 @@ void do_repairship(CHAR_DATA *ch, char *argument )
     int chance, change;
     SHIP_DATA *ship;
     TURRET_DATA *turret;
-    strcpy( arg, argument );
+    strncpy( arg, argument, sizeof(arg) - 1 );
+    arg[sizeof(arg) - 1] = '\0';
 
     switch( ch->substate )
     {

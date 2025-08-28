@@ -279,7 +279,8 @@ void interpret( CHAR_DATA *ch, char *argument )
 	 * Special parsing so ' can be a command,
 	 *   also no spaces needed after punctuation.
 	 */
-	strcpy( logline, argument );
+	strncpy( logline, argument, sizeof(logline) - 1 );
+	logline[sizeof(logline) - 1] = '\0';
 
   	if( ch->desc && (index(argument, '|')))
 	  argument = get_multi_command( ch->desc, argument ); 
@@ -663,7 +664,8 @@ int number_argument( char *argument, char *arg )
 	}
     }
 
-    strcpy( arg, argument );
+    strncpy( arg, argument, sizeof(arg) - 1 );
+    arg[sizeof(arg) - 1] = '\0';
     return 1;
 }
 

@@ -140,7 +140,8 @@ void do_reload( CHAR_DATA *ch, char *argument )
   sh_int price = 0;
 
 
-  strcpy( arg, argument );
+  strncpy( arg, argument, sizeof(arg) - 1 );
+  arg[sizeof(arg) - 1] = '\0';
 
   if (arg[0] == '\0')
   {
@@ -471,7 +472,8 @@ void do_tractorbeam(CHAR_DATA *ch, char *argument )
     SHIP_DATA *target;
     char buf[MAX_STRING_LENGTH];
 
-    strcpy( arg, argument );
+    strncpy( arg, argument, sizeof(arg) - 1 );
+    arg[sizeof(arg) - 1] = '\0';
 
     switch( ch->substate )
     {
@@ -705,7 +707,8 @@ void do_adjusttractorbeam(CHAR_DATA *ch, char *argument )
   char arg[MAX_INPUT_LENGTH];
   SHIP_DATA *ship, *eShip;
 
-  strcpy( arg, argument );
+  strncpy( arg, argument, sizeof(arg) - 1 );
+  arg[sizeof(arg) - 1] = '\0';
   
     
   if (  (ship = ship_from_coseat(ch->in_room->vnum))  == NULL )
@@ -869,7 +872,8 @@ void do_undock(CHAR_DATA *ch, char *argument)
     SHIP_DATA *ship;  
     SHIP_DATA *eShip = NULL;
     
-    strcpy( arg, argument );
+    strncpy( arg, argument, sizeof(arg) - 1 );
+    arg[sizeof(arg) - 1] = '\0';
         
         if (  (ship = ship_from_cockpit(ch->in_room->vnum))  == NULL )
         {
@@ -1027,7 +1031,8 @@ void do_dock(CHAR_DATA *ch, char *argument)
     SHIP_DATA *ship;
     SHIP_DATA *eShip = NULL;
 
-    strcpy( arg, argument );
+    strncpy( arg, argument, sizeof(arg) - 1 );
+    arg[sizeof(arg) - 1] = '\0';
 
         if (  (ship = ship_from_cockpit(ch->in_room->vnum))  == NULL )
         {
@@ -1289,7 +1294,8 @@ void do_request(CHAR_DATA *ch, char *argument)
     SHIP_DATA *ship;
     SHIP_DATA *eShip = NULL;
 
-    strcpy( arg, argument );
+    strncpy( arg, argument, sizeof(arg) - 1 );
+    arg[sizeof(arg) - 1] = '\0';
 
     if ( (ship = ship_from_cockpit(ch->in_room->vnum)) == NULL )
     {
@@ -1824,7 +1830,8 @@ void do_sabotage(CHAR_DATA *ch, char *argument )
     int chance, change;
     SHIP_DATA *ship;
 
-    strcpy( arg, argument );
+    strncpy( arg, argument, sizeof(arg) - 1 );
+    arg[sizeof(arg) - 1] = '\0';
 
     switch( ch->substate )
     {
@@ -3180,7 +3187,8 @@ void do_gravityprojector(CHAR_DATA * ch, char *argument)
     }
     
 
-    strcpy( arg, argument );
+    strncpy( arg, argument, sizeof(arg) - 1 );
+    arg[sizeof(arg) - 1] = '\0';
 
   if ( (ship = ship_from_cockpit(ch->in_room->vnum)) == NULL )
   {

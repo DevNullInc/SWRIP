@@ -282,7 +282,8 @@ void do_makeblaster( CHAR_DATA *ch, char *argument )
     AFFECT_DATA *paf;
     AFFECT_DATA *paf2;
     
-    strcpy( arg , argument );
+    strncpy( arg , argument, sizeof(arg) - 1 );
+    arg[sizeof(arg) - 1] = '\0';
     
     switch( ch->substate )
     { 
@@ -2872,7 +2873,8 @@ void do_postguard( CHAR_DATA *ch, char *argument )
     if ( IS_NPC( ch ) || !ch->pcdata )
      return;
      
-    strcpy( arg, argument );    
+    strncpy( arg, argument, sizeof(arg) - 1 );
+    arg[sizeof(arg) - 1] = '\0';    
 
     switch( ch->substate )
     { 
@@ -4181,7 +4183,8 @@ void do_add_patrol ( CHAR_DATA *ch , char *argument )
     if ( IS_NPC( ch ) || !ch->pcdata )
      return;
 
-    strcpy( arg, argument );    
+    strncpy( arg, argument, sizeof(arg) - 1 );
+    arg[sizeof(arg) - 1] = '\0';    
     
     switch( ch->substate )
     { 
@@ -4262,7 +4265,8 @@ void do_special_forces ( CHAR_DATA *ch , char *argument )
     if ( IS_NPC( ch ) || !ch->pcdata )
      return;
      
-    strcpy( arg, argument );    
+    strncpy( arg, argument, sizeof(arg) - 1 );
+    arg[sizeof(arg) - 1] = '\0';    
     
     switch( ch->substate )
     { 
@@ -4342,7 +4346,8 @@ void do_elite_guard ( CHAR_DATA *ch , char *argument )
     if ( IS_NPC( ch ) || !ch->pcdata )
      return;
 
-    strcpy( arg, argument );
+    strncpy( arg, argument, sizeof(arg) - 1 );
+    arg[sizeof(arg) - 1] = '\0';
 
     switch( ch->substate )
     {
@@ -5601,7 +5606,8 @@ void do_makebowcaster( CHAR_DATA *ch, char *argument )
     AFFECT_DATA *paf;
     AFFECT_DATA *paf2;
     
-    strcpy( arg , argument );
+    strncpy( arg , argument, sizeof(arg) - 1 );
+    arg[sizeof(arg) - 1] = '\0';
     
     switch( ch->substate )
     { 
@@ -5871,7 +5877,8 @@ void do_makedisguise( CHAR_DATA *ch, char *argument )
     int vnum, sex, race;
 //  AFFECT_DATA *paf;
 
-    strcpy( arg, argument );
+    strncpy( arg, argument, sizeof(arg) - 1 );
+    arg[sizeof(arg) - 1] = '\0';
 
     switch( ch->substate )
     { 
